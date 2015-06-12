@@ -77,7 +77,13 @@ class view:
      frame.  pft is a transform from the parent to the frame coordinate
      space.
     '''
-    def apply_frame_transform(self, pft):
+    def apply_frame_transform(self, wft):
+        self.camera = wft * self.camera
+	    self.forward = wft.times_v( self.forward )
+	    self.center = wft * self.center
+	    self.up = wft.times_v(self.up)
+	    tso = screen_objects_t( (z_comparator(self.forward)) )
+	    screen_objects.swap( tso )
 
     '''
      Compute the apparent diameter, in pixels, of a circle that is parallel
@@ -85,6 +91,16 @@ class view:
      the camera, it will return negative.
     '''
     def pixel_coverage(self, pos, radius):
+        # The distance from the camera to this position, in the direction of the
+	    # camera.  This is the distance to the viewing plane that the coverage
+	    # circle lies in.
+        dist = (pos - self.camera).dot(self.forward)
+	    # Half of the width of the viewing plane at this distance.
+    	apparent_hwidth = self.tan_hfov_x * dist
+	    # The fraction of the apparent width covered by the coverage circle.
+	    coverage_fraction = self.radius / apparent_hwidth
+	    # Convert from fraction to pixels.
+	    return coverage_fraction * self.view_width
 
 '''
 Virtual base class for all renderable objects and composites.
@@ -109,6 +125,18 @@ class renderable:
 	 order to make that function compute center.
      '''
 	def outer_render(self, view):
+        actual_color = self.color
+	    if (self.v.anaglyph):
+    		if (self.v.coloranaglyph):
+    			self.color = actual_color.desaturate()
+    		else:
+    			self.color = actual_color.grayscale()
+		get_material_matrix(self.v, material_matrix)
+	    use_mat(self.v, self.mat.get(), material_matrix )
+	    gl_render(self.v)
+
+	    if (self.v.anaglyph):
+		    self.color = actual_color
 
     '''
     Called when rendering for mouse hit testing.  Since the result is not
@@ -116,38 +144,41 @@ class renderable:
 	 and should use the lowest-quality level of detail that covers the
 	 geometry.
 	'''
-	def gl_pick_render(self, view):
+	#def gl_pick_render(self, view):
 
 	'''
     Report the total extent of the object.
     '''
-	def grow_extent(self, extent):
+	#def grow_extent(self, extent):
 
 
 	'''
     Report the approximate center of the object.  This is used for depth
 	 sorting of the transparent models.
     '''
-    def get_center(self):
+    #def get_center(self):
 
     @property
     def material(self):
+        return self.mat
     @mat.setter
 	def material(self, m):
+        self.mat = m
 
-    def get_material_matrix(self, view):
+    #def get_material_matrix(self, view):
 
 	def translucent(self):
+        return opacity != 1.0 or (mat and mat.get_translucent())
 
-	def render_lights(self, view):
+	#def render_lights(self, view):
 
 	def is_light(self):
         return False
 
-	def get_children(self):
+	#def get_children(self):
 
     '''
      Called by outer_render when drawing to the screen.  The default
      is to do nothing.
     '''
-    def gl_render(self, view):
+    #def gl_render(self, view):
