@@ -6,6 +6,18 @@
 from pyglet.gl import *
 from math import pi
 
+displays_visible = 0
+enable_shaders = True
+
+def set_display_visible( display_kernel, visible ):
+
+	if (visible):
+        displays_visible += 1
+	else:
+        displays_visible -= 1
+
+
+
 '''
  A class that manages all OpenGL aspects of a given scene.  This class
  requires platform-specific support from render_surface to manage an OpenGL
@@ -22,7 +34,7 @@ class display_kernel:
 	 gcf_changed = False, ambient = [ 0.2, 0.2, 0.2], show_toolbar = False, last_time = 0, \
 	 background = [0, 0, 0], spin_allowed = True, zoom_allowed = True, mouse_mode = ZOOM_ROTATE, \
 	 stereo_mode = NO_STEREO, stereodepth = 0.0, lod_adjust = 0, realized = False, \
-	 mouse = self, range_auto = 0.0, range = [0,0,0], world_extent = 0.0)
+	 mouse = self, range_auto = 0.0, range = [0,0,0], world_extent = 0.0):
  		self.extensions = ''
  		self.renderer = ''
  		self.version = ''
@@ -33,8 +45,8 @@ class display_kernel:
 		self.selected = ''
 
 		self.center = center # The observed center of the display, in world space.
-		self.forward = forward #/< The direction of the camera, in world space.
-		self.up  = up #/< The vertical orientation of the scene, in world space.
+		self.forward = forward # The direction of the camera, in world space.
+		self.up  = up # The vertical orientation of the scene, in world space.
 		self.internal_forward = internal_forward #/< Do not permit internal_forward to be +up or -up
 		self.range  = range #/< Explicitly specified scene.range, or (0,0,0)
 		self.camera = camera #< World coordinates of camera location
@@ -585,7 +597,7 @@ class display_kernel:
 			scene_geometry  = view( self.internal_forward.norm(), self.center, self.view_width, \
 				self.view_height, self.forward_changed, self.gcf, self.gcfvec, self.gcf_changed, self.glext)
 			scene_geometry.lod_adjust = self.lod_adjust
-			scene_geometry.enable_shaders = self.enable_shaders
+			scene_geometry.enable_shaders = enable_shaders
 			clear_gl_error()
 
 			on_gl_free.frame()
@@ -594,8 +606,7 @@ class display_kernel:
 			modes = {NO_STEREO:self.set_NO_STEREO, ACTIVE_STEREO:self.set_ACTIVE_STEREO, \
 			     REDBLUE_STEREO: self.set_REDBLUE_STEREO, REDCYAN_STEREO: self.set_REDCYAN_STEREO,\
 				 YELLOWBLUE_STEREO: self.set_YELLOWBLUE_STEREO, GREENMAGENTA_STEREO: self.set_GREENMAGENTA_STEREO,\
-				 PASSIVE_STEREO: self.set_PASSIVE_STEREO, CROSSEYED_STEREO: self.set_CROSSEYED_STEREO
-			}
+				 PASSIVE_STEREO: self.set_PASSIVE_STEREO, CROSSEYED_STEREO: self.set_CROSSEYED_STEREO }
 			modes[self.stereo_mode]()
 			# Cleanup
 			check_gl_error()
@@ -806,157 +817,523 @@ class display_kernel:
 						self.forward = self.internal_forward = R*self.internal_forward
 						self.forward_changed = True
 
+	def report_window_resize(self, win_x, win_y, win_w, win_h ):
+        '''
+         Report that the position and/or size of the window or drawing area widget has changed.
+    		Some platforms might not know about position changes they can pass (x,y,new_width,new_height)
+     		win_* give the window rectangle (see self.window_*)
+     		v_* give the view rectangle (see self.view_*)
+        '''
+        self.window_x = win_x
+        self.window_y = win_y
+        self.window_width = win_w
+        self.window_height = win_h
+
+	def report_view_resize(self, v_w, v_h ):
+        self.view_width = max(v_w,1)
+        self.view_height = max(v_h,1)
 
 
-	/** Report that the position and/or size of the window or drawing area widget has changed.
-		Some platforms might not know about position changes they can pass (x,y,new_width,new_height)
- 		win_* give the window rectangle (see this.window_*)
- 		v_* give the view rectangle (see this.view_*)
- 		*/
-	void report_window_resize( int win_x, int win_y, int win_w, int win_h )
-	void report_view_resize( int v_w, int v_h )
+	def pick(self, x, y, d_pixels = 2.0):
+        '''
+         Determine which object (if any) was picked by the cursor.
+     	    @param x the x-position of the mouse cursor, in pixels.
+    		@param y the y-position of the mouse cursor, in pixels.
+    		@param d_pixels the allowable variation in pixels to successfully score
+    			a hit.
+    		@return  the nearest selected object, the position that it was hit, and
+    			the position of the mouse cursor on the near clipping plane.
+               retval.get<0>() may be NULL if nothing was hit, in which def set_the
+               positions are undefined.
+    	'''
+        pickpos = Vector()
+        mousepos = Vector()
+        try :
+            clear_gl_error()
+            # Notes:
+            # culled polygons don't count.  glRasterPos() does count.
 
-	/** Determine which object (if any) was picked by the cursor.
- 	    @param x the x-position of the mouse cursor, in pixels.
-		@param y the y-position of the mouse cursor, in pixels.
-		@param d_pixels the allowable variation in pixels to successfully score
-			a hit.
-		@return  the nearest selected object, the position that it was hit, and
-			the position of the mouse cursor on the near clipping plane.
-           retval.get<0>() may be NULL if nothing was hit, in which def set_the
-           positions are undefined.
-	*/
-	boost::tuple<shared_ptr<renderable>, vector, vector>
-	pick( int x, int y, float d_pixels = 2.0)
+            # Allocate a selection buffer of uints.  Format for returned hits is:
+            # :uint32: n_names:uint32: minimunm depth:uint32: maximum depth
+            # :unit32[n_names]: name_stack
+            # n_names is the depth of the name stack at the time of the hit.
+            # minimum and maximum depth are the minimum and maximum values in the
+            # depth buffer scaled between 0 and 2^32-1. (source is [0,1])
+            # name_stack is the full contents of the name stack at the time of the
+            # hit.
 
-	/** Recenters the scene.  Call this function exactly once to move the visual
-	 * center of the scene to the true center of the scene.  This will work
-	 * regardless of the value of this->autocenter.
-	 */
-	void recenter()
+            hit_buffer_size = max(
+              (self.layer_world.size()+self.layer_world_transparent.size())*4,
+              self.world_extent.get_select_buffer_depth())
+            # Allocate an exception-safe buffer for the GL to talk back to us.
+            hit_buffer = scoped_array(int(hit_buffer_size))
+            # unsigned int hit_buffer[hit_buffer_size]
 
-	/** Rescales the scene.  Call this function exactly once to scale the scene
-	 * such that it fits within the entire window.  This will work
-	 * regardless of the value of this->autoscale.
-	 */
-	void rescale()
+            # Allocate a vector<shared_ptr<renderable> > to lookup names
+            # as they are rendered.
+            name_table = Vector()
+            # Pass the name stack to OpenGL with glSelectBuffer.
+            glSelectBuffer( hit_buffer_size, hit_buffer.get())
+            # Enter selection mode with glRenderMode
+            glRenderMode( GL_SELECT)
+            glClear( GL_DEPTH_BUFFER_BIT)
+            # Clear the name stack with glInitNames(), raise the height of the name
+            # stack with glPushName() exactly once.
+            glInitNames()
+            glPushName(0)
 
-	/** Release GL resources.  Call this as many times as you like during the
-	 * shutdown.  However, neither pick() nor render_scene() may be called on
-	 * any display_kernel after gl_free() has been invoked.
-	 */
-	void gl_free()
+            # Initialize the picking matrix.
+            viewport_bounds = GLint(0, 0, self.view_width, self.view_height)
 
-	void allow_spin(bool)
-	bool spin_is_allowed(void) const
+            glMatrixMode( GL_PROJECTION)
+            glLoadIdentity()
+            gluPickMatrix( x, (self.view_height - y), d_pixels, d_pixels, self.viewport_bounds)
+            scene_geometry = view( self.internal_forward.norm(), self.center, self.view_width, self.view_height,
+            self.forward_changed, self.gcf, self.gcfvec, self.gcf_changed, self.glext)
+            scene_geometry.lod_adjust = self.lod_adjust
+            world_to_view_transform( scene_geometry, 0, True)
 
-	void allow_zoom(bool)
-	bool zoom_is_allowed(void) const
+            # Iterate across the world, rendering each body for picking.
+            i = layer_world.begin()
+            i_end = layer_world.end()
+            while (i != i_end) :
+                glLoadName( name_table.size())
+                name_table.push_back( i)
+                i.gl_pick_render( scene_geometry)
+                i += 1
 
+            j = self.layer_world_transparent.begin()
+            j_end = self.layer_world_transparent.end()
+            while (j != j_end) :
+                glLoadName( name_table.size())
+                name_table.push_back( j)
+                j.gl_pick_render( scene_geometry)
+                j += 1
+
+            # Return the name stack to the bottom with glPopName() exactly once.
+            glPopName()
+
+            # Exit selection mode, return to normal rendering rendering. (collects
+            # the number of hits at this time).
+            n_hits = glRenderMode( GL_RENDER)
+            check_gl_error()
+
+            # Lookup the name to get the shared_ptr<renderable> associated with it.
+            # The farthest point away in the depth buffer.
+            best_pick_depth = 1.0
+            hit_record = hit_buffer.get()
+            hit_buffer_end = hit_buffer.get() + hit_buffer_size
+            while n_hits > 0 and hit_record < hit_buffer_end :
+                n_names = hit_record[0]
+                if hit_record + 3 + n_names > hit_buffer_end:
+                    break
+                min_hit_depth = hit_record[1]/0xffffffffu
+                if (min_hit_depth < best_pick_depth) :
+                    best_pick_depth = min_hit_depth
+                    best_pick = name_table[*(hit_record+3)]
+                  if (n_names > 1) :
+                    # Then the picked object is the child of a frame.
+                    ref_frame = best_pick.get()
+                    assert(ref_frame != None)
+                    best_pick = ref_frame.lookup_name(hit_record + 4, hit_record + 3 + n_names)
+
+                hit_record += 3 + n_names
+                n_hits -= 1
+
+            if (hit_record > hit_buffer_end):
+                raise( \
+                    "More objects were picked than could be reported by the GL." \
+                    "  The hit buffer size was too small.")
+
+            modelview.gl_modelview_get()
+            tmatrix projection
+            projection.gl_projection_get()
+            pickpos.x, pickpos.y, pickpos.z = gluUnProject( \
+               x, self.view_height - y, self.best_pick_depth, \
+               modelview.matrix_addr(), \
+               projection.matrix_addr(), \
+               viewport_bounds)
+            # TODO: Replace the calls to gluUnProject() with own tmatrix inverse
+            # and such for optimization
+            tcenter.x, tcenter.y, tcenter.z  = gluProject( self.center.x*self.gcf,\
+               self.center.y*self.gcf, self.center.z*sel.fgcf, \
+               modelview.matrix_addr(), \
+               projection.matrix_addr(), \
+               viewport_bounds, \
+               )
+
+            mousepos.x, mousepos.y, mousepos.z = gluUnProject( \
+               x, self.view_height - y, tcenter.z, \
+               modelview.matrix_addr(), \
+               projection.matrix_addr(), \
+               viewport_bounds)
+        except (gl_error e) :
+            msg = "pick OpenGL error: " + e + ", aborting.\n"
+            raise( msg )
+            sys.exit(1)
+
+        pickpos.x /= self.gcfvec.x
+        pickpos.y /= self.gcfvec.y
+        pickpos.z /= self.gcfvec.z
+        mousepos.x /= self.gcfvec.x
+        mousepos.y /= self.gcfvec.y
+        mousepos.z /= self.gcfvec.z
+        return [best_pick, pickpos, mousepos]
+
+    #not yet implemented
+	#def recenter():
+        '''
+        Recenters the scene.  Call this function exactly once to move the visual
+    	center of the scene to the true center of the scene.  This will work
+    	regardless of the value of this->autocenter.
+    	'''
+
+	#def rescale():
+        '''
+        Rescales the scene.  Call this function exactly once to scale the scene
+    	such that it fits within the entire window.  This will work
+    	regardless of the value of this->autoscale.
+        '''
+
+	def gl_free(self):
+        '''
+        Release GL resources.  Call this as many times as you like during the
+    	shutdown.  However, neither pick() nor render_scene() may be called on
+    	any display_kernel after gl_free() has been invoked.
+        '''
+        try :
+        	clear_gl_error()
+        	on_gl_free.shutdown()
+        	check_gl_error()
+        except ( error) :
+        	raise( "Caught OpenGL error during shutdown: " \
+        		+ error	+ " Continuing with the shutdown.")
+
+	def allow_spin(self, b):
+        self.spin_allowed = b
+
+	def spin_is_allowed(self):
+        return self.spin_allowed
+
+	def allow_zoom(self, b):
+        zoom_allowed = b
+
+	def zoom_is_allowed(self):
+        return zoom_allowed
 
 	# Python properties
-	void set_up( const vector& n_up)
-	shared_vector& get_up()
+    @property
+    def up(self):
+        return self.up
+    @up.setter
+	def up(self, n_up):
+        if (n_up == vector()):
+            raise ValueError( "Up cannot be zero.")
+	    v = n_up.norm()
+    	if (v.cross(self.internal_forward) == vector()): # if internal_forward parallel to new up, move it away from new up
+    		if (v.cross(self.forward) == vector()):
+    			# old internal_forward was not parallel to old up
+    			self.internal_forward = (self.forward - 0.0001*self.up).norm()
+    		else:
+    			self.internal_forward = self.forward
+    	self.up = v
 
-	void set_forward( const vector& n_forward)
-	shared_vector& get_forward()
+    @property
+    def forward(self):
+        return self.forward
+    @forward.setter
+	def forward(self, n_forward):
+        if (n_forward == vector())
+		    raise ValueError( "Forward cannot be zero.")
+	    v = n_forward.norm()
+	    if (v.cross(self.up) == vector()): # if new forward parallel to up, move internal_forward away from up
+		    # old internal_forward was not parallel to up
+		    self.internal_forward = ( v.dot(self.up)*self.up + 0.0001*self.up.cross(self.internal_forward.cross(self.up)) ).norm()
+	    else : # since new forward not parallel to up, new forward is okay
+		    self.internal_forward = v
+	    self.forward = v
+	    self.forward_changed = True
 
-	void set_scale( const vector& n_scale)
-	vector get_scale()
+    @property
+    def scale(self):
+        if self.autoscale or not self.range.nonzero():
+		    raise Exception("Reading .scale and .range is not supported when autoscale is enabled.")
+	    return vector( 1.0/self.range.x, 1.0/self.range.y, 1.0/self.range.z )
+    @scale.setter
+    def scale(self, n_scale):
+        if (n_scale.x == 0.0 or n_scale.y == 0.0 or n_scale.z == 0.0):
+		    raise ValueError("The scale of each axis must be non-zero.")
+	    n_range = vector( 1.0/n_scale.x, 1.0/n_scale.y, 1.0/n_scale.z)
+	    self.range( n_range )
 
-	void set_center( const vector& n_center)
-	shared_vector& get_center()
+    @property
+    def center(self):
+        return self.center
+    @center.setter
+    def center(self, n_center):
+        self.center = n_center
 
-	void set_fov( double)
-	double get_fov()
-	void set_lod(int)
-	int get_lod()
+    @property
+    def fov(self):
+        return self.fov
+    @fov.setter
+	def fov(self, n_fov):
+        if (n_fov == 0.0):
+		    raise ValueError( "Orthogonal projection is not supported.")
+	    elif (n_fov < 0.0 or n_fov >= pi):
+		    raise ValueError("attribute visual.display.fov must be between 0.0" \
+                "and math.pi (exclusive)")
+	    self.fov = n_fov
 
-	void set_uniform( bool)
-	bool is_uniform()
+    @property
+	def lod_adjust(self):
+        return self.lod_adjust
+    @lod_adjust.setter
+    def lod_adjust(self, n_lod):
+        if (n_lod > 0 or n_lod < -6 ):
+            raise ValueError("attribute visual.display.lod must be between -6 and 0")
+        self.lod_adjust = n_lod
 
-	void set_background( const rgb&)
-	rgb get_background()
+    @property
+    def uniform(self):
+        return self.uniform
+    @uniform.setter
+    def uniform(self, n_uniform):
+        self.uniform = n_uniform
 
-	void set_foreground( const rgb&)
-	rgb get_foreground()
+    @property
+    def background(self):
+        return self.background
+    @background.setter
+    def background(self, n_background):
+        self.background = n_background
 
-	void set_autoscale( bool)
-	bool get_autoscale()
+    @property
+    def foreground(self):
+        return self.foreground
+    @foreground.setter
+    def foreground(self,n_foreground):
+        self.foreground = n_foreground
 
-	void set_autocenter( bool)
-	bool get_autocenter()
+    @property
+    def autoscale(self):
+        return self.autoscale
+    @autoscale.setter
+    def autoscale(self, n_autoscale):
+        if not n_autoscale and self.autoscale:
+            # Autoscale is disabled, but range_auto remains
+            #   set to the current autoscaled scene, until and unless
+            #   range is set explicitly.
+            self.recalc_extent()
+            self.range = vector(0,0,0)
+        self.autoscale = n_autoscale
 
-	void set_range_d( double)
-	void set_range( const vector&)
-	vector get_range()
+    @property
+    def range(self):
+        if self.autoscale or not range.nonzero():
+            raise Exception("Reading .scale and .range is not supported when autoscale is enabled.")
+	    return self.range
+    @range.setter
+    def range(self, n_range):
+        if not type(n_range) == 'double':
+        	if (n_range.x == 0.0 or n_range.y == 0.0 or n_range.z == 0.0):
+        		raise ValueError("attribute visual.display.range may not be zero.")
+        	self.autoscale = False
+        	self.range = n_range
+        	self.range_auto = 0.0
+        elif:
+            self.range = vector(n_range, n_range, n_range)
 
-	void set_ambient_f( float)
-	void set_ambient( const rgb&)
-	rgb get_ambient()
+    @property
+    def ambient(self):
+        return self.ambient
+    @ambient.setter
+    def ambient(self, n_ambient):
+        if type(n_ambient) == 'float':
+            self.ambient = rgb(n_ambient, n_ambient, n_ambient)
+        else:
+            self.ambient = n_ambient
 
-	void set_stereodepth( float)
-	float get_stereodepth()
+    @property
+	def stereodepth(self):
+        return self.stereodepth
+    @stereodepth.setter
+	def stereodepth(self, n_stereodepth):
+        if (self.visible):
+		    raise RuntimeError( "Cannot change parameters of an active window")
+	    else:
+            self.stereodepth = n_stereodepth
 
-	# The only mode that cannot be changed after initialization is active,
-	# which will result in a gl_error exception when rendered.  The completing
-	# display class will have to perform some filtering on this parameter.  This
-	# properties setter will not change the mode if the new one is invalid.
-	void set_stereomode( std::string mode)
-	std::string get_stereomode()
 
-	# A list of all objects rendered into this display_kernel.  Modifying it
-	# does not propogate to the owning display_kernel.
-	std::vector<shared_ptr<renderable> > get_objects() const
+    @property
+    def stereomode(self):
+        # The only mode that cannot be changed after initialization is active,
+    	# which will result in a gl_error exception when rendered.  The completing
+    	# display class will have to perform some filtering on this parameter.  This
+    	# properties setter will not change the mode if the new one is invalid.
+        stereo_values = {'NO_STEREO' :'nostereo', 'ACTIVE_STEREO': 'active', \
+         'PASSIVE_STEREO': 'passive', 'CROSSEYED_STEREO': 'crosseyed', \
+         'REDBLUE_STEREO': 'redblue', 'REDCYAN_STEREO' : 'redcyan', \
+         'YELLOWBLUE_STEREO' : 'yellowblue', 'GREENMAGENTA_STEREO' :'greenmagenta'}
+        if not hasattr(stereo_values, self.stereomode):
+            # Not strictly required, this just silences a warning about control
+    		# reaching the end of a non-void funciton.
+            return "nostereo"
+        else:
+            return stereo_values[self.stereomode]
+    @stereomode.setter
+    def stereomode(self,mode):
+        stereo_values = {'NO_STEREO' :'nostereo', 'ACTIVE_STEREO': 'active', \
+         'PASSIVE_STEREO': 'passive', 'CROSSEYED_STEREO': 'crosseyed', \
+         'REDBLUE_STEREO': 'redblue', 'REDCYAN_STEREO' : 'redcyan', \
+         'YELLOWBLUE_STEREO' : 'yellowblue', 'GREENMAGENTA_STEREO' :'greenmagenta'}
 
-	std::string info( void)
+        for key, value in stereo_values.iteritems():
+            if mode == value:
+                self.stereo_mode = key
+                return
+		raise ValueError( "Unimplemented or invalid stereo mode")
 
-	void set_x( float x)
-	float get_x()
+	@property
+	def objects(self):
+        # A list of all objects rendered into this display_kernel.  Modifying it
+    	# does not propogate to the owning display_kernel.
+        ret = vector()
+	    ret.insert( ret.end(), self.layer_world.begin(), self.layer_world.end() )
+	    ret.insert( ret.end(), self.layer_world_transparent.begin(), self.layer_world_transparent.end() )
+	    # ret[i]->get_children appends the immediate children of ret[i] to ret.  Since
+	    #ret.size() keeps increasing, we keep going until we have all the objects in the tree.
+	    for i in range(0,ret.size()):
+		    ret[i].get_children(ret)
+	    return ret
 
-	void set_y( float y)
-	float get_y()
+	def info(self):
+        if not self.extensions:
+		    return "Renderer inactive.\n"
+	    else:
+		    s += "OpenGL renderer active.\n  Vendor: " + self.vendor + "\n  Version: "\
+             + self.version + "\n  Renderer: " + self.renderer + "\n  Extensions: "
 
-	void set_width( float w)
-	float get_width()
+		    # self.extensions is a list of extensions
+		    copy( self.extensions.begin(), self.extensions.end(), buffer, "\n")
+		    s += buffer
+		    return s
 
-	void set_height( float h)
-	float get_height()
+    @property
+    def window_x(self):
+        return self.window_x
+    @window_x.setter
+	def window_x(self, n_x):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.window_x = n_x
 
-	void set_visible( bool v)
-	bool get_visible()
+    @property
+    def window_y(self):
+        return self.window_y
+    @window_y.setter
+	def window_y(self, n_y):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.window_y = n_y
 
-	void set_title( std::string n_title)
-	std::string get_title()
+    @property
+    def window_z(self):
+        return self.window_z
+    @window_z.setter
+	def window_z(self, n_z):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.window_z = n_z
 
-	bool is_fullscreen()
-	void set_fullscreen( bool)
+    @property
+    def window_width(self):
+        return self.window_width
+    @window_width.setter
+	def window_width(self, n_width):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.window_width = n_width
+
+    @property
+    def window_height(self):
+        return self.window_height
+    @window_height.setter
+	def window_height(self, n_height):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.window_height = n_height
+
+    @property
+    def visible(self):
+        return self.visible
+    @visible.setter
+    def visible(self, vis):
+        if not vis:
+            self.explicitly_invisible = True
+        if vis != self.visible:
+            self.visible = vis
+		set_display_visible( self, self.visible )
+		# drive _activate (through wrap_display_kernel.cpp) in Python code
+		self.activate( vis )
+
+    @property
+    def title(self):
+        return self.title
+    @title.setter
+	def title(self, n_title):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.title = n_title
+
+    @property
+    def fullscreen(self):
+        return self.fullscreen
+    @fullscreen.setter
+	def fullscreen(self, n_fullscreen):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.fullscreen = n_fullscreen
 
 	bool get_exit()
 	void set_exit(bool)
 
-	bool is_showing_toolbar()
-	void set_show_toolbar( bool)
+    @property
+    def show_toolbar(self):
+        return self.show_toolbar
+    @show_toolbar.setter
+	def show_toolbar(self, n_show_toolbar):
+        if (self.visible):
+            raise RuntimeError( "Cannot change parameters of an active window")
+        else:
+		    self.show_toolbar = n_show_toolbar
 
-	static bool enable_shaders
+    def get_mouse(self):
+        self.implicit_activate()
+	    return self.mouse.get_mouse()
 
-	mouse_t* get_mouse()
+    @property
+    def selected(self):
+        return self.selected
+    @selected.setter
+    def selected(self, d):
+        self.selected = d
 
-	static void set_selected( shared_ptr<display_kernel> )
-	static shared_ptr<display_kernel> get_selected()
+    def hasExtension(self, ext ):
+        return self.extensions.find(ext) != extensions.end()
 
-	bool hasExtension( const std::string& ext )
+	#def pushkey(self, k):
 
-	void pushkey(std::string k)
-
-	typedef void (APIENTRYP EXTENSION_FUNCTION)()
+	#typedef void (APIENTRYP EXTENSION_FUNCTION)()
 	#virtual EXTENSION_FUNCTION getProcAddress( const char* )
 
-	EXTENSION_FUNCTION getProcAddress( const char* )
+	#EXTENSION_FUNCTION getProcAddress( const char* )
 
-	virtual void activate( bool active ) = 0
-}
-
-} # !namespace cvisual
-
-#endif # !defined VPYTHON_DISPLAY_KERNEL_HPP
+	#virtual void activate( bool active ) = 0

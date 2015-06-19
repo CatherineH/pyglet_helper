@@ -38,11 +38,11 @@ class frame(renderable) :
 		#children is an iterator? I guess I need to learn python iterators...
 		self.children = iterator()
 		self.trans_children = iterator()
-		'''
-		 Establishes the coordinate system into which this object's children
-	 	 are rendered.
-	 		@param gcf: the global correction factor, propogated from gl_render().
-	 	'''
+		self.child_iterator = []
+		self.const_child_iterator = []
+		self.trans_child_iterator = []
+		self.const_trans_child_iterator = []
+
 	def world_zaxis(self):
 		if (fabs(self.axis.dot(self.up) / sqrt( self.up.mag2() * self.axis.mag2())) > 0.98):
 			if (fabs(self.axis.norm().dot( vector(-1,0,0))) > 0.98):
@@ -110,18 +110,6 @@ class frame(renderable) :
 		ret(2,3) = -(self.pos * z_axis).sum()
 		ret.w_row()
 		return ret
-
-
-	typedef indirect_iterator<std::list<shared_ptr<renderable> >::iterator>
-		child_iterator;
-	typedef indirect_iterator<std::list<shared_ptr<renderable> >::const_iterator>
-		const_child_iterator;
-
-	std::vector<shared_ptr<renderable> > trans_children;
-	typedef indirect_iterator<std::vector<shared_ptr<renderable> >::iterator>
-		trans_child_iterator;
-	typedef indirect_iterator<std::vector<shared_ptr<renderable> >::const_iterator>
-		const_trans_child_iterator;
 
 	def rotate(self, angle, _axis, origin):
 		R = rotation( angle, _axis, origin)
@@ -292,34 +280,35 @@ class frame(renderable) :
   		gl_render(v)
 
 	@property
+	def pos(self):
+		return self.pos
+	@pos.setter
 	def pos(self, n_pos):
 		self.pos = n_pos;
 		if (self.trail_initialized and self.make_trail):
 			if (self.obj_initialized) :
 				trail_update(self.primitive_object)
-	@pos.setter
-	def pos(self):
-		return self.pos
+
 
 	@property
+	def x(self):
+		return self.pos.x
+	@x.setter
 	def x(self, x):
 		self.pos.x = x
 		if (self.trail_initialized and self.make_trail):
 			if (self.obj_initialized):
 				trail_update(self.primitive_object)
-	@x.setter
-	def x(self):
-		return self.pos.x
 
 	@property
+	def y(self):
+	  return self.pos.y
+	@y.setter
 	def y(self, y):
 	  self.pos.y = y
 	  if (self.trail_initialized and self.make_trail):
 	    if (self.obj_initialized):
 	      trail_update(self.primitive_object)
-	@y.setter
-	def y(self):
-	  return self.pos.y
 
 	@property
 	def z(self, z):
@@ -332,6 +321,9 @@ class frame(renderable) :
 	  return self.pos.z
 
 	@property
+	def axis(self):
+		return self.axis
+	@axis.setter
 	def axis(self, n_axis):
 		a = self.axis.cross(n_axis)
 		if (a.mag() == 0.0):
@@ -340,13 +332,10 @@ class frame(renderable) :
 			angle = n_axis.diff_angle(self.axis)
 			self.axis = n_axis.mag()*self.axis.norm()
 			rotate(angle, a, pos)
-	@axis.setter
-	def axis(self):
-		return self.axis
 
 	@property
-	def up(self, n_up):
-		self.up = n_up
-	@up.setter
 	def up(self):
 		return self.up
+	@up.setter
+	def up(self, n_up):
+		self.up = n_up

@@ -79,46 +79,49 @@ class primitive(renderable):
 	    self.up = R.times_v(fake_up)
 
 	@property
+	def pos(self):
+		return self.pos
+	@pos.setter
 	def pos(self, n_pos):
 		self.pos = n_pos;
 		if (self.trail_initialized and self.make_trail):
 			if (self.obj_initialized) :
 				trail_update(self.primitive_object)
-	@pos.setter
-	def pos(self):
-		return self.pos
 
 	@property
+	def x(self):
+		return self.pos.x
+	@x.setter
 	def x(self, x):
 		self.pos.x = x
 		if (self.trail_initialized and self.make_trail):
 			if (self.obj_initialized):
 				trail_update(self.primitive_object)
-	@x.setter
-	def x(self):
-		return self.pos.x
 
 	@property
+	def y(self):
+	  return self.pos.y
+	@y.setter
 	def y(self, y):
 	  self.pos.y = y
 	  if (self.trail_initialized and self.make_trail):
 	    if (self.obj_initialized):
 	      trail_update(self.primitive_object)
-	@y.setter
-	def y(self):
-	  return self.pos.y
 
 	@property
+	def z(self):
+	  return self.pos.z
+	@z.setter
 	def z(self, z):
 	  self.pos.z = z
 	  if (self.trail_initialized and self.make_trail):
 	    if (self.obj_initialized):
 	      trail_update(self.primitive_object)
-	@z.setter
-	def z(self):
-	  return self.pos.z
 
 	@property
+	def axis(self):
+		return self.axis
+	@axis.setter
 	def axis(self, n_axis):
 		a = self.axis.cross(n_axis)
 		if (a.mag() == 0.0):
@@ -127,53 +130,53 @@ class primitive(renderable):
 			angle = n_axis.diff_angle(self.axis)
 			self.axis = n_axis.mag()*self.axis.norm()
 			rotate(angle, a, pos)
-	@axis.setter
-	def axis(self):
-		return self.axis
 
 	@property
-	def up(self, n_up):
-		self.up = n_up
-	@up.setter
 	def up(self):
 		return self.up
+	@up.setter
+	def up(self, n_up):
+		self.up = n_up
 
 	@property
-	def color(self, n_color):
-		self.color = n_color
-	@color.setter
 	def color(self):
 		return self.color
+	@color.setter
+	def color(self, n_color):
+		self.color = n_color
 
 	@property
-	def red(self, x):
-		self.color.red = x
-	@red.setter
 	def red(self):
 		return self.color.red
+	@red.setter
+	def red(self, x):
+		self.color.red = x
 
 	@property
-	def green(self, x):
-		self.color.green = x
-	@green.setter
 	def green(self):
 		return self.color.green
+	@green.setter
+	def green(self, x):
+		self.color.green = x
 
 	@property
-	def blue(self, x):
-		self.color.blue = x
-	@blue.setter
 	def blue(self):
 		return self.color.blue
+	@blue.setter
+	def blue(self, x):
+		self.color.blue = x
 
 	@property
-	def opacity(self, x):
-		self.opacity = x
-	@opacity.setter
 	def opacity(self):
 		return self.opacity
+	@opacity.setter
+	def opacity(self, x):
+		self.opacity = x
 
 	@property
+	def make_trail(self):
+		return self.make_trail
+	@make_trail.setter
 	def make_trail(self, x):
 		if (x and not self.obj_initialized):
 			raise RuntimeError("Can't set make_trail=True unless object was created with make_trail specified")
@@ -182,14 +185,11 @@ class primitive(renderable):
 			self.startup = False
 		self.make_trail = x
 		self.trail_initialized = False
-	@make_trail.setter
-	def make_trail(self):
-		return self.make_trail
 
 	@property
+	def primitive_object(self):
+		return self.primitive_object
+	@primitive_object.setter
 	def primitive_object(self, x):
 		self.primitive_object = x
 		self.obj_initialized = True
-	@primitive_object.setter
-	def primitive_object(self):
-		return self.primitive_object
