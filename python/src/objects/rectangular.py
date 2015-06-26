@@ -14,7 +14,6 @@ class rectangular(primitive):
         else:
             self.width = other.width
             self.height = other.height
-	void apply_transform( const view& )
 
     @property
     def length(self):
@@ -22,17 +21,17 @@ class rectangular(primitive):
     @length.setter
     def length(self, l):
         if (l < 0):
-		    raise RuntimeError( "length cannot be negative")
-	    self.axis = self.axis.norm() * l
+            raise RuntimeError( "length cannot be negative")
+        self.axis = self.axis.norm() * l
 
-	@property
+    @property
     def height(self):
         return self.height
     @height.setter
     def height(self, h):
         if (h < 0):
-		    raise RuntimeError( "height cannot be negative")
-	    self.axis = self.axis.norm() * h
+            raise RuntimeError( "height cannot be negative")
+        self.axis = self.axis.norm() * h
 
     @property
     def width(self):
@@ -44,24 +43,24 @@ class rectangular(primitive):
         self.axis = self.axis.norm() * w
 
     @property
-	def size(self):
-	    return vector(self.axis.mag(), self.height, self.width)
+    def size(self):
+        return vector(self.axis.mag(), self.height, self.width)
     @size.setter
     def size(self, s):
-    	if (s.x < 0):
-    		raise RuntimeError( "length cannot be negative")
-    	if (s.y < 0):
-    		raise RuntimeError( "height cannot be negative")
-    	if (s.z < 0):
-    		raise RuntimeError( "width cannot be negative")
-    	self.axis = self.axis.norm() * s.x
-    	self.height = s.y
-    	self.width = s.z
+        if (s.x < 0):
+            raise RuntimeError( "length cannot be negative")
+        if (s.y < 0):
+            raise RuntimeError( "height cannot be negative")
+        if (s.z < 0):
+            raise RuntimeError( "width cannot be negative")
+        self.axis = self.axis.norm() * s.x
+        self.height = s.y
+        self.width = s.z
 
     def apply_transform( self, scene ):
     	# OpenGL needs to invert the modelview matrix to generate the normal matrix,
     	#   so try not to make it singular:
     	min_scale = max( self.axis.mag(), max(self.height,self.width) ) * 1e-6
-    	vector size( max(min_scale,self.axis.mag()), max(min_scale,self.height),\
+    	size = vector( max(min_scale,self.axis.mag()), max(min_scale,self.height),\
     			     max(min_scale,self.width) )
     	self.model_world_transform( scene.gcf, self.size ).gl_mult()

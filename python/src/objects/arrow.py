@@ -4,8 +4,9 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
+from objects.primitive import primitive
 # A 3D 4-sided arrow, with adjustable head and shaft.
-Class arrow:
+class arrow(primitive):
     # Default arrow.  Pointing along +x, unit length,
 	# Where does axis come from????
 	def __init__(self, fixedwidth = False, headwidth = 0, headlength = 0, shaftwidth = 0):
@@ -48,14 +49,14 @@ Class arrow:
 		self.shaftwidth = sw
 		self.fixedwidth = True
 
-	@propery
+	@property
 	def fixedwidth(self):
 		return self.fixedwidth
 	@fixedwidth.setter
 	def fixedwidth(self, fixed):
 		self.fixedwidth = fixed
 
-	@propery
+	@property
 	def length(self):
 		return self.axis.mag()
 	@length.setter
@@ -73,12 +74,15 @@ Class arrow:
 		m.swap(self.mat)
 
 	def gl_render(self, scene):
-		if (self.degenerate()) return
+		if (self.degenerate()):
+			return
 		self.init_model(scene);
 		self.color.gl_set(self.opacity)
 		hw, sw, len, hl = self.effective_geometry( 1.0 )
-		model_material_loc = self.mat && self.mat.get_shader_program() \
-		    ? self.mat.get_shader_program().get_uniform_location( scene, "model_material" ) :
+		if self.mat and self.mat.get_shader_program():
+			model_material_loc =  self.mat.get_shader_program().get_uniform_location( scene, "model_material" )
+		else:
+			model_material_loc = -1
 		# Render the shaft and the head in back to front order (the shaft is in front
 	 	# of the head if axis points away from the camera)
 		shaft = self.axis.dot( scene.camera - (self.pos + self.axis * (1-hl/len)) ) < 0
@@ -108,7 +112,7 @@ Class arrow:
 				scene.pyramid_model.gl_render()
 
 	def grow_extent(self, world):
-		if (self.degenerate())
+		if (self.degenerate()):
 			return
 		hw, sw, len, hl = effective_geometry(1.0)
 		x = self.axis.cross(up).norm() * 0.5;
@@ -122,8 +126,10 @@ Class arrow:
 		world.add_body()
 
 	def init_model(self, scene):
-		if (!scene.box_model.compiled()): box.init_model(scene, False)
-		if (!scene.pyramid_model.compiled()): pyramid.init_model(scene)
+		if not scene.box_model.compiled():
+			box.init_model(scene, False)
+		if not scene.pyramid_model.compiled():
+			pyramid.init_model(scene)
 	'''
 	Initializes these four variables with the effective geometry for the
 		arrow.  The resulting geometry is scaled to view space, but oriented
@@ -165,7 +171,7 @@ Class arrow:
 				eff_headlength = max_headlength * eff_length
 		else:
 			if (eff_shaftwidth < eff_length * min_sw):
-				double scale = eff_length * min_sw / eff_shaftwidth
+				scale = eff_length * min_sw / eff_shaftwidth
 				eff_shaftwidth = eff_length * min_sw
 				eff_headwidth *= scale
 				eff_headlength *= scale

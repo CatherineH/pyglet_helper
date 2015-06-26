@@ -7,8 +7,7 @@ from pyglet.gl import *
 from axial import axial
 
 class cone(axial):
-    def __init__(self):
-	def init_model(self, scene):
+    def init_model(self, scene):
     	if not self.scene.cone_model[0].compiled():
     		clear_gl_error()
     		# The number of faces corrisponding to each level of detail.
@@ -24,7 +23,7 @@ class cone(axial):
     def length(self):
         return self.axis.mag()
     @length.setter
-	def length(self, l):
+    def length(self, l):
         self.axis = self.axis.norm() * l
 
     def gl_pick_render(self, scene):
@@ -43,64 +42,64 @@ class cone(axial):
     	check_gl_error()
 
 
-	def gl_render(self, scene):
+    def gl_render(self, scene):
         if (self.degenerate()):
-    		     return
+            return
 
-    	self.init_model(scene)
+        self.init_model(scene)
 
-    	clear_gl_error()
+        clear_gl_error()
 
-    	# See sphere::gl_render() for a description of the level of detail calc.
-    	coverage = scene.pixel_coverage( self.pos, self.radius)
-    	lod = 0
-    	if (coverage < 0):
-    		lod = 5
-    	elif (coverage < 10):
-    		lod = 0
-    	elif (coverage < 30):
-    		lod = 1
-    	elif (coverage < 90):
-    		lod = 2
-    	elif (coverage < 250):
-    		lod = 3
-    	elif (coverage < 450):
-    		lod = 4
-    	else
-    		lod = 5
-    	lod += scene.lod_adjust
-    	if (lod < 0):
-    		lod = 0
-    	elif (lod > 5)
-    		lod = 5
+        # See sphere::gl_render() for a description of the level of detail calc.
+        coverage = scene.pixel_coverage( self.pos, self.radius)
+        lod = 0
+        if (coverage < 0):
+            lod = 5
+        elif (coverage < 10):
+            lod = 0
+        elif (coverage < 30):
+            lod = 1
+        elif (coverage < 90):
+            lod = 2
+        elif (coverage < 250):
+            lod = 3
+        elif (coverage < 450):
+            lod = 4
+        else:
+            lod = 5
+        lod += scene.lod_adjust
+        if (lod < 0):
+            lod = 0
+        elif (lod > 5):
+            lod = 5
 
-    	guard = gl_matrix_stackguard()
-    	length = self.axis.mag()
-    	self.model_world_transform( scene.gcf, vector( length, self.radius, self.radius ) ).gl_mult()
+        guard = gl_matrix_stackguard()
+        length = self.axis.mag()
+        self.model_world_transform( scene.gcf, vector( length, self.radius, self.radius ) ).gl_mult()
 
-    	self.color.gl_set(self.opacity)
+        self.color.gl_set(self.opacity)
 
-    	if self.translucent:
-    		cull_face = gl_enable ( GL_CULL_FACE)
+        if self.translucent:
+            cull_face = gl_enable ( GL_CULL_FACE)
 
-    		# Render the back half.
-    		glCullFace( GL_FRONT)
-    		scene.cone_model[lod].gl_render()
+            # Render the back half.
+            glCullFace( GL_FRONT)
+            scene.cone_model[lod].gl_render()
 
-    		# Render the front half.
-    		glCullFace( GL_BACK)
-    		scene.cone_model[lod].gl_render()
-    	else:
-    		scene.cone_model[lod].gl_render()
+            # Render the front half.
+            glCullFace( GL_BACK)
+            scene.cone_model[lod].gl_render()
+        else:
+            scene.cone_model[lod].gl_render()
 
-    	check_gl_error()
+        check_gl_error()
 
-	def grow_extent(self, e):
-    	if self.degenerate():
-    		return
-    	e.add_circle( self.pos, self.axis.norm(), self.radius )
-    	e.add_point( self.pos + self.axis)
-    	e.add_body()
+    def grow_extent(self, e):
+        if self.degenerate():
+            return
+        e.add_circle( self.pos, self.axis.norm(), self.radius )
+        e.add_point( self.pos + self.axis)
+        e.add_body()
 
     def get_center(self):
         return self.pos + self.axis/2.0

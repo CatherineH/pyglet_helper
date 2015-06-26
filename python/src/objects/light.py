@@ -9,22 +9,22 @@ from renderable import renderable
 
 class light(renderable):
     def __init__(self):
-	    self.rgb = rgb()
+        self.rgb = rgb()
         #is get_vertex an opengl thing?
         self.vertex = get_vertex(self.gcf)
 
     @property
     def rgb(self):
         return self.color
-    @rgb.self
+    @rgb.setter
     def rgb(self, r):
         self.color = r
 
     # renderable protocol
-	#def outer_render(self, view):
+    #def outer_render(self, view):
 
     @property
-	def center(self):
+    def center(self):
         return vector()
 
     @property
@@ -39,18 +39,18 @@ class light(renderable):
 
     def render_lights(self, v):
         v.light_count[0] += 1
-	    p = get_vertex( v.gcf )
+        p = get_vertex( v.gcf )
         for d in range(0,4):
             v.light_pos.push_back(p[d])
-	    for d in range(0,3):
+        for d in range(0,3):
             v.light_color.push_back(color[d])
-	    v.light_color.push_back( 1.0 )
+        v.light_color.push_back( 1.0 )
 
 class local_light(light):
     def __init__(self):
-	    self.position = vector()
+        self.position = vector()
 
-	def get_vertex(self, gcf):
+    def get_vertex(self, gcf):
         return vertex( self.position*gcf, 1.0 )
 
     @property
@@ -69,7 +69,7 @@ class distant_light(light) :
         return vertex( self.direction, 0.0 )
 
     @property
-	def direction(self):
+    def direction(self):
         return self.direction
     @direction.setter
     def direction(self, v):

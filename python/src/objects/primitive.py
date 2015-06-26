@@ -4,6 +4,8 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
+from objects.renderable import renderable
+from util.vector import vector
 
 class primitive(renderable):
 	# Generate a displayobject at the origin, with up pointing along +y and
@@ -34,7 +36,7 @@ class primitive(renderable):
 		 Note that with the default parameters, only the rotation transformation is returned!  Typical
 		   usage should be model_world_transform( scene.gcf, my_size );
 		'''
-		tmatrix ret;
+		ret = tmatrix()
 		# A unit vector along the z_axis.
 		z_axis = vector(0,0,1);
 		if (fabs(self.axis.dot(up) / sqrt( self.up.mag2() * self.axis.mag2())) > 0.98):
@@ -59,24 +61,27 @@ class primitive(renderable):
 
 		return ret
 
-	# See above for PRIMITIVE_TYPEINFO_DECL/IMPL.
-	virtual const std::type_info& get_typeid() const
-
-	# Used when obtaining the center of the body.
-	virtual vector get_center() const
-
+	@property
+	def typeid(self):
+		# See above for PRIMITIVE_TYPEINFO_DECL/IMPL.
+		return type(self)
 
 	# Manually overload this member since the default arguments are variables.
-    def rotate(self, angle, _axis, origin):
+	def rotate(self, angle, _axis, origin):
 		R = rotation( angle, _axis, origin)
 		fake_up = self.up
-		if (!self.axis.cross( fake_up)):
+		if not self.axis.cross( fake_up):
 			fake_up = vector( 1,0,0)
-			if (!self.axis.cross( fake_up)):
+			if not self.axis.cross( fake_up):
 				fake_up = vector( 0,1,0)
-	    self.pos = R * self.pos
-	    self.axis = R.times_v(self.axis)
-	    self.up = R.times_v(fake_up)
+		self.pos = R * self.pos
+		self.axis = R.times_v(self.axis)
+		self.up = R.times_v(fake_up)
+
+	@property
+	def center(self):
+		# Used when obtaining the center of the body.
+		return self.pos
 
 	@property
 	def pos(self):
