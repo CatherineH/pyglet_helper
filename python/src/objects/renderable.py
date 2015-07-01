@@ -10,7 +10,7 @@ N_LIGHT_TYPES = 1
 '''
 Virtual base class for all renderable objects and composites.
 '''
-class renderable:
+class renderable(object):
     def __init__(self, color = rgb(), mat = material(), opacity = 1.0, visible = False):
         # The base color of this body.  Ignored by the variable-color composites
     	# (curve, faces, frame).

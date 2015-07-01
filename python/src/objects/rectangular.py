@@ -5,15 +5,18 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from primitive import primitive
+from util.rgba import rgb
 
 class rectangular(primitive):
-    def __init__(self, other=None):
+    def __init__(self, other=None, width = 1.0, height = 1.0, length = 1.0, color = rgb()):
+        super(rectangular, self).__init__(color = color)
         if other==None:
-            self.width = 1.0
-            self.height = 1.0
+            self.width = width
+            self.height = height
         else:
             self.width = other.width
             self.height = other.height
+        self.length = length
 
     @property
     def length(self):

@@ -5,12 +5,16 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from axial import axial
+from util.tmatrix import tmatrix
+from util.rgba import rgb
+from util.vector import vector
 '''
 A simple monochrome sphere.
 '''
 
 class sphere (axial):
-    def __init__(self, other = None):
+    def __init__(self, other = None, color = rgb(), pos = vector(0,0,0)):
+        super(sphere, self).__init__(color = color, pos = pos)
         # Construct a unit sphere at the origin.
         if not other is None:
             self.axial = other

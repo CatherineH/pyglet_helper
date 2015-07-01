@@ -6,11 +6,14 @@
 from pyglet.gl import *
 from primitive import primitive
 from math import pi
+from util.rgba import rgb
+from util.vector import vector
 
 # A subbase class used to only export 'radius' as a property once to Python.
 class axial(primitive):
     # The radius of whatever body inherits from this class.
-    def __init__(self, other = None, radius = 1.0):
+    def __init__(self, other = None, radius = 1.0, color = rgb(), pos = vector(0,0,0)):
+        super(axial, self).__init__(color = color, pos = pos)
         if not other == None:
             self.radius = other.radius
         else:
@@ -18,10 +21,10 @@ class axial(primitive):
 
     @property
     def radius(self):
-        return self.radius
+        return self._radius
     @radius.setter
     def radius(self, r):
-        self.radius = r
+        self._radius = r
 
     @property
     def material_matrix(self):

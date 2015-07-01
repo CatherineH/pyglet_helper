@@ -4,6 +4,7 @@ import objects.box
 import objects.cone
 import objects.cylinder
 import objects.display_kernel
+import objects.ellipsoid
 import objects.frame
 import objects.label
 import objects.light

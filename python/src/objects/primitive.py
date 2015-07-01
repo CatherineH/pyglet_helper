@@ -6,11 +6,34 @@
 from pyglet.gl import *
 from objects.renderable import renderable
 from util.vector import vector
+from util.rgba import rgb
+
+def trail_update(obj):
+    # trail_update does not detect changes such as ball.pos.x += 1
+    # which are detected in create_display/_Interact which looks at trail_list
+    if obj.interval == 0: return
+    obj.updated = True
+    obj.interval_count += 1
+    if len(obj.trail_object.pos) == 0:
+        obj.trail_object.append(pos=obj.pos)
+        obj.interval_count -= 1
+    if obj.interval_count == obj.interval:
+        if obj.pos != obj.trail_object.pos[-1]:
+            obj.trail_object.append(pos=obj.pos, retain=obj.retain)
+        obj.interval_count = 0
 
 class primitive(renderable):
 	# Generate a displayobject at the origin, with up pointing along +y and
 	# an axis = vector(1, 0, 0).
-	def __init__(self, axis = vector(1,0,0), up = vector(0,1,0), pos = vector(0,0,0), make_trail = False, trail_initialized = False, obj_initialized = False, other = None):
+	def __init__(self, axis = vector(1,0,0), up = vector(0,1,0), pos = vector(0,0,0), make_trail = False, trail_initialized = False, obj_initialized = False, other = None, color = rgb()):
+		super(primitive, self).__init__(color = color)
+		self.startup = True
+		self.make_trail = make_trail
+		self.trail_initialized = trail_initialized
+		self.obj_initialized = obj_initialized
+		self.primitive_object = other
+		self.obj_initialized = False
+
 		# The position and orientation of the body in World space.
 		if other == None:
 			self.axis = axis
@@ -21,11 +44,6 @@ class primitive(renderable):
 			self.up = other.up
 			self.pos = other.pos
 
-		self.make_trail = make_trail
-		self.trail_initialized = trail_initialized
-		self.obj_initialized = obj_initialized
-		self.primitive_object = other
-		self.obj_initialized = False
 
 	# Returns a tmatrix that performs reorientation of the object from model
 	# orientation to world (and view) orientation.
@@ -85,10 +103,10 @@ class primitive(renderable):
 
 	@property
 	def pos(self):
-		return self.pos
+		return self._pos
 	@pos.setter
 	def pos(self, n_pos):
-		self.pos = n_pos;
+		self._pos = n_pos;
 		if (self.trail_initialized and self.make_trail):
 			if (self.obj_initialized) :
 				trail_update(self.primitive_object)
@@ -125,30 +143,29 @@ class primitive(renderable):
 
 	@property
 	def axis(self):
-		return self.axis
+		try:
+			return self._axis
+		except:
+			return None
 	@axis.setter
 	def axis(self, n_axis):
+		if self.axis is None:
+			self._axis = vector(1,0,0)
 		a = self.axis.cross(n_axis)
 		if (a.mag() == 0.0):
-			self.axis = n_axis;
+			self._axis = n_axis;
 		else:
 			angle = n_axis.diff_angle(self.axis)
-			self.axis = n_axis.mag()*self.axis.norm()
+			self._axis = n_axis.mag()*self.axis.norm()
 			rotate(angle, a, pos)
+
 
 	@property
 	def up(self):
-		return self.up
+		return self._up
 	@up.setter
 	def up(self, n_up):
-		self.up = n_up
-
-	@property
-	def color(self):
-		return self.color
-	@color.setter
-	def color(self, n_color):
-		self.color = n_color
+		self._up = n_up
 
 	@property
 	def red(self):
@@ -172,29 +189,21 @@ class primitive(renderable):
 		self.color.blue = x
 
 	@property
-	def opacity(self):
-		return self.opacity
-	@opacity.setter
-	def opacity(self, x):
-		self.opacity = x
-
-	@property
 	def make_trail(self):
-		return self.make_trail
+		return self._make_trail
 	@make_trail.setter
 	def make_trail(self, x):
 		if (x and not self.obj_initialized):
 			raise RuntimeError("Can't set make_trail=True unless object was created with make_trail specified")
 		if (self.startup):
-			import visual_common.primitives.trail_update as trail_update
 			self.startup = False
-		self.make_trail = x
+		self._make_trail = x
 		self.trail_initialized = False
 
 	@property
 	def primitive_object(self):
-		return self.primitive_object
+		return self._primitive_object
 	@primitive_object.setter
 	def primitive_object(self, x):
-		self.primitive_object = x
+		self._primitive_object = x
 		self.obj_initialized = True

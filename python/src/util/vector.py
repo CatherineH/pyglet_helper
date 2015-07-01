@@ -3,6 +3,7 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
+from math import sqrt
 
 class vector:
 	def __init__(self, a = 0.0, b = 0.0, c = 0.0, v = None):

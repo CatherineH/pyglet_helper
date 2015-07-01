@@ -5,8 +5,11 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from rectangular import rectangular
+from util.rgba import rgb
 
 class box(rectangular):
+    def __init__(self, width = 1.0, height = 1.0, length = 1.0, color = rgb()):
+        super(box, self).__init__(width = width, height = height, color = color, length = length)
 	# True if the box should not be rendered.
 	#bool degenerate();
 	#static displaylist model;
