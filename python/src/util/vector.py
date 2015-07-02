@@ -118,6 +118,8 @@ class vector:
 
 	# Return the cross product of this vector and another.
 	def	cross(self, v):
+		print "self: "+str(type(self.x))+" "+str(type(self.y))+" "+str(type(self.z))
+		print "v: "+str(type(v.x))+" "+str(type(v.y))+" "+str(type(v.z))
 		ret = vector( self.y*v.z - self.z*v.y \
 		, self.z*v.x - self.x*v.z \
 		, self.x*v.y - self.y*v.x)

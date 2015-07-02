@@ -5,11 +5,13 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from objects.primitive import primitive
+from util.rgba import rgb
 # A 3D 4-sided arrow, with adjustable head and shaft.
 class arrow(primitive):
     # Default arrow.  Pointing along +x, unit length,
 	# Where does axis come from????
-	def __init__(self, fixedwidth = False, headwidth = 0, headlength = 0, shaftwidth = 0):
+	def __init__(self, fixedwidth = False, headwidth = 0, headlength = 0, shaftwidth = 0, color = rgb()):
+		super(arrow, self).__init__(color = color)
 		# True if the width of the point and shaft should not vary with the length
 		#  of the arrow.
 		self.fixedwidth = fixedwidth
@@ -24,43 +26,43 @@ class arrow(primitive):
 
 	@property
 	def headwidth(self):
-		if (self.headwidth): return self.headwidth
-		if (self.shaftwidth): return 2.0*self.shaftwidth
+		if (self._headwidth): return self._headwidth
+		if (self._shaftwidth): return 2.0*self._shaftwidth
 		return 0.2*self.axis.mag()
 	@headwidth.setter
 	def headwidth(self, hw):
-		self.headwidth = hw
+		self._headwidth = hw
 
-	@property
-	def headlength(self, hl):
-		self.headlength = hl
-	@headlength.setter
+	@property	
 	def headlength(self):
-		if (self.headlength): return self.headlength
-		if (self.shaftwidth): return 3.0*self.shaftwidth
+		if (self._headlength): return self._headlength
+		if (self._shaftwidth): return 3.0*self._shaftwidth
 		return 0.3*self.axis.mag()
+	@headlength.setter
+	def headlength(self, hl):
+		self._headlength = hl
 
 	@property
 	def shaftwidth(self):
-		if (self.shaftwidth): return self.shaftwidth
+		if (self._shaftwidth): return self._shaftwidth
 		return 0.1*axis.mag()
 	@shaftwidth.setter
 	def shaftwidth(self, sw):
-		self.shaftwidth = sw
-		self.fixedwidth = True
+		self._shaftwidth = sw
+		self._fixedwidth = True
 
 	@property
 	def fixedwidth(self):
-		return self.fixedwidth
+		return self._fixedwidth
 	@fixedwidth.setter
 	def fixedwidth(self, fixed):
-		self.fixedwidth = fixed
+		self._fixedwidth = fixed
 
 	@property
 	def length(self):
 		return self.axis.mag()
 	@length.setter
-	def length(self):
+	def length(self, l):
 		self.axis = self.axis.norm() * l
 
 	def get_center(self):

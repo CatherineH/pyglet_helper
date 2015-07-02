@@ -151,6 +151,8 @@ class primitive(renderable):
 	def axis(self, n_axis):
 		if self.axis is None:
 			self._axis = vector(1,0,0)
+		print "in axis: "+str(type(n_axis))
+		print n_axis
 		a = self.axis.cross(n_axis)
 		if (a.mag() == 0.0):
 			self._axis = n_axis;

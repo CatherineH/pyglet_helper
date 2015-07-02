@@ -23,7 +23,7 @@ _ball = sphere(pos=(0,4,0), color = color.red)
 
 _arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
 
-_cone = cone(pos=(5,2,0), axis=(12,0,0), radius=1, color = color.green)
+_cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
 
 _cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
 

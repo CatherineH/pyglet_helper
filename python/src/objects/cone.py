@@ -5,8 +5,13 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from axial import axial
+from util.rgba import rgb
+from util.vector import vector
 
 class cone(axial):
+    def __init__(self, radius = 1.0, color = rgb(), pos = vector(0,0,0), axis = vector(1, 0, 0)):
+	super(cone, self).__init__(radius = radius, color = color, pos = vector(pos))
+	self.axis = vector(axis)
     def init_model(self, scene):
         if not self.scene.cone_model[0].compiled():
             clear_gl_error()
