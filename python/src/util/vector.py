@@ -3,7 +3,7 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
-from math import sqrt
+from math import sqrt, acos
 
 class vector:
 	def __init__(self, a = 0.0, b = 0.0, c = 0.0, v = None):
@@ -15,9 +15,18 @@ class vector:
 			else:
 				raise ValueExcept("Vector must be of length 3!")
 		else:
-			self.x = a
-			self.y = b
-			self.z = c
+			if type(a) is tuple:
+				self.x = a[0]
+				self.y = a[1]
+				self.z = a[2]
+			elif hasattr(a, 'x') and hasattr(a, 'y') and hasattr(a, 'z'):
+				self.x = a.x
+				self.y = a.y
+				self.z = a.z
+			else:
+				self.x = a
+				self.y = b
+				self.z = c
 
 	def __add__(self, other):
 		return vector( self.x+other.x, self.y+other.y, self.z+other.z)
@@ -30,6 +39,11 @@ class vector:
 			return vector( self.x*v.x, self.y*v.y, self.z*v.z)
 		else:
 			return vector( self.x*v, self.y*v, self.z*v)
+	def __rmul__(self,v):
+		if type(v) == type(self):
+			return vector(v.x*self.x, v.y*self.y, v.z*self.z)
+		else:
+			return vector(v*self.x, v*self.y, v*self.z)
 
 	def __div__(self,s):
 		return vector( self.x/s, self.y/s, self.z/s)
@@ -118,8 +132,6 @@ class vector:
 
 	# Return the cross product of this vector and another.
 	def	cross(self, v):
-		print "self: "+str(type(self.x))+" "+str(type(self.y))+" "+str(type(self.z))
-		print "v: "+str(type(v.x))+" "+str(type(v.y))+" "+str(type(v.z))
 		ret = vector( self.y*v.z - self.z*v.y \
 		, self.z*v.x - self.x*v.z \
 		, self.x*v.y - self.y*v.x)

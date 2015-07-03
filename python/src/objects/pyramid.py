@@ -7,8 +7,13 @@ from pyglet.gl import *
 from rectangular import rectangular
 from arrow import arrow
 
+from util.rgba import rgb
+from util.vector import vector
+from util.displaylist import displaylist
+
 class pyramid(rectangular):
-    def __init__(self):
+    def __init__(self, pos = vector(0,0,0), size = (1,1,1),color = rgb()):
+        super(pyramid, self).__init__(pos = pos, color = color, width = size[0], height = size[1], length = size[2])
         self.model = displaylist()
         self.arrow = arrow()
 

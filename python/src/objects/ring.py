@@ -5,7 +5,8 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from axial import axial
-
+from util.rgba import rgb
+from util.vector import vector
 
 class model :
     def __init__(self):
@@ -14,7 +15,8 @@ class model :
         self.vector_normal = vector()
 
 class ring (axial):
-    def __init__(self, thickness = 0.0, model_rings = -1):
+    def __init__(self, thickness = 0.0, model_rings = -1, radius = 1.0, color = rgb(), pos = vector(0,0,0), axis = vector(1,0,0)):
+        super(ring, self).__init__(radius = radius, color = color, pos = pos, axis = axis)
         # The radius of the ring's body.  If not specified, it is set to 1/10 of
         # the radius of the body.
         self.thickness = thickness
@@ -27,10 +29,10 @@ class ring (axial):
 
     @property
     def thickness(self):
-        return self.thickness
+        return self._thickness
     @thickness.setter
     def thickness(self, t):
-        self.thickness = t
+        self._thickness = t
 
     @property
     def material_matrix(self, out):

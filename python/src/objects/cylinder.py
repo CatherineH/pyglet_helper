@@ -5,8 +5,14 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from axial import axial
+from util.vector import vector
+from util.rgba import rgb
 
 class cylinder(axial):
+    def __init__(self, pos=vector(0,0,0), axis=(1,0,0), radius=1, color = rgb(0,0,0)):
+        super(cylinder,self).__init__(pos = pos, radius = radius, color = color)
+        self.axis = vector(axis)
+
     def init_model(self, scene):
       if not scene.cylinder_model[0].compiled():
         clear_gl_error()

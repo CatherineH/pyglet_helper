@@ -6,10 +6,11 @@
 from pyglet.gl import *
 from primitive import primitive
 from util.rgba import rgb
+from util.vector import vector
 
 class rectangular(primitive):
-    def __init__(self, other=None, width = 1.0, height = 1.0, length = 1.0, color = rgb()):
-        super(rectangular, self).__init__(color = color)
+    def __init__(self, other=None, pos= vector(0,0,0),width = 1.0, height = 1.0, length = 1.0, color = rgb()):
+        super(rectangular, self).__init__(color = color, pos = pos)
         if other==None:
             self.width = width
             self.height = height

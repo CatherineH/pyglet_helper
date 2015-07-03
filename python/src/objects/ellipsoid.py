@@ -5,10 +5,15 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from objects.sphere import sphere
+from util.rgba import rgb
+from util.vector import vector
+
 class ellipsoid(sphere):
-    def __init__(self, height = 1.0, width = 1.0):
+    def __init__(self, height = 1.0, width = 1.0, length = 1.0, color = rgb(), pos = vector(0,0,0)):
+        super(ellipsoid, self).__init__(color = color, pos = pos)
         self.height = height
         self.width = width
+        self.length = length
 
     @property
     def length(self):
@@ -21,21 +26,21 @@ class ellipsoid(sphere):
 
     @property
     def height(self):
-        return self.height
+        return self._height
     @height.setter
     def height(self, h):
         if (h < 0):
             raise ValueError( "height cannot be negative")
-        self.height = h
+        self._height = h
 
     @property
     def width(self):
-        return self.width
+        return self._width
     @width.setter
     def width(self, w):
         if (w < 0):
             raise ValueError( "width cannot be negative")
-        self.width = w
+        self._width = w
 
     @property
     def size(self):
