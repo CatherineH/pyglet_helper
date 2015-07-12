@@ -25,12 +25,12 @@ class material:
         if (self.shader):
             return self.shader.get_source()
         else:
-    	    return ''
+            return ''
 
     @shader.setter
     def shader(self, source):
         if (source.size()):
-    	    self.shader.reset(shader_program( source ))
+            self.shader.reset(shader_program( source ))
         else:
             self.shader.reset( None )
 
@@ -58,7 +58,7 @@ class apply_material:
         self.sp = sp
         if not self.m or not sp.ok():
             return
-	    self.texa = "tex0"
+        self.texa = "tex0"
         for t in range(0,self.m.textures.size()):
             if (t and self.v.glext.ARB_multitexture):
                 self.v.glext.glActiveTexture(GL_TEXTURE0 + t)

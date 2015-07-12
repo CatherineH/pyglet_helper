@@ -186,24 +186,24 @@ class vector:
 
 	@property
 	def x(self):
-		return self.x
+		return self._x
 	@x.setter
 	def x(self,s):
-		self.x = s
+		self._x = s
 
 	@property
 	def y(self):
-		return self.y
+		return self._y
 	@y.setter
 	def y(self,s):
-		self.y = s
+		self._y = s
 
 	@property
 	def z(self):
-		return self.z
+		return self._z
 	@z.setter
 	def z(self,s):
-		self.z = s
+		self._z = s
 
 	# zero the state of the vector. Potentially useful for reusing a temporary.
 	def clear(self):

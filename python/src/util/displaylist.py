@@ -18,7 +18,10 @@ class displaylist_impl:
 		glDeleteLists( handle, 1 )
 
 	def compile_end(self):
-		glEndList()
+		try:
+			glEndList()
+		except GLException as e:
+			print "Got GL Exception: "+str(e)
 
 	def call(self):
 		glCallList( self.handle )

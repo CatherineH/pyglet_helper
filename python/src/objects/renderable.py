@@ -13,12 +13,12 @@ Virtual base class for all renderable objects and composites.
 class renderable(object):
     def __init__(self, color = rgb(), mat = material(), opacity = 1.0, visible = False):
         # The base color of this body.  Ignored by the variable-color composites
-    	# (curve, faces, frame).
-    	self.color = color
+        # (curve, faces, frame).
+        self.color = color
         # Fully opaque is 1.0, fully transparent is 0.0:
         self.opacity = opacity
         #True if the object should be rendered on the screen.
-    	self.visible = visible
+        self.visible = visible
         self.mat = mat
 
     @property
@@ -36,8 +36,8 @@ class renderable(object):
 
     def outer_render(self, view):
         # Applies materials and other general features and calls gl_render().
-    	# For now, also calls refresh_cache(), but that might be moved back in
-    	# order to make that function compute center.
+        # For now, also calls refresh_cache(), but that might be moved back in
+        # order to make that function compute center.
         actual_color = self.color
         if (self.v.anaglyph):
             if (self.v.coloranaglyph):
@@ -53,9 +53,9 @@ class renderable(object):
 
 '''
     This primarily serves as a means of communicating information down to the
-	various primitives that may or may not need it from the render_surface.  Most
-	of the members are simply references to the real values in the owning
-	render_surface.
+    various primitives that may or may not need it from the render_surface.  Most
+    of the members are simply references to the real values in the owning
+    render_surface.
 '''
 class view:
     def __init__(self, n_gcf, anaglyph = False, coloranaglyph = False, lod_adjust = 0, tan_hfov_x = 0, tan_hfov_y = 0, enable_shaders = True):
