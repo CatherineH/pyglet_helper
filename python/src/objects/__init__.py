@@ -2,6 +2,7 @@ import objects.arrow
 import objects.axial
 import objects.box
 import objects.cone
+import objects.create_display
 import objects.cylinder
 import objects.display_kernel
 import objects.ellipsoid

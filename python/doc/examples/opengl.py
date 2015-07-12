@@ -1,22 +1,3 @@
-#temporary, until I get the setup working.
-
-import sys
-import os
-filename = os.path.dirname(os.path.realpath(__file__))
-filename = filename.replace("doc/examples", "src")
-sys.path.append(filename)
-
-from objects.box import *
-from objects.sphere import *
-from objects.arrow import *
-from objects.cone import *
-from objects.cylinder import *
-from objects.pyramid import *
-from objects.ring import *
-from objects.ellipsoid import *
-from util import *
-
-from numpy import zeros
 #!/usr/bin/env python
 # ----------------------------------------------------------------------------
 # pyglet
@@ -52,7 +33,18 @@ from numpy import zeros
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
+'''Displays a rotating torus using OpenGL.
 
+This example demonstrates:
+
+ * Using a 3D projection on a window by overriding the default on_resize
+   handler
+ * Enabling multisampling if available
+ * Drawing a simple 3D primitive using vertex and index arrays
+ * Using a display list
+ * Fixed-pipeline lighting
+
+'''
 
 from math import pi, sin, cos
 
@@ -96,7 +88,7 @@ def on_draw():
     glRotatef(rz, 0, 0, 1)
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
-    _box.gl_render()
+    torus.draw()
 
 def setup():
     # One-time GL setup
@@ -130,31 +122,69 @@ def setup():
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
+class Torus(object):
+    def __init__(self, radius, inner_radius, slices, inner_slices):
+        # Create the vertex and normal arrays.
+        vertices = []
+        normals = []
 
+        u_step = 2 * pi / (slices - 1)
+        v_step = 2 * pi / (inner_slices - 1)
+        u = 0.
+        for i in range(slices):
+            cos_u = cos(u)
+            sin_u = sin(u)
+            v = 0.
+            for j in range(inner_slices):
+                cos_v = cos(v)
+                sin_v = sin(v)
+
+                d = (radius + inner_radius * cos_v)
+                x = d * cos_u
+                y = d * sin_u
+                z = inner_radius * sin_v
+
+                nx = cos_u * cos_v
+                ny = sin_u * cos_v
+                nz = sin_v
+
+                vertices.extend([x, y, z])
+                normals.extend([nx, ny, nz])
+                v += v_step
+            u += u_step
+
+        # Create ctypes arrays of the lists
+        vertices = (GLfloat * len(vertices))(*vertices)
+        normals = (GLfloat * len(normals))(*normals)
+
+        # Create a list of triangle indices.
+        indices = []
+        for i in range(slices - 1):
+            for j in range(inner_slices - 1):
+                p = i * inner_slices + j
+                indices.extend([p, p + inner_slices, p + inner_slices + 1])
+                indices.extend([p,  p + inner_slices + 1, p + 1])
+        indices = (GLuint * len(indices))(*indices)
+
+        # Compile a display list
+        self.list = glGenLists(1)
+        glNewList(self.list, GL_COMPILE)
+
+        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_NORMAL_ARRAY)
+        glVertexPointer(3, GL_FLOAT, 0, vertices)
+        glNormalPointer(GL_FLOAT, 0, normals)
+        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, indices)
+        glPopClientAttrib()
+
+        glEndList()
+
+    def draw(self):
+        glCallList(self.list)
 
 setup()
-_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+torus = Torus(1, 0.3, 50, 30)
 rx = ry = rz = 0
-
-pyglet.app.run()
-
-
-#put all objects in a scene together
-#_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
-'''
-_ball = sphere(pos=(0,4,0), color = color.red)
-
-_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
-
-_cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
-
-_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
-
-_pyramid = pyramid(pos=(5,2,0), size=(12,6,4), color = color.cyan)
-
-_ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-
-_ellipsoid = ellipsoid(pos=(3,3,3), length=2, height=1, width=3, color = color.white)
-'''
 
 pyglet.app.run()

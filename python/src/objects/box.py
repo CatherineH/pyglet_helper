@@ -51,7 +51,7 @@ class box(rectangular):
 
     def gl_render(self):
         if not scene.box_model.compiled():
-            init_model(scene, False)
+            self.init_model(scene, False)
         self.color.gl_set(self.opacity)
         guard = gl_matrix_stackguard()
         self.apply_transform( scene )
