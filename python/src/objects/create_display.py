@@ -14,11 +14,10 @@ import atexit as _atexit
 from inspect import getargspec
 import pyglet
 from pyglet.canvas.base import Display
-from pyglet.window import window
+from pyglet.window import Window
 import platform
 
-
-import objects.display_kernel
+from objects.display_kernel import display_kernel
 
 def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()
@@ -26,11 +25,14 @@ def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene
     elif len(args) == 1: _time.sleep(args[0])
     else: raise ValueError("Too many arguments for the wait() function.")
 
-_App = pyglet.app()
+_App = pyglet.app
 
 _plat = platform.system()
-_screenwidth = Display.get_default_screen().width
-_screenheight = Display.get_default_screen().width
+# the display class appears to not really be implemented at the moment. perhaps use window instead?
+#_display = Display()
+_window = Window()
+_screenwidth = _window.get_size()[0]
+_screenheight = _window.get_size()[1]
 
 def exit():
     pyglet.exit()
@@ -103,17 +105,17 @@ class window(object):
         self.win.Bind(Window.on_close, self._OnExitApp)
         self.win.Bind(Window.on_move, self._OnMove)
         self.win.Bind(Window.on_resize, self._OnSize)
-        #self.win.Bind(_wx.EVT_MAXIMIZE, self._OnMaximize)
-        #self.win.Bind(_wx.EVT_ICONIZE, self._OnIconize)
+        #self.win.Bind(_App.EVT_MAXIMIZE, self._OnMaximize)
+        #self.win.Bind(_App.EVT_ICONIZE, self._OnIconize)
 
-        if _make_panel: self.panel = _wx.Panel(self.win)
+        if _make_panel: self.panel = _App.Panel(self.win)
         else: self.panel = None
 
         if self.menus:
-            self.menubar = _wx.MenuBar()
-            menu = _wx.Menu()
-            item = menu.Append(_wx.ID_EXIT, "E&xit\tCtrl-Q", "Exit demo")
-            self.win.Bind(_wx.EVT_MENU, self._OnExitApp, item)
+            self.menubar = _App.MenuBar()
+            menu = _App.Menu()
+            item = menu.Append(_App.ID_EXIT, "E&xit\tCtrl-Q", "Exit demo")
+            self.win.Bind(_App.EVT_MENU, self._OnExitApp, item)
             self.menubar.Append(menu, "&File")
             self.win.SetMenuBar(self.menubar)
 
@@ -409,15 +411,15 @@ _legal_event_types = ['mousedown', 'mousemove', 'mouseup', 'click',
 
 def set_cursor(win, visible):
         if visible:
-            if 'phoenix' in _wx.PlatformInfo:
-                win.SetCursor(_wx.Cursor(_wx.CURSOR_ARROW)) # Phoenix
+            if 'phoenix' in _App.PlatformInfo:
+                win.SetCursor(_App.Cursor(_App.CURSOR_ARROW)) # Phoenix
             else:
-                win.SetCursor(_wx.StockCursor(_wx.CURSOR_ARROW)) # Classic
+                win.SetCursor(_App.StockCursor(_App.CURSOR_ARROW)) # Classic
         else:
-            if 'phoenix' in _wx.PlatformInfo:
-                win.SetCursor(_wx.Cursor(_wx.CURSOR_BLANK)) # Phoenix
+            if 'phoenix' in _App.PlatformInfo:
+                win.SetCursor(_App.Cursor(_App.CURSOR_BLANK)) # Phoenix
             else:
-                win.SetCursor(_wx.StockCursor(_wx.CURSOR_BLANK)) # Classic
+                win.SetCursor(_App.StockCursor(_App.CURSOR_BLANK)) # Classic
 
 class cursor(object): # used for both display.cursor.visible and window.cursor.visible
     def __init__(self, win=None, visible=True):
@@ -514,7 +516,7 @@ class display(display_kernel):
         self.kb = kb()
 
     def select(self):
-        cvisual.display_kernel.set_selected(self)
+        display_kernel.set_selected(self)
 
     def waitfor_event(self, evt):
         """
@@ -650,7 +652,7 @@ class display(display_kernel):
             h = h
         if self.fillswindow: # the canvas fills a window created by us
             if self.window._fullscreen:
-                w, h = _wx.GetDisplaySize()
+                w, h = _App.GetDisplaySize()
                 self._width = w
                 self._height = h
                 self._x = self._y = 0
@@ -662,41 +664,41 @@ class display(display_kernel):
             h = self._height
         # For backward compatibility, maintain self._canvas as well as self.canvas
 
-        attribList = [_wx.glcanvas.WX_GL_DEPTH_SIZE, 24,
-                      _wx.glcanvas.WX_GL_DOUBLEBUFFER, 1,
+        attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 24,
+                      _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
                       0]
-        if _wx.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-            c = self.canvas = self._canvas = _wx.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
+        if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
+            c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
         else:
-            attribList = [_wx.glcanvas.WX_GL_DEPTH_SIZE, 16,
-                          _wx.glcanvas.WX_GL_DOUBLEBUFFER, 1,
+            attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 16,
+                          _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
                           0]
-            if _wx.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-                c = self.canvas = self._canvas = _wx.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
+            if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
+                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
             else:
-                c = self.canvas = self._canvas = _wx.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h))
+                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h))
 
-        self._context = _wx.glcanvas.GLContext(c)
+        self._context = _App.glcanvas.GLContext(c)
 
         if self.fillswindow: c.SetFocus()
 
-        c.Bind(_wx.EVT_LEFT_DOWN, self._OnLeftMouseDown)
-        c.Bind(_wx.EVT_LEFT_UP, self._OnLeftMouseUp)
-        c.Bind(_wx.EVT_MIDDLE_DOWN, self._OnMiddleMouseDown)
-        c.Bind(_wx.EVT_MIDDLE_UP, self._OnMiddleMouseUp)
-        c.Bind(_wx.EVT_RIGHT_DOWN, self._OnRightMouseDown)
-        c.Bind(_wx.EVT_RIGHT_UP, self._OnRightMouseUp)
-        c.Bind(_wx.EVT_MOTION, self._OnMouseMotion)
-        c.Bind(_wx.EVT_LEFT_DCLICK, self._OnLeftDClick)
-        c.Bind(_wx.EVT_RIGHT_DCLICK, self._OnRightDClick)
-        c.Bind(_wx.EVT_MIDDLE_DCLICK, self._OnMiddleDClick)
-        c.Bind(_wx.EVT_MOUSE_CAPTURE_LOST, self._OnCaptureLost)
+        c.Bind(_App.EVT_LEFT_DOWN, self._OnLeftMouseDown)
+        c.Bind(_App.EVT_LEFT_UP, self._OnLeftMouseUp)
+        c.Bind(_App.EVT_MIDDLE_DOWN, self._OnMiddleMouseDown)
+        c.Bind(_App.EVT_MIDDLE_UP, self._OnMiddleMouseUp)
+        c.Bind(_App.EVT_RIGHT_DOWN, self._OnRightMouseDown)
+        c.Bind(_App.EVT_RIGHT_UP, self._OnRightMouseUp)
+        c.Bind(_App.EVT_MOTION, self._OnMouseMotion)
+        c.Bind(_App.EVT_LEFT_DCLICK, self._OnLeftDClick)
+        c.Bind(_App.EVT_RIGHT_DCLICK, self._OnRightDClick)
+        c.Bind(_App.EVT_MIDDLE_DCLICK, self._OnMiddleDClick)
+        c.Bind(_App.EVT_MOUSE_CAPTURE_LOST, self._OnCaptureLost)
 
-        #c.Bind(_wx.EVT_MOUSEWHEEL, self.OnMouseWheel)
+        #c.Bind(_App.EVT_MOUSEWHEEL, self.OnMouseWheel)
 
-        #c.Bind(_wx.EVT_CHAR, self._OnCharEvent)
-        c.Bind(_wx.EVT_KEY_DOWN, self._OnKeyDown)
-        c.Bind(_wx.EVT_KEY_UP, self._OnKeyUp)
+        #c.Bind(_App.EVT_CHAR, self._OnCharEvent)
+        c.Bind(_App.EVT_KEY_DOWN, self._OnKeyDown)
+        c.Bind(_App.EVT_KEY_UP, self._OnKeyUp)
 
     def _report_resize(self):
         self.report_window_resize(int(self._x), int(self._y), int(self._width), int(self._height))
@@ -768,7 +770,7 @@ class display(display_kernel):
         self.render_scene()
         self._canvas.SwapBuffers()
 
-## mouse event codes: http://docs.wxwidgets.org/2.8.4/wx_wxmouseevent.html#wxmouseevent
+## mouse event codes: http://docs.wxwidgets.org/2.8.4/wx_Appmouseevent.html#wxmouseevent
 
     def _OnLeftDClick(self, evt):
         self._OnLeftMouseDown(evt)
@@ -949,7 +951,7 @@ class display(display_kernel):
             else: k = 'invalid key'
         else:
             # key code 311 is the caps lock key
-            if shift or _wx.GetKeyState(311): k = _shifted[key]
+            if shift or _App.GetKeyState(311): k = _shifted[key]
             else: k = _unshifted[key]
         if k == 'invalid key':
             return k
@@ -990,13 +992,13 @@ class display(display_kernel):
         evt.Skip()
 
     def _return_objects(self):
-        return tuple([ o for o in self._get_objects() if not isinstance(o, cvisual.light) ])
+        return tuple([ o for o in self._get_objects() if not isinstance(o, light) ])
     objects = property( _return_objects, None, None)
 
     def _get_lights(self):
         # TODO: List comprehension used for Python 2.3 compatibility; replace with
         #   generator comprehension
-        return tuple([ o for o in self._get_objects() if isinstance(o, cvisual.light) ])
+        return tuple([ o for o in self._get_objects() if isinstance(o, light) ])
 
     def _set_lights(self, n_lights):
         old_lights = self._get_lights()
@@ -1006,12 +1008,12 @@ class display(display_kernel):
         if (type(n_lights) is not list) and (type(n_lights) is not tuple):
             n_lights = [n_lights] # handles case of scene.lights = single light
         for lt in n_lights:
-            if isinstance( lt, cvisual.light ):  #< TODO: should this be allowed?
+            if isinstance( lt, light ):  #< TODO: should this be allowed?
                 lt.display = self
                 lt.visible = True
             else:
-                lum = cvisual.vector(lt).mag
-                distant_light( direction=cvisual.vector(lt).norm(),
+                lum = vector(lt).mag
+                distant_light( direction=vector(lt).norm(),
                                color=(lum,lum,lum),
                                display=self )
 
@@ -1048,8 +1050,8 @@ class display(display_kernel):
     visible = property( _get_visible, _set_visible )
     fullscreen = property( _get_fullscreen, _set_fullscreen )
 
-    ambient = property( cvisual.display_kernel._get_ambient, cvisual.display_kernel._set_ambient)
-    range = property( cvisual.display_kernel._get_range, cvisual.display_kernel._set_range)
+    ambient = property( display_kernel.ambient, display_kernel.ambient)
+    range = property( display_kernel.range, display_kernel.range)
     lights = property( _get_lights, _set_lights, None)
 
 from vis.site_settings import enable_shaders
@@ -1069,7 +1071,7 @@ def _close_final(): # There is a window, or an activated display
         _do_loop = False # make sure we don't trigger this twice
         while True: # at end of user program, wait for user to close the program
             rate(1)
-    _wx.Exit()
+    #_App.EventLoop().exit()
 
 _atexit.register(_close_final)
 # The following is needed by Python 3, else running from vidle3/run.py
@@ -1078,7 +1080,8 @@ _sys.exitfunc = _close_final
 
 class _ManageDisplays(): # a singleton
     def __init__(self):
-        set_wait(wait)
+        #I don't believe this does anything at the moment
+        #set_wait(wait)
         self.displays = []
         self.window_num = 0
         self.display_num = 0
@@ -1098,9 +1101,9 @@ class _ManageDisplays(): # a singleton
             d._paint()
 
 _displays = _ManageDisplays()
-_evtloop = _wx.GUIEventLoop()
-_wx.EventLoop.SetActive(_evtloop)
-_isMac = ('wxOSX' in _wx.PlatformInfo)
+_evtloop = _App.EventLoop()
+_evtloop.run()
+_isMac = ('wxOSX' in _App.PlatformInfo)
 
 if _plat == 'Windows':
     # On Windows, the best timer is supposedly time.clock()
@@ -1131,7 +1134,7 @@ else:
 ##                print("""
 ##Program terminated because window has become inactive.
 ##Probably there is a loop without a rate or sleep function.""")
-##                _wx.Exit()
+##                _App.Exit()
 ##
 ##_thr = _timer()
 ##_thr.start()
@@ -1165,7 +1168,7 @@ def _Interact():
         d._dispatch_event("draw_complete")
 
     while not _evtloop.Pending() and _evtloop.ProcessIdle(): pass
-    if _wx.GetApp(): _wx.GetApp().ProcessPendingEvents()
+    if _App.GetApp(): _App.GetApp().ProcessPendingEvents()
     if _isMac and not _evtloop.Dispatch(): return
     # Currently on wxOSX Pending always returns true, so the
     # ProcessIdle above is not ever called. Call it here instead.
@@ -1173,8 +1176,8 @@ def _Interact():
 
     while True:
         checkAgain = False
-        if _wx.GetApp() and _wx.GetApp().HasPendingEvents():
-            _wx.GetApp().ProcessPendingEvents()
+        if _App.GetApp() and _App.GetApp().HasPendingEvents():
+            _App.GetApp().ProcessPendingEvents()
             checkAgain = True
         if not _isMac and _evtloop.Pending():
             _evtloop.Dispatch()
@@ -1212,18 +1215,18 @@ def sleep(dt):
 
 ##print('--------------')
 ### Note that Mac info is incorrect (Linux is same as Mac)
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_SCREEN_X))    # 1920, 1440
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_SCREEN_Y))    # 1200, 900
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_BORDER_X))    # 1, -1 (Windows, Mac)
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_BORDER_Y))    # 1, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_FRAMESIZE_X)) # 8, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_FRAMESIZE_Y)) # 8, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_MENU_Y))      #  20, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_CAPTION_Y))   #  22, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_EDGE_X))      #   2, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_EDGE_Y))      #   2, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_WINDOWMIN_X)) # 132, -1
-##print(_wx.SystemSettings.GetMetric(_wx.SYS_WINDOWMIN_Y)) #  38, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_SCREEN_X))    # 1920, 1440
+##print(_App.SystemSettings.GetMetric(_App.SYS_SCREEN_Y))    # 1200, 900
+##print(_App.SystemSettings.GetMetric(_App.SYS_BORDER_X))    # 1, -1 (Windows, Mac)
+##print(_App.SystemSettings.GetMetric(_App.SYS_BORDER_Y))    # 1, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_X)) # 8, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y)) # 8, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_MENU_Y))      #  20, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y))   #  22, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_EDGE_X))      #   2, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_EDGE_Y))      #   2, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_WINDOWMIN_X)) # 132, -1
+##print(_App.SystemSettings.GetMetric(_App.SYS_WINDOWMIN_Y)) #  38, -1
 ##print('--------------')
 
 # Title bar height is FRAMESIZE_Y + CAPTION_Y = 30 on Windows
@@ -1246,11 +1249,11 @@ elif _plat == 'Unix': # e.g., Linux
     _dheight = 27
     _menuheight = 27
 else: # Windows
-    _dwidth = 2*(_wx.SystemSettings.GetMetric(_wx.SYS_FRAMESIZE_X))
-    _dheight = 2*(_wx.SystemSettings.GetMetric(_wx.SYS_FRAMESIZE_Y)) + \
-            _wx.SystemSettings.GetMetric(_wx.SYS_CAPTION_Y)
-    _menuheight = _wx.SystemSettings.GetMetric(_wx.SYS_FRAMESIZE_Y) + \
-            _wx.SystemSettings.GetMetric(_wx.SYS_CAPTION_Y)
+    _dwidth = 2*(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_X))
+    _dheight = 2*(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y)) + \
+            _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
+    _menuheight = _App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y) + \
+            _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
 
 window.dwidth = _dwidth
 window.dheight = _dheight
@@ -1370,33 +1373,33 @@ WXK_PRINT                            WXK_NUMPAD_DIVIDE VPY_MAC_CTRL
 VPY_MAC_CTRL = 396
 
 ##codeVals = [
-##_wx.WXK_BACK,_wx.WXK_EXECUTE,_wx.WXK_F1,_wx.WXK_NUMPAD_SPACE,_wx.WXK_WINDOWS_LEFT,
-##_wx.WXK_TAB,_wx.WXK_SNAPSHOT,_wx.WXK_F2,_wx.WXK_NUMPAD_TAB,_wx.WXK_WINDOWS_RIGHT,
-##_wx.WXK_RETURN,_wx.WXK_INSERT,_wx.WXK_F3,_wx.WXK_NUMPAD_ENTER,_wx.WXK_WINDOWS_MENU,
-##_wx.WXK_ESCAPE,_wx.WXK_HELP,_wx.WXK_F4,_wx.WXK_NUMPAD_F1,_wx.WXK_SPECIAL1,
-##_wx.WXK_SPACE,_wx.WXK_NUMPAD0,_wx.WXK_F5,_wx.WXK_NUMPAD_F2,_wx.WXK_SPECIAL2,
-##_wx.WXK_DELETE,_wx.WXK_NUMPAD1,_wx.WXK_F6,_wx.WXK_NUMPAD_F3,_wx.WXK_SPECIAL3,
-##_wx.WXK_LBUTTON,_wx.WXK_NUMPAD2,_wx.WXK_F7,_wx.WXK_NUMPAD_F4,_wx.WXK_SPECIAL4,
-##_wx.WXK_RBUTTON,_wx.WXK_NUMPAD3,_wx.WXK_F8,_wx.WXK_NUMPAD_HOME,_wx.WXK_SPECIAL5,
-##_wx.WXK_CANCEL,_wx.WXK_NUMPAD4,_wx.WXK_F9,_wx.WXK_NUMPAD_LEFT,_wx.WXK_SPECIAL6,
-##_wx.WXK_MBUTTON,_wx.WXK_NUMPAD5,_wx.WXK_F10,_wx.WXK_NUMPAD_UP,_wx.WXK_SPECIAL7,
-##_wx.WXK_CLEAR,_wx.WXK_NUMPAD6,_wx.WXK_F11,_wx.WXK_NUMPAD_RIGHT,_wx.WXK_SPECIAL8,
-##_wx.WXK_SHIFT,_wx.WXK_NUMPAD7,_wx.WXK_F12,_wx.WXK_NUMPAD_DOWN,_wx.WXK_SPECIAL9,
-##_wx.WXK_ALT,_wx.WXK_NUMPAD8,_wx.WXK_F13,_wx.WXK_NUMPAD_PRIOR,_wx.WXK_SPECIAL10,
-##_wx.WXK_CONTROL,_wx.WXK_NUMPAD9,_wx.WXK_F14,_wx.WXK_NUMPAD_PAGEUP,_wx.WXK_SPECIAL11,
-##_wx.WXK_MENU,_wx.WXK_MULTIPLY,_wx.WXK_F15,_wx.WXK_NUMPAD_NEXT,_wx.WXK_SPECIAL12,
-##_wx.WXK_PAUSE,_wx.WXK_ADD,_wx.WXK_F16,_wx.WXK_NUMPAD_PAGEDOWN,_wx.WXK_SPECIAL13,
-##_wx.WXK_CAPITAL,_wx.WXK_SEPARATOR,_wx.WXK_F17,_wx.WXK_NUMPAD_END,_wx.WXK_SPECIAL14,
-##_wx.WXK_PRIOR,_wx.WXK_SUBTRACT,_wx.WXK_F18,_wx.WXK_NUMPAD_BEGIN,_wx.WXK_SPECIAL15,
-##_wx.WXK_NEXT,_wx.WXK_DECIMAL,_wx.WXK_F19,_wx.WXK_NUMPAD_INSERT,_wx.WXK_SPECIAL16,
-##_wx.WXK_END,_wx.WXK_DIVIDE,_wx.WXK_F20,_wx.WXK_NUMPAD_DELETE,_wx.WXK_SPECIAL17,
-##_wx.WXK_HOME,_wx.WXK_NUMLOCK,_wx.WXK_F21,_wx.WXK_NUMPAD_EQUAL,_wx.WXK_SPECIAL18,
-##_wx.WXK_LEFT,_wx.WXK_SCROLL,_wx.WXK_F22,_wx.WXK_NUMPAD_MULTIPLY,_wx.WXK_SPECIAL19,
-##_wx.WXK_UP,_wx.WXK_PAGEUP,_wx.WXK_F23,_wx.WXK_NUMPAD_ADD,_wx.WXK_SPECIAL20,
-##_wx.WXK_RIGHT,_wx.WXK_PAGEDOWN,_wx.WXK_F24,_wx.WXK_NUMPAD_SEPARATOR,
-##_wx.WXK_DOWN,_wx.WXK_NUMPAD_SUBTRACT,
-##_wx.WXK_SELECT,_wx.WXK_NUMPAD_DECIMAL,
-##_wx.WXK_PRINT,_wx.WXK_NUMPAD_DIVIDE,VPY_MAC_CTRL
+##_App.WXK_BACK,_App.WXK_EXECUTE,_App.WXK_F1,_App.WXK_NUMPAD_SPACE,_App.WXK_WINDOWS_LEFT,
+##_App.WXK_TAB,_App.WXK_SNAPSHOT,_App.WXK_F2,_App.WXK_NUMPAD_TAB,_App.WXK_WINDOWS_RIGHT,
+##_App.WXK_RETURN,_App.WXK_INSERT,_App.WXK_F3,_App.WXK_NUMPAD_ENTER,_App.WXK_WINDOWS_MENU,
+##_App.WXK_ESCAPE,_App.WXK_HELP,_App.WXK_F4,_App.WXK_NUMPAD_F1,_App.WXK_SPECIAL1,
+##_App.WXK_SPACE,_App.WXK_NUMPAD0,_App.WXK_F5,_App.WXK_NUMPAD_F2,_App.WXK_SPECIAL2,
+##_App.WXK_DELETE,_App.WXK_NUMPAD1,_App.WXK_F6,_App.WXK_NUMPAD_F3,_App.WXK_SPECIAL3,
+##_App.WXK_LBUTTON,_App.WXK_NUMPAD2,_App.WXK_F7,_App.WXK_NUMPAD_F4,_App.WXK_SPECIAL4,
+##_App.WXK_RBUTTON,_App.WXK_NUMPAD3,_App.WXK_F8,_App.WXK_NUMPAD_HOME,_App.WXK_SPECIAL5,
+##_App.WXK_CANCEL,_App.WXK_NUMPAD4,_App.WXK_F9,_App.WXK_NUMPAD_LEFT,_App.WXK_SPECIAL6,
+##_App.WXK_MBUTTON,_App.WXK_NUMPAD5,_App.WXK_F10,_App.WXK_NUMPAD_UP,_App.WXK_SPECIAL7,
+##_App.WXK_CLEAR,_App.WXK_NUMPAD6,_App.WXK_F11,_App.WXK_NUMPAD_RIGHT,_App.WXK_SPECIAL8,
+##_App.WXK_SHIFT,_App.WXK_NUMPAD7,_App.WXK_F12,_App.WXK_NUMPAD_DOWN,_App.WXK_SPECIAL9,
+##_App.WXK_ALT,_App.WXK_NUMPAD8,_App.WXK_F13,_App.WXK_NUMPAD_PRIOR,_App.WXK_SPECIAL10,
+##_App.WXK_CONTROL,_App.WXK_NUMPAD9,_App.WXK_F14,_App.WXK_NUMPAD_PAGEUP,_App.WXK_SPECIAL11,
+##_App.WXK_MENU,_App.WXK_MULTIPLY,_App.WXK_F15,_App.WXK_NUMPAD_NEXT,_App.WXK_SPECIAL12,
+##_App.WXK_PAUSE,_App.WXK_ADD,_App.WXK_F16,_App.WXK_NUMPAD_PAGEDOWN,_App.WXK_SPECIAL13,
+##_App.WXK_CAPITAL,_App.WXK_SEPARATOR,_App.WXK_F17,_App.WXK_NUMPAD_END,_App.WXK_SPECIAL14,
+##_App.WXK_PRIOR,_App.WXK_SUBTRACT,_App.WXK_F18,_App.WXK_NUMPAD_BEGIN,_App.WXK_SPECIAL15,
+##_App.WXK_NEXT,_App.WXK_DECIMAL,_App.WXK_F19,_App.WXK_NUMPAD_INSERT,_App.WXK_SPECIAL16,
+##_App.WXK_END,_App.WXK_DIVIDE,_App.WXK_F20,_App.WXK_NUMPAD_DELETE,_App.WXK_SPECIAL17,
+##_App.WXK_HOME,_App.WXK_NUMLOCK,_App.WXK_F21,_App.WXK_NUMPAD_EQUAL,_App.WXK_SPECIAL18,
+##_App.WXK_LEFT,_App.WXK_SCROLL,_App.WXK_F22,_App.WXK_NUMPAD_MULTIPLY,_App.WXK_SPECIAL19,
+##_App.WXK_UP,_App.WXK_PAGEUP,_App.WXK_F23,_App.WXK_NUMPAD_ADD,_App.WXK_SPECIAL20,
+##_App.WXK_RIGHT,_App.WXK_PAGEDOWN,_App.WXK_F24,_App.WXK_NUMPAD_SEPARATOR,
+##_App.WXK_DOWN,_App.WXK_NUMPAD_SUBTRACT,
+##_App.WXK_SELECT,_App.WXK_NUMPAD_DECIMAL,
+##_App.WXK_PRINT,_App.WXK_NUMPAD_DIVIDE,VPY_MAC_CTRL
 ##]
 ##
 ##codeLookup = dict(zip(codeVals, codeStrings))
