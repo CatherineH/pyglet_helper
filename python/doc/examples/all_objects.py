@@ -14,7 +14,10 @@ from objects.cylinder import *
 from objects.pyramid import *
 from objects.ring import *
 from objects.ellipsoid import *
+from objects.create_display import *
 from util import *
+
+scene = display()
 
 from numpy import zeros
 #!/usr/bin/env python

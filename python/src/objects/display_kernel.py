@@ -8,8 +8,10 @@ from math import pi
 
 from enum import Enum
 
-from objects.mouseobject import mousebase
-
+from mouseobject import mousebase
+from mouse_manager import mouse_button
+from util import color
+from util.vector import vector
 class mouse_mode_t(Enum):
 	ZOOM_ROTATE = 1
 	ZOOM_ROLL = 2
@@ -54,7 +56,7 @@ class display_kernel:
 	 gcf_changed = False, ambient = [ 0.2, 0.2, 0.2], show_toolbar = False, last_time = 0, \
 	 background = [0, 0, 0], spin_allowed = True, zoom_allowed = True, mouse_mode = mouse_mode_t.ZOOM_ROTATE, \
 	 stereo_mode = stereo_mode_t.NO_STEREO, stereodepth = 0.0, lod_adjust = 0, realized = False, \
-	 mouse = mousebase(), range_auto = 0.0, range = [0,0,0], world_extent = 0.0):
+	 mouse = mousebase(), range_auto = 0.0, range = [0,0,0], world_extent = 0.0, foreground = color.white):
 		self.extensions = ''
 		self.renderer = ''
 		self.version = ''
@@ -108,12 +110,12 @@ class display_kernel:
 		self.zoom_allowed = zoom_allowed
 
 		# Opaque objects to be rendered into world space.
-		self.world_iterator = indirect_iterator()
+		#self.world_iterator = indirect_iterator()
 
 		# objects with a nonzero level of transparency that need to be depth sorted
 		#	prior to rendering.
-		self.layer_world_transparent = Vector()
-		self.world_trans_iterator = indirect_iterator()
+		self.layer_world_transparent = vector()
+		#self.world_trans_iterator = indirect_iterator()
 		# Mouse and keyboard objects
 		self.mouse = mouse
 		self.mouse_mode = mouse_mode
@@ -141,7 +143,7 @@ class display_kernel:
 		self.visible = visible #/< scene.visible
 		self.explicitly_invisible = explicitly_invisible #/< true iff scene.visible has ever been set to 0 by the program, or by the user closing a window
 		self.fullscreen = fullscreen #/< True when the display is in fullscreen mode.
-		self.show_toolbar #/< True when toolbar is displayed (pan, etc).
+		self.show_toolbar = show_toolbar #/< True when toolbar is displayed (pan, etc).
 		self.title = title
 
 		#Older machines should set this to some number between -6 and 0.  All of
@@ -150,11 +152,10 @@ class display_kernel:
 		self.lod_adjust = lod_adjust
 		self.realized = realized
 
-		self.glext = gl_extensions()
-		self.mouse_mode_t = enumerate( ZOOM_ROTATE, ZOOM_ROLL, PAN, FIXED )
-		self.mouse_button = enumerate( NONE, LEFT, RIGHT, MIDDLE )
-		self.stereo_mode_t = enumerate( NO_STEREO, PASSIVE_STEREO, ACTIVE_STEREO, CROSSEYED_STEREO, \
-			REDBLUE_STEREO, REDCYAN_STEREO, YELLOWBLUE_STEREO, GREENMAGENTA_STEREO)
+		#self.glext = gl_extensions()
+		self.mouse_mode_t = mouse_mode_t
+		self.mouse_button = mouse_button
+		self.stereo_mode_t = stereo_mode_t
 
 
 	def enable_lights(self, scene):
@@ -1316,13 +1317,13 @@ class display_kernel:
 
 	@property
 	def show_toolbar(self):
-	    return self.show_toolbar
+	    return self._show_toolbar
 	@show_toolbar.setter
 	def show_toolbar(self, n_show_toolbar):
 	    if (self.visible):
 	        raise RuntimeError( "Cannot change parameters of an active window")
 	    else:
-		    self.show_toolbar = n_show_toolbar
+		    self._show_toolbar = n_show_toolbar
 
 	def get_mouse(self):
 	    self.implicit_activate()

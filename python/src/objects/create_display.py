@@ -17,7 +17,8 @@ from pyglet.canvas.base import Display
 from pyglet.window import Window
 import platform
 
-from objects.display_kernel import display_kernel
+from display_kernel import display_kernel
+from material import diffuse
 
 def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()
@@ -28,6 +29,7 @@ def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene
 _App = pyglet.app
 
 _plat = platform.system()
+
 # the display class appears to not really be implemented at the moment. perhaps use window instead?
 #_display = Display()
 _window = Window()
@@ -80,7 +82,7 @@ class window(object):
             self.y = 0
 
         if _plat == 'Macintosh': self.y += 20 # 20-pixel menu bar at top of screen
-        if _plat == 'Unix':
+        if _plat == 'Unix' or _plat =='Linux':
             if (self.x <= 65): self.x = 0 # 65-pixel band (launcher) at left of screen for Ubuntu 12.04
             self.y += 25 # 25-pixel band (menus etc.) at top of screen for Ubuntu 12.04
 ##        if _plat == 'Unix': self.height -= 25 # correction for Xubuntu; not understood
@@ -441,7 +443,8 @@ class display(display_kernel):
     # the methods report_window_resize, report_view_resize, and pick.
 
     def __init__(self, **keywords):
-        super(display_kernel, self).__init__(self)
+        #super(display, self).__init__()
+        display_kernel.__init__(self)
         self._window_initialized = False
         self.window = None
         self.menus = False
@@ -451,7 +454,7 @@ class display(display_kernel):
         self._visible = True
         self._fullscreen = False
 
-        self.material = materials.diffuse
+        self.material = diffuse
         # If visible is set before width (say), can get error "can't change window".
         # So deal with visible attribute separately.
         v = None
@@ -647,7 +650,7 @@ class display(display_kernel):
         x = y = 0
         w = self._width-_dwidth
         h = self._height-_dheight
-        if _plat == 'Unix':
+        if _plat == 'Unix' or _plat == 'Linux':
             y = 0
             h = h
         if self.fillswindow: # the canvas fills a window created by us
@@ -703,7 +706,7 @@ class display(display_kernel):
     def _report_resize(self):
         self.report_window_resize(int(self._x), int(self._y), int(self._width), int(self._height))
         w = self._width-_dwidth
-        if _plat == 'Unix':
+        if _plat == 'Unix' or _plat == 'Linux':
             h = self._height-_menuheight
         else:
             h = self._height-_dheight
@@ -1050,8 +1053,6 @@ class display(display_kernel):
     visible = property( _get_visible, _set_visible )
     fullscreen = property( _get_fullscreen, _set_fullscreen )
 
-    ambient = property( display_kernel.ambient, display_kernel.ambient)
-    range = property( display_kernel.range, display_kernel.range)
     lights = property( _get_lights, _set_lights, None)
 
 from vis.site_settings import enable_shaders
@@ -1102,8 +1103,8 @@ class _ManageDisplays(): # a singleton
 
 _displays = _ManageDisplays()
 _evtloop = _App.EventLoop()
-_evtloop.run()
-_isMac = ('wxOSX' in _App.PlatformInfo)
+#_evtloop.run()
+_isMac = False #('wxOSX' in _App.PlatformInfo)
 
 if _plat == 'Windows':
     # On Windows, the best timer is supposedly time.clock()
@@ -1203,8 +1204,8 @@ def _Interact():
                 if event.click:
                     d._dispatch_event("click", event)
 
-from .rate_function import RateKeeper as _rk
-rate = _rk(interactFunc=_Interact)
+#from .rate_function import RateKeeper as _rk
+#rate = _rk(interactFunc=_Interact)
 
 def sleep(dt):
     tend = _clock() + dt
@@ -1242,7 +1243,7 @@ if _plat == 'Macintosh':
     _dwidth = 0
     _dheight = 22
     _menuheight = 0
-elif _plat == 'Unix': # e.g., Linux
+elif _plat == 'Unix' or _plat == 'Linux': # e.g., Linux
     # Xubuntu: title bar 49 high, menubar 27 high, mouse offset 52
     # Ubuntu 12.04: title bar 27, menubar ?, mouse offset ?
     _dwidth = 0
@@ -1403,3 +1404,5 @@ VPY_MAC_CTRL = 396
 ##]
 ##
 ##codeLookup = dict(zip(codeVals, codeStrings))
+if __name__ == "__main__":
+    scene = display()

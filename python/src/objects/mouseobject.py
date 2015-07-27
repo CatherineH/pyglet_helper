@@ -4,9 +4,16 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
+import sys
+import os
+
+filename = os.path.dirname(os.path.realpath(__file__))
+filename = filename.replace("objects", "")
+sys.path.append(filename)
+
 
 from util.vector import vector
-from objects.renderable import renderable
+from renderable import renderable
 
 from enum import Enum
 
@@ -26,6 +33,7 @@ class event_t(Enum):
     drop = 5
 
 class button_t(Enum):
+    none = 0
     left = 1
     right = 2
     middle = 3
