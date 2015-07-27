@@ -442,6 +442,7 @@ class display(display_kernel):
     # render_scene, report_mouse_state, and report_mouse_state,
     # the methods report_window_resize, report_view_resize, and pick.
 
+    #I don't understand how 
     def __init__(self, **keywords):
         #super(display, self).__init__()
         display_kernel.__init__(self)
