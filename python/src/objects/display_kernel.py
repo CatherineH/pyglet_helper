@@ -609,12 +609,14 @@ class display_kernel:
 	 	 @return If false, something catastrophic has happened and the
 	 	 application should probably exit.
 		'''
+		print("starting render")
 		# TODO: Exception handling?
 		if not self.realized :
 			self.realize()
 
 		try :
 			self.recalc_extent()
+
 			scene_geometry  = view( self.internal_forward.norm(), self.center, self.view_width, \
 				self.view_height, self.forward_changed, self.gcf, self.gcfvec, self.gcf_changed, self.glext)
 			scene_geometry.lod_adjust = self.lod_adjust
@@ -629,6 +631,7 @@ class display_kernel:
 				 YELLOWBLUE_STEREO: self.set_YELLOWBLUE_STEREO, GREENMAGENTA_STEREO: self.set_GREENMAGENTA_STEREO,\
 				 PASSIVE_STEREO: self.set_PASSIVE_STEREO, CROSSEYED_STEREO: self.set_CROSSEYED_STEREO }
 			modes[self.stereo_mode]()
+			print("stereo mode: "+str(self.stereo_mode))
 			# Cleanup
 			check_gl_error()
 			self.gcf_changed = False
@@ -636,7 +639,8 @@ class display_kernel:
 
 		except gl_error as e:
 			raise RunTimeError("render_scene OpenGL error: " + e.what() + ", aborting.\n")
-
+		except:
+			print "something went wrong"
 
 		# TODO: Can we delay picking until the Python program actually wants one of these attributes?
 		mouse.get_mouse().cam = camera

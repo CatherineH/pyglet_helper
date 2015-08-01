@@ -6,12 +6,14 @@
 from pyglet.gl import *
 
 from renderable import renderable
+from util.rgba import rgb
+from util.vector import vector
+import abc
 
 class light(renderable):
-    def __init__(self):
-        self.rgb = rgb()
-        #is get_vertex an opengl thing?
-        self.vertex = get_vertex(self.gcf)
+    def __init__(self, color = rgb()):
+        super(light, self).__init__(color = color)
+        self.rgb = color
 
     @property
     def rgb(self):
@@ -39,16 +41,21 @@ class light(renderable):
 
     def render_lights(self, v):
         v.light_count[0] += 1
-        p = get_vertex( v.gcf )
+        p = self.get_vertex( v.gcf )
         for d in range(0,4):
             v.light_pos.push_back(p[d])
         for d in range(0,3):
             v.light_color.push_back(color[d])
         v.light_color.push_back( 1.0 )
 
+    @abc.abstractmethod
+    def get_vertex(self, gcf):
+        return 0
+
 class local_light(light):
-    def __init__(self):
-        self.position = vector()
+    def __init__(self, position = vector(), color = rgb()):
+        super(local_light, self).__init__(color = color)
+        self.position = position
 
     def get_vertex(self, gcf):
         return vertex( self.position*gcf, 1.0 )
@@ -61,8 +68,9 @@ class local_light(light):
         self.position = v
 
 class distant_light(light) :
-    def __init__(self):
-        self.direction = vector()
+    def __init__(self, direction = vector(), color = rgb()):
+        super(distant_light, self).__init__(color = color)
+        self.direction = direction
 
     @property
     def vertex(self):
@@ -70,7 +78,11 @@ class distant_light(light) :
 
     @property
     def direction(self):
-        return self.direction
+        return self._direction
     @direction.setter
     def direction(self, v):
-        self.direction = v.norm()
+        v = vector(v)
+        self._direction = v.norm()
+
+    def get_vertex(self, gcf):
+        return vertex( direction, 0.0 )

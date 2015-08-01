@@ -17,7 +17,10 @@ from objects.ellipsoid import *
 from objects.create_display import *
 from util import *
 
+global scene
 scene = display()
+
+print (scene)
 
 from numpy import zeros
 #!/usr/bin/env python
@@ -99,8 +102,6 @@ def on_draw():
     glRotatef(rz, 0, 0, 1)
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
-    print "attempting to render box now"
-    _box.gl_render()
 
 def setup():
     # One-time GL setup

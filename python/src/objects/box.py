@@ -6,6 +6,7 @@
 from pyglet.gl import *
 from rectangular import rectangular
 from util.rgba import rgb
+from create_display import display
 
 class box(rectangular):
     def __init__(self, width = 1.0, height = 1.0, length = 1.0, color = rgb()):
@@ -49,7 +50,7 @@ class box(rectangular):
     def gl_pick_render(self, scene):
         gl_render(scene)
 
-    def gl_render(self):
+    def gl_render(self, scene):
         if not scene.box_model.compiled():
             self.init_model(scene, False)
         self.color.gl_set(self.opacity)

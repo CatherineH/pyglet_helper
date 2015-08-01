@@ -3,9 +3,6 @@ from __future__ import print_function
 # Note that Python variables starting with "_" are not accessible to the importing program,
 # so variables intended to be private in this module start with "_"
 
-# When running from a terminal get this warning:
-# swig/python detected a memory leak of type wxPlatformInfo *', no destructor found.
-# Probably doesn't matter.
 import os as _os
 import sys as _sys
 import time as _time
@@ -19,6 +16,7 @@ import platform
 
 from display_kernel import display_kernel
 from material import diffuse
+from light import distant_light
 
 def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()
@@ -30,197 +28,13 @@ _App = pyglet.app
 
 _plat = platform.system()
 
-# the display class appears to not really be implemented at the moment. perhaps use window instead?
-#_display = Display()
+#it is unnecessary to implement the window class, as it already exists in pyglet.
 _window = Window()
 _screenwidth = _window.get_size()[0]
 _screenheight = _window.get_size()[1]
 
 def exit():
     pyglet.exit()
-
-class window(object):
-
-    @classmethod
-    def delete_all(cls):
-        ds = _displays.displays[:] # make a copy
-        for d in ds:
-            try:
-                d.window.delete()
-            except:
-                pass
-
-    def __init__(self, menus=False, _make_panel=True, x=0, y=0, width=600, height=600,
-                 title='Pyglet Helper',visible=True, fullscreen=False,
-                 style=Window.WINDOW_STYLE_DEFAULT, **keywords):
-        global _do_loop
-        _do_loop = True # if a window has been made, execute wait loop at exit
-        self.menus = menus
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-        if self.x > _screenwidth - 100:
-            raise ValueError('window x too near the right edge of the screen')
-        if self.x + self.width < 100:
-            raise ValueError('window x too far to the left edge of the screen')
-        if self.y > _screenheight - 100:
-            raise ValueError('window y too close to the bottom of the screen')
-        if self.y + self.height < 100:
-            raise ValueError('window y too far to the top of the screen')
-
-        if self.x + self.width > _screenwidth:
-            self.width = _screenwidth - self.x
-        if self.x < 0:
-            self.width = self.x + self.width
-            self.x = 0
-        if self.y + self.height > _screenheight:
-            self.height = _screenheight - self.y
-        if self.y < 0:
-            self.height = self.y + self.height
-            self.y = 0
-
-        if _plat == 'Macintosh': self.y += 20 # 20-pixel menu bar at top of screen
-        if _plat == 'Unix' or _plat =='Linux':
-            if (self.x <= 65): self.x = 0 # 65-pixel band (launcher) at left of screen for Ubuntu 12.04
-            self.y += 25 # 25-pixel band (menus etc.) at top of screen for Ubuntu 12.04
-##        if _plat == 'Unix': self.height -= 25 # correction for Xubuntu; not understood
-        self.win = Window(None, -1, title, pos=(self.x, self.y),
-                             size=(self.width, self.height), style=style)
-        _displays.window_num += 1
-        self.N = _displays.window_num
-        self._canvas = None # not None if one canvas fills the window
-        self.menubar = None
-
-        self._visible = visible
-        self._fullscreen = fullscreen
-        self._fullscreen_count = 0
-        self._exit = True
-        if 'exit' in keywords:
-            self._exit = keywords['exit']
-            del keywords['exit']
-        for kw in keywords:
-            setattr(self, kw, keywords[kw])
-        self.cursor = cursor(win=self.win)
-
-        self.win.Bind(Window.on_close, self._OnExitApp)
-        self.win.Bind(Window.on_move, self._OnMove)
-        self.win.Bind(Window.on_resize, self._OnSize)
-        #self.win.Bind(_App.EVT_MAXIMIZE, self._OnMaximize)
-        #self.win.Bind(_App.EVT_ICONIZE, self._OnIconize)
-
-        if _make_panel: self.panel = _App.Panel(self.win)
-        else: self.panel = None
-
-        if self.menus:
-            self.menubar = _App.MenuBar()
-            menu = _App.Menu()
-            item = menu.Append(_App.ID_EXIT, "E&xit\tCtrl-Q", "Exit demo")
-            self.win.Bind(_App.EVT_MENU, self._OnExitApp, item)
-            self.menubar.Append(menu, "&File")
-            self.win.SetMenuBar(self.menubar)
-
-        if not self._visible:
-            self.visible = False
-        if self._fullscreen:
-            self.fullscreen = True
-
-        self.win.Raise()
-        self.win.Show(True)
-
-    def _add_display(self, disp):
-        self._canvas = disp # this marks that there is a display that doesn't fill this window
-
-    def delete(self):
-        dl = _displays.displays[:]
-        for d in dl:
-            if d.win is self.win:
-                for obj in d.objects:
-                    obj.visible = False
-                    del obj
-                d.lights = []
-                d.visible = False
-                d._destroy()
-        _displays.window_num -= 1
-        self.win.DestroyChildren()
-        self.win.Destroy()
-
-    def _OnExitApp(self, evt):
-        if self._canvas is None: # canvas isn't the only element of the window
-            if self._exit:
-                exit()
-            else: # just close this window; leave other windows open
-                self.win.DestroyChildren()
-                self.win.Destroy()
-        elif self._canvas.exit: # canvas fills the window; default is display.exit is True
-            exit()
-        else: # display.exit is False; just close this window; leave other windows open
-            self.win.DestroyChildren()
-            self.win.Destroy()
-        _displays.window_num -= 1
-        if _displays.window_num == 0:
-            exit()
-        else:
-            for d in _displays.displays:
-                if d.win is self.win:
-                    d._destroy()
-
-    def _OnMove(self, evt):
-        c = self._canvas
-        if c is not None:
-            c._x, c._y = evt.GetPosition()
-            c._x -= _dwidth//2
-            c._y -= _dheight - _dwidth//2
-            if self.menus: c._y -= _menuheight
-            c._width = c.width
-            c._height = c.height
-            c._report_resize()
-        _Interact()
-        evt.Skip()
-
-    def _OnSize(self, evt):
-        c = self._canvas
-        if c is not None:
-            c._width, c._height = evt.GetSize()
-            c._x = c.x
-            c._y = c.y
-            c._report_resize()
-        if self._fullscreen_count == 2:
-            self._fullscreen = False
-            self._fullscreen_count = 0
-        else:
-            self._fullscreen_count += 1
-        _Interact()
-        evt.Skip()
-
-    def _OnIconize(self, evt): # either iconized or restored
-        self._visible = not self._visible
-
-    def _OnMaximize(self, evt): # maximized (full screen); restore just drives _OnSize
-        self._fullscreen_count = 1 # _OnSize is driven just after _OnMaximize
-        self._fullscreen = True
-
-    def _get_visible(self):
-        return self._visible
-
-    def _set_visible(self, v):
-        if v:
-            self.win.Restore()
-        else:
-            self.win.Iconize()
-
-    def _get_fullscreen(self):
-        return self._fullscreen
-
-    def _set_fullscreen(self, full):
-        if full:
-            self.win.Maximize()
-        else:
-            self.win.Restore()
-
-    visible = property( _get_visible, _set_visible )
-    fullscreen = property( _get_fullscreen, _set_fullscreen )
 
 class _mouseTracker:
     """
@@ -442,7 +256,7 @@ class display(display_kernel):
     # render_scene, report_mouse_state, and report_mouse_state,
     # the methods report_window_resize, report_view_resize, and pick.
 
-    #I don't understand how 
+    #I don't understand how
     def __init__(self, **keywords):
         #super(display, self).__init__()
         display_kernel.__init__(self)
@@ -484,25 +298,25 @@ class display(display_kernel):
             w = self.window.width - self.window.dwidth
             h = self.window.height - self.window.dheight
 
-        if self.x > w - 100:
+        if self.window_x > w - 100:
             raise ValueError('display x too near the right edge of the screen')
-        if self.x + self.width < 100:
+        if self.window_x + self.window_width < 100:
             raise ValueError('display x too far to the left edge of the screen')
-        if self.y > h - 100:
+        if self.window_y > h - 100:
             raise ValueError('display y too close to the bottom of the screen')
-        if self.y + self.height < 100:
+        if self.window_y + self.window_height < 100:
             raise ValueError('display y too far to the top of the screen')
 
-        if self.x + self.width > w:
-            self.width = w - self.x
-        if self.x < 0:
-            self.width = self.x + self.width
-            self.x = 0
-        if self.y + self.height > h:
-            self.height = h - self.y
-        if self.y < 0:
-            self.height = self.y + self.height
-            self.y = 0
+        if self.window_x + self.window_width > w:
+            self.window_width = w - self.window_x
+        if self.window_x < 0:
+            self.window_width = self.window_x + self.window_width
+            self.window_x = 0
+        if self.window_y + self.window_height > h:
+            self.window_height = h - self.y
+        if self.window_y < 0:
+            self.window_height = self.window_y + self.window_height
+            self.window_y = 0
 
         self._mt = _mouseTracker()
         self._captured = 0
@@ -520,7 +334,7 @@ class display(display_kernel):
         self.kb = kb()
 
     def select(self):
-        display_kernel.set_selected(self)
+        display_kernel.selected = self
 
     def waitfor_event(self, evt):
         """
@@ -645,9 +459,6 @@ class display(display_kernel):
             self._dispatch_event(name, args[0])
 
     def _make_canvas(self, parent):
-        # http://xoomer.virgilio.it/infinity77/wxPython/glcanvas/wx.glcanvas.GLCanvas.html
-        # http://xoomer.virgilio.it/infinity77/wxPython/glcanvas/wx.glcanvas.GLContext.html
-
         x = y = 0
         w = self._width-_dwidth
         h = self._height-_dheight
@@ -732,8 +543,8 @@ class display(display_kernel):
         self.N = _displays.display_num
         self._x = self.x
         self._y = self.y
-        self._width = self.width
-        self._height = self.height
+        self._width = self.window_width
+        self._height = self.window_height
         if self.fillswindow: # the display fills the window; no panel created
             self.window = window(menus=self.menus, _make_panel=False, x=self._x, y=self._y,
                                  width=self._width, height=self._height, title=self.title,
@@ -769,12 +580,14 @@ class display(display_kernel):
         self.report_closed()
 
     def _paint(self):
-        if not self._window_initialized: return
+        print("checking if window is initalized")
+        if not self._window_initialized:
+            print("window not initialized") 
+            return
         self._canvas.SetCurrent(self._context)
+        print ("about to call render")
         self.render_scene()
         self._canvas.SwapBuffers()
-
-## mouse event codes: http://docs.wxwidgets.org/2.8.4/wx_Appmouseevent.html#wxmouseevent
 
     def _OnLeftDClick(self, evt):
         self._OnLeftMouseDown(evt)
@@ -831,7 +644,6 @@ class display(display_kernel):
     def _OnCaptureLost(self, evt):
         pass
 
-# Mouse state, including ctrl/alt etc. http://wxpython.org/docs/api/wx.MouseState-class.html
 # On Mac:
 # CTRL + 1-button mouse = no CTRL, right button, presumably because CTRL-mouse == "right button"
 # ALT  + 1-button mouse = ALT, left button
@@ -1114,33 +926,6 @@ else:
     # On most other platforms, the best timer is supposedly time.time()
     _clock = _time.time
 
-##_lastInteract = None
-##
-### This thread watches to see whether the window has become inactive,
-### typically due to a loop not containing a call to rate or sleep.
-### The check for "_lastInteract is not None" means that a program
-### that imports visual but doesn't actually create any 3D objects
-### will not be killed.
-### This scheme doesn't work without making other changes. For example,
-### the example program stonehenge.py gets terminated because there is
-### lengthy setup of the scene. _Interact() gets called by the creation
-### of the canvas, which is triggered by the creation of a 3D object.
-### Also, during a long window move or resize, this times out.
-### Maybe there's no way to detect a loop without a rate call?
-##from threading import Thread
-##class _timer(Thread):
-##    def run(self):
-##        while True:
-##            _time.sleep(0.5)
-##            if _lastInteract is not None and _clock() >= _lastInteract+0.5:
-##                print("""
-##Program terminated because window has become inactive.
-##Probably there is a loop without a rate or sleep function.""")
-##                _App.Exit()
-##
-##_thr = _timer()
-##_thr.start()
-
 _mouse_binding_names = set(['mousedown','mouseup','click'])   # these are the events that we need to grab using display.mouse.getevents()
 
 def _Interact():
@@ -1214,23 +999,6 @@ def sleep(dt):
     while _clock() < tend:
         rate(30)
 
-
-##print('--------------')
-### Note that Mac info is incorrect (Linux is same as Mac)
-##print(_App.SystemSettings.GetMetric(_App.SYS_SCREEN_X))    # 1920, 1440
-##print(_App.SystemSettings.GetMetric(_App.SYS_SCREEN_Y))    # 1200, 900
-##print(_App.SystemSettings.GetMetric(_App.SYS_BORDER_X))    # 1, -1 (Windows, Mac)
-##print(_App.SystemSettings.GetMetric(_App.SYS_BORDER_Y))    # 1, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_X)) # 8, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y)) # 8, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_MENU_Y))      #  20, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y))   #  22, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_EDGE_X))      #   2, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_EDGE_Y))      #   2, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_WINDOWMIN_X)) # 132, -1
-##print(_App.SystemSettings.GetMetric(_App.SYS_WINDOWMIN_Y)) #  38, -1
-##print('--------------')
-
 # Title bar height is FRAMESIZE_Y + CAPTION_Y = 30 on Windows
 # Menu bar height is MENU_Y = 20 on Windows
 # Thickness of bottom is FRAMESIZE_Y = 8 on Windows
@@ -1257,16 +1025,6 @@ else: # Windows
     _menuheight = _App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y) + \
             _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
 
-window.dwidth = _dwidth
-window.dheight = _dheight
-window.menuheight = _menuheight
-
-##        # The canvas size can also be determined by comparing GetSize() and GetClientSize(),
-##        # after the window and canvas have been created:
-##        size = self.win.GetSize()
-##        canvas_size = self.win.GetClientSize()
-##        self._dwidth = size[0] - canvas_size[0] # canvas is dwidth thinner than scene.width
-##        self._dheight = size[1] - canvas_size[1] # canvas is dheight shorter than scene.height
 
 # Tables for converting US keyboard inputs to characters
 _unshifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab', # 0-9
@@ -1297,75 +1055,7 @@ _shifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab', # 0-9
    '', '', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', # 110-119
    'f9', 'f10', '', '{', '|', '}', '~', 'delete'] #120-127
 
-##    def _OnCharEvent(self, evt):
-##        k = self._ProcessChar(evt)
-##        self.kb.pushkey(k)
-##        self.keyboard.key = k
-##        self._dispatch_event('char', self.keyboard)
-##        evt.Skip()
-#
-# The wx key codes:
-#
-# WXK_BACK     WXK_EXECUTE    WXK_F1   WXK_NUMPAD_SPACE      WXK_WINDOWS_LEFT
-# WXK_TAB      WXK_SNAPSHOT   WXK_F2   WXK_NUMPAD_TAB        WXK_WINDOWS_RIGHT
-# WXK_RETURN   WXK_INSERT     WXK_F3   WXK_NUMPAD_ENTER      WXK_WINDOWS_MENU
-# WXK_ESCAPE   WXK_HELP       WXK_F4   WXK_NUMPAD_F1         WXK_SPECIAL1
-# WXK_SPACE    WXK_NUMPAD0    WXK_F5   WXK_NUMPAD_F2         WXK_SPECIAL2
-# WXK_DELETE   WXK_NUMPAD1    WXK_F6   WXK_NUMPAD_F3         WXK_SPECIAL3
-# WXK_LBUTTON  WXK_NUMPAD2    WXK_F7   WXK_NUMPAD_F4         WXK_SPECIAL4
-# WXK_RBUTTON  WXK_NUMPAD3    WXK_F8   WXK_NUMPAD_HOME       WXK_SPECIAL5
-# WXK_CANCEL   WXK_NUMPAD4    WXK_F9   WXK_NUMPAD_LEFT       WXK_SPECIAL6
-# WXK_MBUTTON  WXK_NUMPAD5    WXK_F10  WXK_NUMPAD_UP         WXK_SPECIAL7
-# WXK_CLEAR    WXK_NUMPAD6    WXK_F11  WXK_NUMPAD_RIGHT      WXK_SPECIAL8
-# WXK_SHIFT    WXK_NUMPAD7    WXK_F12  WXK_NUMPAD_DOWN       WXK_SPECIAL9
-# WXK_ALT      WXK_NUMPAD8    WXK_F13  WXK_NUMPAD_PRIOR      WXK_SPECIAL10
-# WXK_CONTROL  WXK_NUMPAD9    WXK_F14  WXK_NUMPAD_PAGEUP     WXK_SPECIAL11
-# WXK_MENU     WXK_MULTIPLY   WXK_F15  WXK_NUMPAD_NEXT       WXK_SPECIAL12
-# WXK_PAUSE    WXK_ADD        WXK_F16  WXK_NUMPAD_PAGEDOWN   WXK_SPECIAL13
-# WXK_CAPITAL  WXK_SEPARATOR  WXK_F17  WXK_NUMPAD_END        WXK_SPECIAL14
-# WXK_PRIOR    WXK_SUBTRACT   WXK_F18  WXK_NUMPAD_BEGIN      WXK_SPECIAL15
-# WXK_NEXT     WXK_DECIMAL    WXK_F19  WXK_NUMPAD_INSERT     WXK_SPECIAL16
-# WXK_END      WXK_DIVIDE     WXK_F20  WXK_NUMPAD_DELETE     WXK_SPECIAL17
-# WXK_HOME     WXK_NUMLOCK    WXK_F21  WXK_NUMPAD_EQUAL      WXK_SPECIAL18
-# WXK_LEFT     WXK_SCROLL     WXK_F22  WXK_NUMPAD_MULTIPLY   WXK_SPECIAL19
-# WXK_UP       WXK_PAGEUP     WXK_F23  WXK_NUMPAD_ADD        WXK_SPECIAL20
-# WXK_RIGHT    WXK_PAGEDOWN   WXK_F24  WXK_NUMPAD_SEPARATOR
-# WXK_DOWN                             WXK_NUMPAD_SUBTRACT
-# WXK_SELECT                           WXK_NUMPAD_DECIMAL
-# WXK_PRINT                            WXK_NUMPAD_DIVIDE
-#
-# With time we can include all of these..
-#
 
-codeStrings = [x.strip() for x in """
-WXK_BACK     WXK_EXECUTE    WXK_F1   WXK_NUMPAD_SPACE      WXK_WINDOWS_LEFT
-WXK_TAB      WXK_SNAPSHOT   WXK_F2   WXK_NUMPAD_TAB        WXK_WINDOWS_RIGHT
-WXK_RETURN   WXK_INSERT     WXK_F3   WXK_NUMPAD_ENTER      WXK_WINDOWS_MENU
-WXK_ESCAPE   WXK_HELP       WXK_F4   WXK_NUMPAD_F1         WXK_SPECIAL1
-WXK_SPACE    WXK_NUMPAD0    WXK_F5   WXK_NUMPAD_F2         WXK_SPECIAL2
-WXK_DELETE   WXK_NUMPAD1    WXK_F6   WXK_NUMPAD_F3         WXK_SPECIAL3
-WXK_LBUTTON  WXK_NUMPAD2    WXK_F7   WXK_NUMPAD_F4         WXK_SPECIAL4
-WXK_RBUTTON  WXK_NUMPAD3    WXK_F8   WXK_NUMPAD_HOME       WXK_SPECIAL5
-WXK_CANCEL   WXK_NUMPAD4    WXK_F9   WXK_NUMPAD_LEFT       WXK_SPECIAL6
-WXK_MBUTTON  WXK_NUMPAD5    WXK_F10  WXK_NUMPAD_UP         WXK_SPECIAL7
-WXK_CLEAR    WXK_NUMPAD6    WXK_F11  WXK_NUMPAD_RIGHT      WXK_SPECIAL8
-WXK_SHIFT    WXK_NUMPAD7    WXK_F12  WXK_NUMPAD_DOWN       WXK_SPECIAL9
-WXK_ALT      WXK_NUMPAD8    WXK_F13  WXK_NUMPAD_PRIOR      WXK_SPECIAL10
-WXK_CONTROL  WXK_NUMPAD9    WXK_F14  WXK_NUMPAD_PAGEUP     WXK_SPECIAL11
-WXK_MENU     WXK_MULTIPLY   WXK_F15  WXK_NUMPAD_NEXT       WXK_SPECIAL12
-WXK_PAUSE    WXK_ADD        WXK_F16  WXK_NUMPAD_PAGEDOWN   WXK_SPECIAL13
-WXK_CAPITAL  WXK_SEPARATOR  WXK_F17  WXK_NUMPAD_END        WXK_SPECIAL14
-WXK_PRIOR    WXK_SUBTRACT   WXK_F18  WXK_NUMPAD_BEGIN      WXK_SPECIAL15
-WXK_NEXT     WXK_DECIMAL    WXK_F19  WXK_NUMPAD_INSERT     WXK_SPECIAL16
-WXK_END      WXK_DIVIDE     WXK_F20  WXK_NUMPAD_DELETE     WXK_SPECIAL17
-WXK_HOME     WXK_NUMLOCK    WXK_F21  WXK_NUMPAD_EQUAL      WXK_SPECIAL18
-WXK_LEFT     WXK_SCROLL     WXK_F22  WXK_NUMPAD_MULTIPLY   WXK_SPECIAL19
-WXK_UP       WXK_PAGEUP     WXK_F23  WXK_NUMPAD_ADD        WXK_SPECIAL20
-WXK_RIGHT    WXK_PAGEDOWN   WXK_F24  WXK_NUMPAD_SEPARATOR
-WXK_DOWN                             WXK_NUMPAD_SUBTRACT
-WXK_SELECT                           WXK_NUMPAD_DECIMAL
-WXK_PRINT                            WXK_NUMPAD_DIVIDE VPY_MAC_CTRL
-""".split()]
 
 #
 # the mac 'ctrl' key seems to come in as key code 396, not in WXK list.
@@ -1374,35 +1064,6 @@ WXK_PRINT                            WXK_NUMPAD_DIVIDE VPY_MAC_CTRL
 
 VPY_MAC_CTRL = 396
 
-##codeVals = [
-##_App.WXK_BACK,_App.WXK_EXECUTE,_App.WXK_F1,_App.WXK_NUMPAD_SPACE,_App.WXK_WINDOWS_LEFT,
-##_App.WXK_TAB,_App.WXK_SNAPSHOT,_App.WXK_F2,_App.WXK_NUMPAD_TAB,_App.WXK_WINDOWS_RIGHT,
-##_App.WXK_RETURN,_App.WXK_INSERT,_App.WXK_F3,_App.WXK_NUMPAD_ENTER,_App.WXK_WINDOWS_MENU,
-##_App.WXK_ESCAPE,_App.WXK_HELP,_App.WXK_F4,_App.WXK_NUMPAD_F1,_App.WXK_SPECIAL1,
-##_App.WXK_SPACE,_App.WXK_NUMPAD0,_App.WXK_F5,_App.WXK_NUMPAD_F2,_App.WXK_SPECIAL2,
-##_App.WXK_DELETE,_App.WXK_NUMPAD1,_App.WXK_F6,_App.WXK_NUMPAD_F3,_App.WXK_SPECIAL3,
-##_App.WXK_LBUTTON,_App.WXK_NUMPAD2,_App.WXK_F7,_App.WXK_NUMPAD_F4,_App.WXK_SPECIAL4,
-##_App.WXK_RBUTTON,_App.WXK_NUMPAD3,_App.WXK_F8,_App.WXK_NUMPAD_HOME,_App.WXK_SPECIAL5,
-##_App.WXK_CANCEL,_App.WXK_NUMPAD4,_App.WXK_F9,_App.WXK_NUMPAD_LEFT,_App.WXK_SPECIAL6,
-##_App.WXK_MBUTTON,_App.WXK_NUMPAD5,_App.WXK_F10,_App.WXK_NUMPAD_UP,_App.WXK_SPECIAL7,
-##_App.WXK_CLEAR,_App.WXK_NUMPAD6,_App.WXK_F11,_App.WXK_NUMPAD_RIGHT,_App.WXK_SPECIAL8,
-##_App.WXK_SHIFT,_App.WXK_NUMPAD7,_App.WXK_F12,_App.WXK_NUMPAD_DOWN,_App.WXK_SPECIAL9,
-##_App.WXK_ALT,_App.WXK_NUMPAD8,_App.WXK_F13,_App.WXK_NUMPAD_PRIOR,_App.WXK_SPECIAL10,
-##_App.WXK_CONTROL,_App.WXK_NUMPAD9,_App.WXK_F14,_App.WXK_NUMPAD_PAGEUP,_App.WXK_SPECIAL11,
-##_App.WXK_MENU,_App.WXK_MULTIPLY,_App.WXK_F15,_App.WXK_NUMPAD_NEXT,_App.WXK_SPECIAL12,
-##_App.WXK_PAUSE,_App.WXK_ADD,_App.WXK_F16,_App.WXK_NUMPAD_PAGEDOWN,_App.WXK_SPECIAL13,
-##_App.WXK_CAPITAL,_App.WXK_SEPARATOR,_App.WXK_F17,_App.WXK_NUMPAD_END,_App.WXK_SPECIAL14,
-##_App.WXK_PRIOR,_App.WXK_SUBTRACT,_App.WXK_F18,_App.WXK_NUMPAD_BEGIN,_App.WXK_SPECIAL15,
-##_App.WXK_NEXT,_App.WXK_DECIMAL,_App.WXK_F19,_App.WXK_NUMPAD_INSERT,_App.WXK_SPECIAL16,
-##_App.WXK_END,_App.WXK_DIVIDE,_App.WXK_F20,_App.WXK_NUMPAD_DELETE,_App.WXK_SPECIAL17,
-##_App.WXK_HOME,_App.WXK_NUMLOCK,_App.WXK_F21,_App.WXK_NUMPAD_EQUAL,_App.WXK_SPECIAL18,
-##_App.WXK_LEFT,_App.WXK_SCROLL,_App.WXK_F22,_App.WXK_NUMPAD_MULTIPLY,_App.WXK_SPECIAL19,
-##_App.WXK_UP,_App.WXK_PAGEUP,_App.WXK_F23,_App.WXK_NUMPAD_ADD,_App.WXK_SPECIAL20,
-##_App.WXK_RIGHT,_App.WXK_PAGEDOWN,_App.WXK_F24,_App.WXK_NUMPAD_SEPARATOR,
-##_App.WXK_DOWN,_App.WXK_NUMPAD_SUBTRACT,
-##_App.WXK_SELECT,_App.WXK_NUMPAD_DECIMAL,
-##_App.WXK_PRINT,_App.WXK_NUMPAD_DIVIDE,VPY_MAC_CTRL
-##]
 ##
 ##codeLookup = dict(zip(codeVals, codeStrings))
 if __name__ == "__main__":
