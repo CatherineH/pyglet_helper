@@ -256,9 +256,8 @@ class display(display_kernel):
     # render_scene, report_mouse_state, and report_mouse_state,
     # the methods report_window_resize, report_view_resize, and pick.
 
-    #I don't understand how
     def __init__(self, **keywords):
-        #super(display, self).__init__()
+        super(display, self).__init__(**keywords)
         display_kernel.__init__(self)
         self._window_initialized = False
         self.window = None
@@ -582,7 +581,7 @@ class display(display_kernel):
     def _paint(self):
         print("checking if window is initalized")
         if not self._window_initialized:
-            print("window not initialized") 
+            print("window not initialized")
             return
         self._canvas.SetCurrent(self._context)
         print ("about to call render")

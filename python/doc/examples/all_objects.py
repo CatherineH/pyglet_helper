@@ -15,12 +15,13 @@ from objects.pyramid import *
 from objects.ring import *
 from objects.ellipsoid import *
 from objects.create_display import *
+from objects.renderable import view
 from util import *
 
 global scene
-scene = display()
+#scene = display()
 
-print (scene)
+#print (scene)
 
 from numpy import zeros
 #!/usr/bin/env python
@@ -65,6 +66,9 @@ from math import pi, sin, cos
 from pyglet.gl import *
 import pyglet
 
+from traceback import print_stack
+
+'''
 try:
     # Try and create a window with multisampling (antialiasing)
     config = Config(sample_buffers=1, samples=4,
@@ -83,7 +87,16 @@ def on_resize(width, height):
     gluPerspective(60., width / float(height), .1, 1000.)
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
+@window.event
+def on_draw():
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity()
+    glTranslatef(0, 0, -4)
+    glRotatef(rz, 0, 0, 1)
+    glRotatef(ry, 0, 1, 0)
+    glRotatef(rx, 1, 0, 0)
 
+'''
 def update(dt):
     global rx, ry, rz
     rx += dt * 1
@@ -94,14 +107,6 @@ def update(dt):
     rz %= 360
 pyglet.clock.schedule(update)
 
-@window.event
-def on_draw():
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glLoadIdentity()
-    glTranslatef(0, 0, -4)
-    glRotatef(rz, 0, 0, 1)
-    glRotatef(ry, 0, 1, 0)
-    glRotatef(rx, 1, 0, 0)
 
 def setup():
     # One-time GL setup
@@ -138,14 +143,16 @@ def setup():
 
 
 setup()
-_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+#_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
 rx = ry = rz = 0
 
-pyglet.app.run()
+
 
 
 #put all objects in a scene together
-#_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+_view = view()
+_box.init_model(_view)
 '''
 _ball = sphere(pos=(0,4,0), color = color.red)
 

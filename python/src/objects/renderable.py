@@ -5,6 +5,9 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from util.rgba import rgb
+from util.vector import vector
+from util.displaylist import displaylist
+from util.tmatrix import tmatrix
 from objects.material import material
 N_LIGHT_TYPES = 1
 '''
@@ -58,7 +61,7 @@ class renderable(object):
     render_surface.
 '''
 class view:
-    def __init__(self, n_gcf, anaglyph = False, coloranaglyph = False, lod_adjust = 0, tan_hfov_x = 0, tan_hfov_y = 0, enable_shaders = True):
+    def __init__(self, n_gcf = 1.0, view_width = 800, view_height = 600, anaglyph = False, coloranaglyph = False, forward_changed = False, gcf_changed = False, lod_adjust = 0, tan_hfov_x = 0, tan_hfov_y = 0, enable_shaders = True):
         # The position of the camera in world space.
         self.camera = vector()
         # The direction the camera is pointing - a unit vector.
@@ -68,17 +71,17 @@ class view:
         # The true up direction of the scene in world space.
         self.up = vector()
         # The width of the viewport in pixels.
-        self.view_width
+        self.view_width = view_width
         # The height of the viewport in pixels.
-        self.view_height
+        self.view_height = view_height
         # True if the forward vector changed since the last rending operation.
-        self.forward_changed
+        self.forward_changed = forward_changed
         # The Global Scaling Factor
         self.gcf = n_gcf
         # The vector version of the Global Scaling Factor, for scene.uniform=0
         self.gcfvec = vector()
         # True if gcf changed since the last render cycle.
-        self.gcf_changed
+        self.gcf_changed = gcf_changed
         # The user adjustment to the level-of-detail.
         self.lod_adjust = lod_adjust
         # True in anaglyph stereo rendering modes.
@@ -88,12 +91,16 @@ class view:
         self.tan_hfov_x = tan_hfov_x #< The tangent of half the horzontal field of view.
         self.tan_hfov_y = tan_hfov_y#< The tangent of half the vertical field of view.
 
+        # not sure what this does...
+        '''
         self.box_model = displaylist()
         self.sphere_model = [displaylist()]*6
         self.cylinder_model = [displaylist()]*6
         self.cone_model = [displaylist()]*6
         self.pyramid_model = displaylist()
-        self.glext = gl_extensions()
+        '''
+        # TODO: implement gl extensions
+        #self.glext = gl_extensions()
         self.camera_world = tmatrix()
         self.light_count = [0]*N_LIGHT_TYPES
         self.light_pos = vector()
