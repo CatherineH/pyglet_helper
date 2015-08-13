@@ -37,15 +37,15 @@ class texture:
 
 	@property
 	def handle(self):
-		return self.handle
+		return self._handle
 	@handle.setter
 	def handle(self, h ):
-		if (self.handle):
-			on_gl_free.free(bind( gl_free, self.handle ) )
+		if hasattr(self,'_handle'):
+			on_gl_free.free(bind( gl_free, self._handle ) )
 
-		self.handle = h
-		on_gl_free.connect( bind(gl_free, self.handle) )
-		print( "Allocated texture number " + self.handle)
+		self._handle = h
+		on_gl_free.connect( bind(gl_free, self._handle) )
+		print( "Allocated texture number " + self._handle)
 
 	def gl_activate(self, v):
 		'''
