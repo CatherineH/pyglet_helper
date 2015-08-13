@@ -11,11 +11,13 @@ from create_display import display
 class box(rectangular):
     def __init__(self, width = 1.0, height = 1.0, length = 1.0, color = rgb()):
         super(box, self).__init__(width = width, height = height, color = color, length = length)
+
 	# True if the box should not be rendered.
 	#bool degenerate();
 	#static displaylist model;
 	#static void init_model(displaylist& model, bool skip_right_face);
-    def init_model(self, scene, skip_right_face ):
+    def init_model(self, scene, skip_right_face = False ):
+      print "init model box"
       # Note that this model is also used by arrow!
       scene.box_model.gl_compile_begin()
       glEnable(GL_CULL_FACE)

@@ -4,11 +4,15 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
+from traceback import print_stack
 
 class displaylist_impl:
 	def __init__(self):
+		print_stack()
 		self.handle = glGenLists(1)
 		#on_gl_free.connect( gl_free, self.handle)
+		print self.handle
+		print "GL_COMPILE" +str(GL_COMPILE)
 		glNewList( self.handle, GL_COMPILE )
 	def __del__(self):
 		self.compile_end()

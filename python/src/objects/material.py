@@ -36,10 +36,10 @@ class material:
 
     @property
     def translucent(self):
-        return self.translucent
+        return self._translucent
     @translucent.setter
     def translucent(self, t):
-        self.translucent = t
+        self._translucent = t
 
     def get_shader_program(self):
         return self.shader.get()
