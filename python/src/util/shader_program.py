@@ -6,6 +6,7 @@
 
 class shader_program:
     def __init__(self, source = None):
+        print("created shader program")
         self.source = source
         self.program = 0
         self.uniforms = ['', 0]
@@ -15,7 +16,11 @@ class shader_program:
             on_gl_free.free( bind( gl_free, glDeleteObjectARB, self.program ) )
     @property
     def source(self):
-        return self.source
+        return self._source
+    @source.setter
+    def source(self, source):
+        self._source = source
+
     @property
     def uniform_location(self, v, name):
         # TODO: change interface to cache the uniforms we actually want and avoid string comparisons

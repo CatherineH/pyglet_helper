@@ -1,7 +1,8 @@
-#temporary, until I get the setup working.
+# temporary, until I get the setup working.
 
 import sys
 import os
+
 filename = os.path.dirname(os.path.realpath(__file__))
 filename = filename.replace("doc/examples", "src")
 sys.path.append(filename)
@@ -20,10 +21,10 @@ from util import *
 global scene
 scene = display()
 
-print (scene)
+print(scene)
 
 from numpy import zeros
-#!/usr/bin/env python
+# !/usr/bin/env python
 # ----------------------------------------------------------------------------
 # pyglet
 # Copyright (c) 2006-2008 Alex Holkner
@@ -59,20 +60,18 @@ from numpy import zeros
 # ----------------------------------------------------------------------------
 
 
-
-from math import pi, sin, cos
-
 from pyglet.gl import *
 import pyglet
 
 try:
     # Try and create a window with multisampling (antialiasing)
     config = Config(sample_buffers=1, samples=4,
-                    depth_size=16, double_buffer=True,)
+                    depth_size=16, double_buffer=True, )
     window = pyglet.window.Window(resizable=True, config=config)
 except pyglet.window.NoSuchConfigException:
     # Fall back to no multisampling for old hardware
     window = pyglet.window.Window(resizable=True)
+
 
 @window.event
 def on_resize(width, height):
@@ -84,6 +83,7 @@ def on_resize(width, height):
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
+
 def update(dt):
     global rx, ry, rz
     rx += dt * 1
@@ -92,7 +92,10 @@ def update(dt):
     rx %= 360
     ry %= 360
     rz %= 360
+
+
 pyglet.clock.schedule(update)
+
 
 @window.event
 def on_draw():
@@ -103,6 +106,7 @@ def on_draw():
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
 
+
 def setup():
     # One-time GL setup
     glClearColor(1, 1, 1, 1)
@@ -111,7 +115,7 @@ def setup():
     glEnable(GL_CULL_FACE)
 
     # Uncomment this line for a wireframe view
-    #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    # glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     # Simple light setup.  On Windows GL_LIGHT0 is enabled by default,
     # but this is not the case on Linux or Mac, so remember to always
@@ -136,16 +140,15 @@ def setup():
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
 
-
 setup()
-_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+_box = box(length=4, height=0.5, width=4, color=color.blue)
 rx = ry = rz = 0
 
 pyglet.app.run()
 
 
-#put all objects in a scene together
-#_box = box(length = 4, height = 0.5, width = 4, color = color.blue)
+# put all objects in a scene together
+# _box = box(length = 4, height = 0.5, width = 4, color = color.blue)
 '''
 _ball = sphere(pos=(0,4,0), color = color.red)
 
