@@ -63,6 +63,8 @@ from numpy import zeros
 
 from pyglet.gl import *
 import pyglet
+from objects.pyramid import pyramid
+
 
 from traceback import print_stack
 
@@ -76,6 +78,7 @@ def update(dt):
     rx %= 360
     ry %= 360
     rz %= 360
+    _pyramid.init_model()
 
 
 pyglet.clock.schedule(update)
@@ -89,8 +92,7 @@ def on_draw():
     glRotatef(rz, 0, 0, 1)
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
-
-
+    #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
 
 def setup():
     # One-time GL setup
@@ -123,8 +125,12 @@ def setup():
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
-    _box.init_model()
-_box = box(length=4, height=0.5, width=4, color=color.blue)
+
+#_ball = sphere(pos=(0,4,0), color = color.red)
+
+#_box = box(length=4, height=0.5, width=4, color=color.blue)
+_pyramid = pyramid(pos=(0,0,0), size=(1,1,1), color = color.cyan)
+
 
 setup()
 rx = ry = rz = 0
@@ -135,7 +141,6 @@ rx = ry = rz = 0
 # put all objects in a scene together
 # _box = box(length = 4, height = 0.5, width = 4, color = color.blue)
 '''
-_ball = sphere(pos=(0,4,0), color = color.red)
 
 _arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
 
@@ -143,7 +148,6 @@ _cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
 
 _cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
 
-_pyramid = pyramid(pos=(5,2,0), size=(12,6,4), color = color.cyan)
 
 _ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
 

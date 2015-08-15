@@ -14,12 +14,11 @@ from util.displaylist import displaylist
 class pyramid(rectangular):
     def __init__(self, pos = vector(0,0,0), size = (1,1,1),color = rgb()):
         super(pyramid, self).__init__(pos = pos, color = color, width = size[0], height = size[1], length = size[2])
-        self.model = displaylist()
-        self.arrow = arrow()
+        #self.model = displaylist()
 
-    def init_model(self, scene):
+    def init_model(self):#, scene):
         # Note that this model is also used by arrow!
-        scene.pyramid_model.gl_compile_begin()
+        #scene.pyramid_model.gl_compile_begin()
 
         vertices = [[0, .5, .5], \
             [0,-.5, .5], \
@@ -54,8 +53,8 @@ class pyramid(rectangular):
         glEnd()
         glDisable(GL_CULL_FACE)
 
-        scene.pyramid_model.gl_compile_end()
-        check_gl_error()
+        #scene.pyramid_model.gl_compile_end()
+        #check_gl_error()
 
     @property
     def center(self):

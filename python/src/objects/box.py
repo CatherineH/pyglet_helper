@@ -41,16 +41,15 @@ class box(rectangular):
                             GLfloat(vertices[f][3 - v][2]))
         # Draw outside
         for f in range(skip_right_face, 6):
-            print(normals[f])
             glNormal3fv(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
             for v in range(0, 4):
                 glVertex3fv(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
-            #glEnd()
-            glDisable(GL_CULL_FACE)
-            # scene.box_model.gl_compile_end()
-            # check_gl_error()
+        glEnd()
+        glDisable(GL_CULL_FACE)
+        # scene.box_model.gl_compile_end()
+        # check_gl_error()
 
-            # virtual void gl_pick_render( const view&);
+        # virtual void gl_pick_render( const view&);
 
     def gl_pick_render(self, scene):
         gl_render(scene)
