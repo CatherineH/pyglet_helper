@@ -4,8 +4,8 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from rectangular import rectangular
-from arrow import arrow
+from objects.rectangular import rectangular
+from objects.arrow import arrow
 
 from util.rgba import rgb
 from util.vector import vector

@@ -15,24 +15,24 @@ class material:
 
     @property
     def textures(self):
-        return self.textures
+        return self._textures
     @textures.setter
     def textures(self, tex):
-        self.textures = tex
+        self._textures = tex
 
     @property
     def shader(self):
-        if (self.shader):
-            return self.shader.get_source()
+        if hasattr(self,'_shader'):
+            return self._shader.get_source()
         else:
             return ''
 
     @shader.setter
     def shader(self, source):
-        if (source.size()):
-            self.shader.reset(shader_program( source ))
+        if source is not None:
+            self._shader = shader_program(source)
         else:
-            self.shader.reset( None )
+            self._shader = None
 
     @property
     def translucent(self):

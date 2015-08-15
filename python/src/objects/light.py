@@ -5,7 +5,7 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 
-from renderable import renderable
+from objects.renderable import renderable
 from util.rgba import rgb
 from util.vector import vector
 import abc

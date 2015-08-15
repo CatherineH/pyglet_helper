@@ -13,7 +13,7 @@ sys.path.append(filename)
 
 
 from util.vector import vector
-from renderable import renderable
+from objects.renderable import renderable
 
 from enum import Enum
 
@@ -137,10 +137,6 @@ class mousebase:
         return (self.position - self.cam).norm(self)
     def get_pickpos(self)  :
         return pickpos
-
-    @property
-    def pick(self):
-        return self.pick
 
     def get_pos(self) :
         return self.position

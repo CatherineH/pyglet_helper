@@ -1,3 +1,4 @@
+'''
 import objects.arrow
 import objects.axial
 import objects.box
@@ -18,3 +19,4 @@ import objects.rectangular
 import objects.renderable
 import objects.ring
 import objects.sphere
+'''

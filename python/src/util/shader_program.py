@@ -3,17 +3,14 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
+from traceback import print_stack
 
 class shader_program:
     def __init__(self, source = None):
-        print("created shader program")
         self.source = source
         self.program = 0
         self.uniforms = ['', 0]
 
-    def __del__(self):
-        if (self.program > 0):
-            on_gl_free.free( bind( gl_free, glDeleteObjectARB, self.program ) )
     @property
     def source(self):
         return self._source

@@ -66,6 +66,8 @@ import pyglet
 
 from traceback import print_stack
 
+window = pyglet.window.Window(visible=False)
+
 def update(dt):
     global rx, ry, rz
     rx += dt * 1
@@ -98,7 +100,7 @@ def setup():
     glEnable(GL_CULL_FACE)
 
     # Uncomment this line for a wireframe view
-    # glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     # Simple light setup.  On Windows GL_LIGHT0 is enabled by default,
     # but this is not the case on Linux or Mac, so remember to always
@@ -121,10 +123,10 @@ def setup():
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
-
+    _box.init_model()
+_box = box(length=4, height=0.5, width=4, color=color.blue)
 
 setup()
-_box = box(length=4, height=0.5, width=4, color=color.blue)
 rx = ry = rz = 0
 
 

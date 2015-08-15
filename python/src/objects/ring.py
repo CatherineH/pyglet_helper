@@ -4,7 +4,7 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from axial import axial
+from objects.axial import axial
 from util.rgba import rgb
 from util.vector import vector
 
