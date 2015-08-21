@@ -42,13 +42,14 @@ class pyramid(rectangular):
         for f in range(0,6):
             glNormal3f( -normals[f][0], -normals[f][1], -normals[f][2] )
             for v in range(0,3):
-                glVertex3fv( vertices[ triangle_indices[f][2-v] ] )
+                vert = [GLfloat(i) for i in vertices[ triangle_indices[f][2-v] ]]
+                glVertex3f( *vert )
 
         # Outside
         for f in range(0, 6):
-            glNormal3fv( normals[f] )
+            glNormal3fv( *[GLfloat(i) for i in normals[f]] )
             for v in range(0, 3):
-                glVertex3fv( vertices[ triangle_indices[f][v] ] )
+                glVertex3f(*[GLfloat(i) for i in vertices[ triangle_indices[f][v] ]] )
 
         glEnd()
         glDisable(GL_CULL_FACE)

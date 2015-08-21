@@ -17,11 +17,10 @@ class box(rectangular):
     # static displaylist model;
     # static void init_model(displaylist& model, bool skip_right_face);
     def init_model(self, skip_right_face=False):
-        print("init model box")
         # Note that this model is also used by arrow!
         # scene.box_model.gl_compile_begin()
         glEnable(GL_CULL_FACE)
-        glBegin(GL_QUADS)
+        glBegin(GL_TRIANGLES)
 
         s = 0.5
         vertices = [ \
@@ -37,13 +36,13 @@ class box(rectangular):
         for f in range(skip_right_face, 6):
             glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
             for v in range(0, 4):
-                glVertex3fv(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
+                glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
                             GLfloat(vertices[f][3 - v][2]))
         # Draw outside
         for f in range(skip_right_face, 6):
-            glNormal3fv(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
+            glNormal3f(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
             for v in range(0, 4):
-                glVertex3fv(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
+                glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
         glEnd()
         glDisable(GL_CULL_FACE)
         # scene.box_model.gl_compile_end()

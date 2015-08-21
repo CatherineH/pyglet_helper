@@ -62,13 +62,18 @@ from numpy import zeros
 
 
 from pyglet.gl import *
-import pyglet
+#import pyglet
 from objects.pyramid import pyramid
-
-
+from objects.box import box
+from objects.arrow import arrow
+from objects.cone import cone
+from objects.cylinder import cylinder
+from objects.ring import ring
+from objects.ellipsoid import ellipsoid
 from traceback import print_stack
 
-window = pyglet.window.Window(visible=False)
+window = pyglet.window.Window()
+
 
 def update(dt):
     global rx, ry, rz
@@ -78,11 +83,25 @@ def update(dt):
     rx %= 360
     ry %= 360
     rz %= 360
-    _pyramid.init_model()
 
 
 pyglet.clock.schedule(update)
 
+@window.event
+def on_resize(width, height):
+    print('resized!')
+    glViewport(0, 0, width, height)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45, width / float(height), .1, 1000)
+
+    gluLookAt(
+     1, 4, 3, # eye
+     0, 0, 0, # target
+     0, 1, 0  # up
+    );
+    glMatrixMode(GL_MODELVIEW)
+    return pyglet.event.EVENT_HANDLED
 
 @window.event
 def on_draw():
@@ -93,6 +112,21 @@ def on_draw():
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
     #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
+    glTranslatef(0,0,2)
+    _pyramid.init_model()
+    glTranslatef(0,0,-2)
+    _box.init_model()
+    glTranslatef(0,0,4)
+    _cone.init_model()
+    glTranslatef(0,0,-4)
+    glTranslatef(0, 2, 0)
+    _ball.init_model()
+    glTranslatef(2,0,0)
+    _ellipsoid.init_model()
+    glTranslatef(2, 0,0)
+    _ring.init_model()
+
+    glTranslatef(-4, -2, 0)
 
 def setup():
     # One-time GL setup
@@ -102,7 +136,7 @@ def setup():
     glEnable(GL_CULL_FACE)
 
     # Uncomment this line for a wireframe view
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+    #glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     # Simple light setup.  On Windows GL_LIGHT0 is enabled by default,
     # but this is not the case on Linux or Mac, so remember to always
@@ -126,32 +160,21 @@ def setup():
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
-#_ball = sphere(pos=(0,4,0), color = color.red)
+# put all objects in a scene together
 
-#_box = box(length=4, height=0.5, width=4, color=color.blue)
+_ball = sphere(pos=(0,4,0), color = color.red)
+
+_box = box(length=2, height=0.5, width=2, color=color.blue)
 _pyramid = pyramid(pos=(0,0,0), size=(1,1,1), color = color.cyan)
+_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
+_cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
+_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
+_ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
+_ellipsoid = ellipsoid(pos=(3,3,3), length=2, height=1, width=3, color = color.white)
 
 
-setup()
+#setup()
 rx = ry = rz = 0
 
-
-
-
-# put all objects in a scene together
-# _box = box(length = 4, height = 0.5, width = 4, color = color.blue)
-'''
-
-_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
-
-_cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
-
-_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
-
-
-_ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-
-_ellipsoid = ellipsoid(pos=(3,3,3), length=2, height=1, width=3, color = color.white)
-'''
 
 pyglet.app.run()

@@ -8,6 +8,7 @@ from objects.axial import axial
 from util.tmatrix import tmatrix
 from util.rgba import rgb
 from util.vector import vector
+from util.quadric import quadric
 '''
 A simple monochrome sphere.
 '''
@@ -47,12 +48,14 @@ class sphere (axial):
         e.add_body()
 
     # True until the first sphere is rendered, then false.
-    def init_model(self, scene):
-        if (scene.sphere_model[0].compiled()):
-            return
+    def init_model(self):#, scene):
+        #if (scene.sphere_model[0].compiled()):
+        #    return
 
         sph = quadric()
+        sph.render_sphere( 1.0, 13, 7)
 
+        '''
         scene.sphere_model[0].gl_compile_begin()
         sph.render_sphere( 1.0, 13, 7)
         scene.sphere_model[0].gl_compile_end()
@@ -77,6 +80,7 @@ class sphere (axial):
         scene.sphere_model[5].gl_compile_begin()
         sph.render_sphere( 1.0, 140, 69)
         scene.sphere_model[5].gl_compile_end()
+        '''
 
     def gl_pick_render(self, geometry):
         if (self.degenerate()):

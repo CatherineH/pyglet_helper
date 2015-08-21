@@ -7,7 +7,7 @@ from pyglet.gl import *
 from objects.axial import axial
 from util.rgba import rgb
 from util.vector import vector
-
+from util.quadric import quadric
 
 class cone(axial):
     def __init__(self, radius=1.0, color=rgb(), pos=vector(0, 0, 0), axis=vector(1, 0, 0)):
@@ -36,7 +36,7 @@ class cone(axial):
 
     def render_cone_model(self):
         q = quadric()
-        q.render_cylinder(1.0, 0.0, 1.0, self.n_sides, self.n_stacks)
+        q.render_cylinder(1.0, 1.0, self.n_sides, self.n_stacks, top_radius = 0.0)
         q.render_disk(1.0, self.n_sides, self.n_stacks * 2, -1)
 
     def gl_pick_render(self, scene):
@@ -115,3 +115,13 @@ class cone(axial):
 
     def get_center(self):
         return self.pos + self.axis / 2.0
+
+    def init_model(self):
+        # clear_gl_error();
+        # The number of faces corrisponding to each level of detail.
+        n_faces = [8, 16, 32, 46, 68, 90]
+        n_stacks = [1, 2, 4, 7, 10, 14]
+        for i in range(0, 6):
+            self.n_sides = n_faces[i]
+            self.n_stacks = n_stacks[i]
+            self.render_cone_model()
