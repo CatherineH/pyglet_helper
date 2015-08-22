@@ -92,13 +92,13 @@ class view:
         self.tan_hfov_y = tan_hfov_y#< The tangent of half the vertical field of view.
 
         # not sure what this does...
-        '''
+
         self.box_model = displaylist()
         self.sphere_model = [displaylist()]*6
         self.cylinder_model = [displaylist()]*6
         self.cone_model = [displaylist()]*6
         self.pyramid_model = displaylist()
-        '''
+
         # TODO: implement gl extensions
         #self.glext = gl_extensions()
         self.camera_world = tmatrix()
@@ -130,10 +130,14 @@ class view:
         # The distance from the camera to this position, in the direction of the
         # camera.  This is the distance to the viewing plane that the coverage
         # circle lies in.
+        pos = vector(pos)
         dist = (pos - self.camera).dot(self.forward)
         # Half of the width of the viewing plane at this distance.
         apparent_hwidth = self.tan_hfov_x * dist
         # The fraction of the apparent width covered by the coverage circle.
-        coverage_fraction = self.radius / apparent_hwidth
+        if apparent_hwidth == 0:
+            coverage_fraction = 1
+        else:
+            coverage_fraction = radius / apparent_hwidth
         # Convert from fraction to pixels.
         return coverage_fraction * self.view_width

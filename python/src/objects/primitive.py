@@ -7,6 +7,9 @@ from pyglet.gl import *
 from objects.renderable import renderable
 from util.vector import vector
 from util.rgba import rgb
+from util.tmatrix import tmatrix, rotation
+from traceback import print_stack
+from math import sqrt
 
 def trail_update(obj):
     # trail_update does not detect changes such as ball.pos.x += 1
@@ -27,6 +30,8 @@ class primitive(renderable):
     # an axis = vector(1, 0, 0).
     def __init__(self, axis = vector(1,0,0), up = vector(0,1,0), pos = vector(0,0,0), make_trail = False, trail_initialized = False, obj_initialized = False, other = None, color = rgb()):
         super(primitive, self).__init__(color = color)
+        print("pos "+str(pos))
+        print("axis "+str(axis))
         self.startup = True
         self.make_trail = make_trail
         self.trail_initialized = trail_initialized
@@ -36,13 +41,15 @@ class primitive(renderable):
 
         # The position and orientation of the body in World space.
         if other == None:
-            self.axis = vector(axis)
+            # position must be defined first, before the axis
             self.up = vector(up)
             self.pos = vector(pos)
+            self.axis = vector(axis)
+
         else:
-            self.axis = other.axis
             self.up = other.up
             self.pos = other.pos
+            self.axis = other.axis
 
 
     # Returns a tmatrix that performs reorientation of the object from model
@@ -57,10 +64,10 @@ class primitive(renderable):
         ret = tmatrix()
         # A unit vector along the z_axis.
         z_axis = vector(0,0,1);
-        if (fabs(self.axis.dot(up) / sqrt( self.up.mag2() * self.axis.mag2())) > 0.98):
+        if (abs(self.axis.dot(self.up) / sqrt( self.up.mag2() * self.axis.mag2())) > 0.98):
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
-            if (fabs(self.axis.norm().dot( vector(-1,0,0))) > 0.98):
+            if (abs(self.axis.norm().dot( vector(-1,0,0))) > 0.98):
                 z_axis = self.axis.cross( vector(0,0,1)).norm()
             else:
                 z_axis = self.axis.cross( vector(-1,0,0)).norm()
@@ -72,10 +79,11 @@ class primitive(renderable):
         ret.x_column( x_axis )
         ret.y_column( y_axis )
         ret.z_column( z_axis )
+        print("pos type: "+str(type(self.pos)))
         ret.w_column( self.pos * world_scale )
         ret.w_row()
 
-        ret.scale( self.object_scale * world_scale )
+        ret.scale( object_scale * world_scale, 1 )
 
         return ret
 
@@ -86,15 +94,17 @@ class primitive(renderable):
 
     # Manually overload this member since the default arguments are variables.
     def rotate(self, angle, _axis, origin):
+        print("angl")
         R = rotation( angle, _axis, origin)
         fake_up = self.up
         if not self.axis.cross( fake_up):
             fake_up = vector( 1,0,0)
             if not self.axis.cross( fake_up):
                 fake_up = vector( 0,1,0)
-        self.pos = R * self.pos
-        self.axis = R.times_v(self.axis)
+        self.pos = R * self._pos
         self.up = R.times_v(fake_up)
+        self._axis = R.times_v(self._axis)
+
 
     @property
     def center(self):
@@ -103,10 +113,11 @@ class primitive(renderable):
 
     @property
     def pos(self):
+        #print_stack()
         return self._pos
     @pos.setter
     def pos(self, n_pos):
-        self._pos = n_pos
+        self._pos = vector(n_pos)
         if (self.trail_initialized and self.make_trail):
             if (self.obj_initialized) :
                 trail_update(self.primitive_object)
@@ -151,12 +162,14 @@ class primitive(renderable):
     def axis(self, n_axis):
         if self.axis is None:
             self._axis = vector(1,0,0)
+        if type(n_axis) is not vector:
+            n_axis = vector(n_axis)
         a = self.axis.cross(n_axis)
         if (a.mag() == 0.0):
-            self._axis = n_axis;
+            self._axis = n_axis
         else:
-            angle = n_axis.diff_angle(self.axis)
-            self._axis = n_axis.mag()*self.axis.norm()
+            angle = n_axis.diff_angle(self._axis)
+            self._axis = n_axis.mag()*self._axis.norm()
             self.rotate(angle, a, self.pos)
 
 

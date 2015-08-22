@@ -70,10 +70,11 @@ from objects.cone import cone
 from objects.cylinder import cylinder
 from objects.ring import ring
 from objects.ellipsoid import ellipsoid
+from objects.renderable import view
 from traceback import print_stack
 
 window = pyglet.window.Window()
-
+scene = view()
 
 def update(dt):
     global rx, ry, rz
@@ -113,20 +114,21 @@ def on_draw():
     glRotatef(rx, 1, 0, 0)
     #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
     glTranslatef(0,0,2)
-    _pyramid.init_model()
+    _pyramid.gl_render(scene)
     glTranslatef(0,0,-2)
-    _box.init_model()
+    _box.gl_render(scene)
     glTranslatef(0,0,4)
-    _cone.init_model()
+    _cone.gl_render(scene)
     glTranslatef(0,0,-4)
     glTranslatef(0, 2, 0)
-    _ball.init_model()
+    _ball.gl_render(scene)
     glTranslatef(2,0,0)
-    _ellipsoid.init_model()
+    _ellipsoid.gl_render(scene)
     glTranslatef(2, 0,0)
-    _ring.init_model()
-
-    glTranslatef(-4, -2, 0)
+    _cylinder.gl_render(scene)
+    glTranslatef(2, 0, 0)
+    _ring.gl_render(scene)
+    glTranslatef(-6, -2, 0)
 
 def setup():
     # One-time GL setup
@@ -168,9 +170,11 @@ _box = box(length=2, height=0.5, width=2, color=color.blue)
 _pyramid = pyramid(pos=(0,0,0), size=(1,1,1), color = color.cyan)
 _arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
 _cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
-_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
+print("ring")
 _ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
 _ellipsoid = ellipsoid(pos=(3,3,3), length=2, height=1, width=3, color = color.white)
+print("cylinder")
+_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
 
 
 #setup()

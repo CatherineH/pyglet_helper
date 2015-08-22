@@ -6,7 +6,7 @@
 from pyglet.gl import *
 from objects.rectangular import rectangular
 from util.rgba import rgb
-
+from util.tmatrix import gl_matrix_stackguard
 
 class box(rectangular):
     def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb()):
@@ -16,9 +16,9 @@ class box(rectangular):
     # bool degenerate();
     # static displaylist model;
     # static void init_model(displaylist& model, bool skip_right_face);
-    def init_model(self, skip_right_face=False):
+    def init_model(self, scene, skip_right_face=False):
         # Note that this model is also used by arrow!
-        # scene.box_model.gl_compile_begin()
+        scene.box_model.gl_compile_begin()
         glEnable(GL_CULL_FACE)
         glBegin(GL_TRIANGLES)
 
@@ -45,7 +45,7 @@ class box(rectangular):
                 glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
         glEnd()
         glDisable(GL_CULL_FACE)
-        # scene.box_model.gl_compile_end()
+        scene.box_model.gl_compile_end()
         # check_gl_error()
 
         # virtual void gl_pick_render( const view&);
@@ -60,7 +60,7 @@ class box(rectangular):
         guard = gl_matrix_stackguard()
         self.apply_transform(scene)
         scene.box_model.gl_render()
-        check_gl_error()
+        #check_gl_error()
 
     def grow_extent(self, e):
         tm = self.model_world_transform(1.0, vector(self.axis.mag(), self.height, self.width) * 0.5)

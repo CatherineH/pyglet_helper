@@ -5,7 +5,7 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from util.vector import vector
 from pyglet.gl import *
-from numpy import matrix, identity
+from numpy import matrix, identity, nditer
 from numpy.linalg import inv
 
 class vertex:
@@ -31,6 +31,7 @@ class tmatrix:
         # This is a -precision matrix in _COLUMN MAJOR ORDER_.  User's beware.
         # It is in this order since that is what OpenGL uses internally - thus
         #eliminating a reformatting penalty.
+        #print(identity(4))
         if not t is None:
             self.M = t.M
         elif not A is None and not B is None:
@@ -42,7 +43,15 @@ class tmatrix:
         return self.M[key]
 
     def __mul__(self, o):
-        return self.M*o
+        if type(o) == vector:
+            vertex = self.project(o)
+            out_vect = vector()
+            out_vect.x = vertex.x
+            out_vect.y = vertex.y
+            out_vect.z = vertex.z
+            return out_vect
+        else:
+            return self.M*o
 
     def inverse(self):
         self.M = inv(self.M)
@@ -100,7 +109,7 @@ class tmatrix:
 
     # Sets the first column to v
     def x_column(self, v = None, x = None, y = None, z = None):
-        if not v is None:
+        if v is not None:
             self.M[0,0] = v.x
             self.M[0,1] = v.y
             self.M[0,2] = v.z
@@ -140,11 +149,14 @@ class tmatrix:
             self.M[3,0] = v.x
             self.M[3,1] = v.y
             self.M[3,2] = v.z
-        else:
+        elif v is None and x is not None:
             self.M[3,0] = x
             self.M[3,1] = y
             self.M[3,2] = z
-
+        else:
+            self.M[3,0] = 0
+            self.M[3,1] = 0
+            self.M[3,2] = 0
 
     # Sets the bottom row to x, y, z, w
     def w_row(self, x=0, y=0, z=0,w=1):
@@ -157,9 +169,14 @@ class tmatrix:
     def gl_load(self):
         glLoadMatrixd( self.M[0])
 
-    # Multiplies the active OpenGL matrix by this one.
+    # Multiplies the active OpenGL by this one.
     def gl_mult(self):
-        glMultMatrixd(self.M[0])
+        m = (GLdouble * 16)()
+        j = 0
+        for i in nditer(self.M):
+            m[j] = i
+            j+=1
+        glMultMatrixd(m)
 
     '''
      Initialize this tmatrix with the contents of the OpenGL modelview,
@@ -202,10 +219,11 @@ class tmatrix:
      Dump this matrix to a formatted string.
     '''
     def __str__(self):
-        output = "| " + M[0,0] + " " + M[1,0] + " " + M[2,0] + " " + M[3,0] + "|\n"
-        output += "| " + M[0,1] + " " + M[1,1] + " " + M[2,1] + " " + M[3,1] + "|\n"
-        output +=  "| " + M[0,2] + " " + M[1,2] + " " + M[2,2] + " " + M[3,2] + "|\n"
-        output +=  "| " + M[0,3] + " " + M[1,3] + " " + M[2,3] + " " + M[3,3] + "|\n"
+        output  = "| " + str(self.M[0,0]) + " " + str(self.M[1,0]) + " " + str(self.M[2,0]) + " " + str(self.M[3,0]) + "|\n"
+        output += "| " + str(self.M[0,1]) + " " + str(self.M[1,1]) + " " + str(self.M[2,1]) + " " + str(self.M[3,1]) + "|\n"
+        output += "| " + str(self.M[0,2]) + " " + str(self.M[1,2]) + " " + str(self.M[2,2]) + " " + str(self.M[3,2]) + "|\n"
+        output += "| " + str(self.M[0,3]) + " " + str(self.M[1,3]) + " " + str(self.M[2,3]) + " " + str(self.M[3,3]) + "|\n"
+        return output
 
 
 # Returns a rotation matrix to perform rotations about an axis passing through
@@ -213,9 +231,11 @@ class tmatrix:
 def rotation(angle, axis, origin = None):
     from math import cos, sin
     ret = tmatrix()
-    if not origin is None:
+    if origin is not None:
         ret = rotation(angle, axis.norm())
-        ret.w_column( origin - ret * origin)
+        rot_vect = ret*origin
+        vect = vector(origin - ret * origin)
+        ret.w_column(v = vect)
     else:
         c = cos(angle)
         s = sin(angle)
@@ -228,9 +248,9 @@ def rotation(angle, axis, origin = None):
         iczz = ic * axis.z * axis.z
 
 
-        ret.x_column( icxx +        c, icxy + axis.z*s, icxz - axis.y*s )
-        ret.y_column( icxy - axis.z*s, icyy +     c   , icyz + axis.x*s )
-        ret.z_column( icxz + axis.y*s, icyz - axis.x*s, iczz +        c )
+        ret.x_column( x = icxx +        c, y = icxy + axis.z*s, z = icxz - axis.y*s )
+        ret.y_column( x = icxy - axis.z*s, y = icyy +     c   , z = icyz + axis.x*s )
+        ret.z_column( x = icxz + axis.y*s, y = icyz - axis.x*s, z = iczz +        c )
         ret.w_column()
         ret.w_row()
     return ret

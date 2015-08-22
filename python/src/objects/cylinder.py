@@ -7,6 +7,8 @@ from pyglet.gl import *
 from objects.axial import axial
 from util.vector import vector
 from util.rgba import rgb
+from util.quadric import quadric
+from util.tmatrix import gl_matrix_stackguard
 
 
 class cylinder(axial):
@@ -14,17 +16,14 @@ class cylinder(axial):
         super(cylinder, self).__init__(pos=pos, radius=radius, color=color)
         self.axis = vector(axis)
 
-    def init_model(self, scene):
-        if not scene.cylinder_model[0].compiled():
-            clear_gl_error()
+    def init_model(self):#, scene):
+        #if not scene.cylinder_model[0].compiled():
+        #    clear_gl_error()
             # The number of faces corrisponding to each level of detail.
-            n_faces = [8, 16, 32, 64, 96, 188]
-            n_stacks = [1, 1, 3, 6, 10, 20]
-            for i in range(0, 6):
-                scene.cylinder_model[i].gl_compile_begin()
-                self.render_cylinder_model(n_faces[i], n_stacks[i])
-                scene.cylinder_model[i].gl_compile_end()
-            check_gl_error()
+        n_faces = [8, 16, 32, 64, 96, 188]
+        n_stacks = [1, 1, 3, 6, 10, 20]
+        for i in range(0, 6):
+            self.render_cylinder_model(n_faces[i], n_stacks[i])
 
     def degenerate(self):
         return not self.visible or self.radius == 0.0 or self.axis.mag() == 0.0

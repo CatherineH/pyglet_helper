@@ -39,7 +39,7 @@ class displaylist_impl:
 class displaylist:
     def __init__(self, built=False):
         self.built = built
-        self.impl = displaylist_impl()
+        self.impl = None
 
     # Begin compiling a new displaylist.  Nothing is drawn to the screen
     #	when rendering commands into the displaylist.  Be sure to call

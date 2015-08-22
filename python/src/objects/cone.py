@@ -15,16 +15,16 @@ class cone(axial):
         self.axis = vector(axis)
 
         def init_model(self, scene):
-            if not self.scene.cone_model[0].compiled():
-                clear_gl_error()
+            if not scene.cone_model[0].compiled():
+                #clear_gl_error()
                 # The number of faces corrisponding to each level of detail.
                 self.n_faces = [8, 16, 32, 46, 68, 90]
                 self.n_stacks = [1, 2, 4, 7, 10, 14]
                 for i in range(0, 6):
-                    self.scene.cone_model[i].gl_compile_begin()
+                    scene.cone_model[i].gl_compile_begin()
                     self.render_cone_model(n_faces[i], n_stacks[i])
-                    self.scene.cone_model[i].gl_compile_end()
-                check_gl_error()
+                    scene.cone_model[i].gl_compile_end()
+                #check_gl_error()
 
     @property
     def length(self):
@@ -125,3 +125,6 @@ class cone(axial):
             self.n_sides = n_faces[i]
             self.n_stacks = n_stacks[i]
             self.render_cone_model()
+
+    def degenerate(self):
+        return not self.visible or self.radius == 0.0 or self.axis.mag() == 0.0

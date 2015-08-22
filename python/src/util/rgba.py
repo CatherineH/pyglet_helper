@@ -3,6 +3,8 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
+from pyglet.gl import *
+
 ''' A helper class to manage OpenGL color attributes.  The data is layout
 	compatable with OpenGL's needs for the various vector forms of commands,
 	like glColor4fv(), and glColorPointer().

@@ -30,12 +30,13 @@ class rectangular(primitive):
 
     @property
     def height(self):
-        return self.height
+        return self._height
     @height.setter
     def height(self, h):
         if (h < 0):
             raise RuntimeError( "height cannot be negative")
-        self.axis = self.axis.norm() * h
+        #self.axis = self.axis.norm() * h
+        self._height = h
 
     @property
     def width(self):
@@ -44,7 +45,8 @@ class rectangular(primitive):
     def width(self, w):
         if (w < 0):
             raise RuntimeError( "width cannot be negative")
-        self.axis = self.axis.norm() * w
+        #self.axis = self.axis.norm() * w
+        self._width = w
 
     @property
     def size(self):

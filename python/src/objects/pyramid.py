@@ -10,15 +10,16 @@ from objects.arrow import arrow
 from util.rgba import rgb
 from util.vector import vector
 from util.displaylist import displaylist
+from util.tmatrix import gl_matrix_stackguard
 
 class pyramid(rectangular):
     def __init__(self, pos = vector(0,0,0), size = (1,1,1),color = rgb()):
         super(pyramid, self).__init__(pos = pos, color = color, width = size[0], height = size[1], length = size[2])
         #self.model = displaylist()
-
-    def init_model(self):#, scene):
+        self.compiled = False
+    def init_model(self, scene):
         # Note that this model is also used by arrow!
-        #scene.pyramid_model.gl_compile_begin()
+        scene.pyramid_model.gl_compile_begin()
 
         vertices = [[0, .5, .5], \
             [0,-.5, .5], \
@@ -53,9 +54,8 @@ class pyramid(rectangular):
 
         glEnd()
         glDisable(GL_CULL_FACE)
-
-        #scene.pyramid_model.gl_compile_end()
-        #check_gl_error()
+        self.compiled = True
+        scene.pyramid_model.gl_compile_end()
 
     @property
     def center(self):
@@ -78,10 +78,10 @@ class pyramid(rectangular):
         self.color.gl_set(self.opacity)
 
         guard = gl_matrix_stackguard()
-        apply_transform( scene )
+        self.apply_transform( scene )
 
         scene.pyramid_model.gl_render()
-        check_gl_error()
+        #check_gl_error()
 
     def grow_extent( world_extent):
         orient = model_world_transform()
