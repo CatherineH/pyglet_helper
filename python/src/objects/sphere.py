@@ -5,22 +5,25 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from objects.axial import axial
-from util.tmatrix import tmatrix
+from util.tmatrix import tmatrix, gl_matrix_stackguard
 from util.rgba import rgb
 from util.vector import vector
 from util.quadric import quadric
+from util.gl_enable import gl_enable
+
 '''
 A simple monochrome sphere.
 '''
 
 class sphere (axial):
-    def __init__(self, other = None, color = rgb(), pos = vector(0,0,0)):
-        super(sphere, self).__init__(color = color, pos = pos)
+    def __init__(self, other = None, color = rgb(), pos = vector(0,0,0), radius = 1.0):
+        super(sphere, self).__init__(color = color, pos = pos, radius = radius)
         # Construct a unit sphere at the origin.
         if not other is None:
             self.axial = other
         self.PRIMITIVE_TYPEINFO_IMPL = sphere
-
+        self.compiled = False
+        print("radius: "+str(self.radius))
     @property
     def scale(self):
         '''
@@ -41,21 +44,24 @@ class sphere (axial):
         Returns true if this object should not be drawn.  Conditions are:
         zero radius, or visible is false.  (overridden by the ellipsoid class).
         '''
-        return not self.visible or self.radius == 0.0
+        return self.radius == 0.0
 
     def grow_extent(self, e):
         e.add_sphere( self.pos, self.radius)
         e.add_body()
 
     # True until the first sphere is rendered, then false.
-    def init_model(self):#, scene):
+    def init_model(self, scene):
+        # TODO: make this work
         #if (scene.sphere_model[0].compiled()):
-        #    return
-
+        '''
+        if self.compiled:
+            return
+        '''
         sph = quadric()
         sph.render_sphere( 1.0, 13, 7)
 
-        '''
+
         scene.sphere_model[0].gl_compile_begin()
         sph.render_sphere( 1.0, 13, 7)
         scene.sphere_model[0].gl_compile_end()
@@ -80,21 +86,21 @@ class sphere (axial):
         scene.sphere_model[5].gl_compile_begin()
         sph.render_sphere( 1.0, 140, 69)
         scene.sphere_model[5].gl_compile_end()
-        '''
 
     def gl_pick_render(self, geometry):
         if (self.degenerate()):
+            print("I'm a degenerate sphere!")
             return
         self.init_model(geometry)
 
         guard = gl_matrix_stackguard()
-        model_world_transform( geometry.gcf, self.scale() ).gl_mult()
+        self.model_world_transform( geometry.gcf, self.scale() ).gl_mult()
 
         geometry.sphere_model[0].gl_render()
 
     def gl_render(self, geometry):
         # Renders a simple sphere with the #2 level of detail.
-        if (self.degenerate()):
+        if self.radius==0.0:
             return
         self.init_model(geometry)
 
@@ -120,13 +126,12 @@ class sphere (axial):
             lod = 5
         elif (lod < 0):
             lod = 0
-
         guard = gl_matrix_stackguard()
-        model_world_transform( geometry.gcf, self.scale() ).gl_mult()
-
+        self.model_world_transform( geometry.gcf, self.scale ).gl_mult()
         self.color.gl_set(self.opacity)
 
-        if (self.translucent()):
+        lod = 3
+        if self.translucent():
             # Spheres are convex, so we don't need to sort
             cull_face = gl_enable( GL_CULL_FACE)
 

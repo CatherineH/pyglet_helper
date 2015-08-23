@@ -5,7 +5,6 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from objects.rectangular import rectangular
-from objects.arrow import arrow
 
 from util.rgba import rgb
 from util.vector import vector
@@ -19,6 +18,7 @@ class pyramid(rectangular):
         self.compiled = False
     def init_model(self, scene):
         # Note that this model is also used by arrow!
+        print("opening compile")
         scene.pyramid_model.gl_compile_begin()
 
         vertices = [[0, .5, .5], \
@@ -55,7 +55,10 @@ class pyramid(rectangular):
         glEnd()
         glDisable(GL_CULL_FACE)
         self.compiled = True
+        print("ending compile")
+
         scene.pyramid_model.gl_compile_end()
+        print("done")
 
     @property
     def center(self):

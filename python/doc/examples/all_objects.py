@@ -113,22 +113,14 @@ def on_draw():
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
     #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
-    glTranslatef(0,0,2)
-    _pyramid.gl_render(scene)
-    glTranslatef(0,0,-2)
-    _box.gl_render(scene)
-    glTranslatef(0,0,4)
-    _cone.gl_render(scene)
-    glTranslatef(0,0,-4)
-    glTranslatef(0, 2, 0)
+    _arrow.gl_render(scene)
     _ball.gl_render(scene)
-    glTranslatef(2,0,0)
+    _box.gl_render(scene)
+    _cone.gl_render(scene)
+    _pyramid.gl_render(scene)
     _ellipsoid.gl_render(scene)
-    glTranslatef(2, 0,0)
     _cylinder.gl_render(scene)
-    glTranslatef(2, 0, 0)
     _ring.gl_render(scene)
-    glTranslatef(-6, -2, 0)
 
 def setup():
     # One-time GL setup
@@ -158,26 +150,23 @@ def setup():
     glLightfv(GL_LIGHT1, GL_DIFFUSE, vec(.5, .5, .5, 1))
     glLightfv(GL_LIGHT1, GL_SPECULAR, vec(1, 1, 1, 1))
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
+    #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
+    #glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
+    #glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
 # put all objects in a scene together
 
-_ball = sphere(pos=(0,4,0), color = color.red)
-
+_ball = sphere(pos=(0,0,0), color = color.red)
 _box = box(length=2, height=0.5, width=2, color=color.blue)
 _pyramid = pyramid(pos=(0,0,0), size=(1,1,1), color = color.cyan)
-_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 1.0, shaftwidth = 2.0, color = color.yellow)
-_cone = cone(pos=[5,2,0], axis=(12,0,0), radius=1, color = color.green)
-print("ring")
-_ring = ring(pos=(1,1,1), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-_ellipsoid = ellipsoid(pos=(3,3,3), length=2, height=1, width=3, color = color.white)
-print("cylinder")
-_cylinder = cylinder(pos=(0,2,1), axis=(5,0,0), radius=1, color = color.black)
+_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.40, color = color.yellow)
+_cone = cone(pos=(0,-2,1), axis=(1,0,0), radius=0.5, color = color.green)
+_ring = ring(pos=(0,0,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
+_ellipsoid = ellipsoid(pos=(0,0,0), length=2, height=1, width=3, color = color.white)
+_cylinder = cylinder(pos=(0,0,0), axis=(5,0,0), radius=1, color = color.black)
 
 
-#setup()
+setup()
 rx = ry = rz = 0
 
 

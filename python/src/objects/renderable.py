@@ -32,7 +32,8 @@ class renderable(object):
         self.mat = m
 
     def translucent(self):
-        return opacity != 1.0 or (mat and mat.get_translucent())
+
+        return self.opacity != 1.0 or (self.mat and self.mat.translucent)
 
     def is_light(self):
         return False
@@ -130,6 +131,7 @@ class view:
         # The distance from the camera to this position, in the direction of the
         # camera.  This is the distance to the viewing plane that the coverage
         # circle lies in.
+
         pos = vector(pos)
         dist = (pos - self.camera).dot(self.forward)
         # Half of the width of the viewing plane at this distance.

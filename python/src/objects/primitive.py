@@ -30,8 +30,6 @@ class primitive(renderable):
     # an axis = vector(1, 0, 0).
     def __init__(self, axis = vector(1,0,0), up = vector(0,1,0), pos = vector(0,0,0), make_trail = False, trail_initialized = False, obj_initialized = False, other = None, color = rgb()):
         super(primitive, self).__init__(color = color)
-        print("pos "+str(pos))
-        print("axis "+str(axis))
         self.startup = True
         self.make_trail = make_trail
         self.trail_initialized = trail_initialized
@@ -79,7 +77,6 @@ class primitive(renderable):
         ret.x_column( x_axis )
         ret.y_column( y_axis )
         ret.z_column( z_axis )
-        print("pos type: "+str(type(self.pos)))
         ret.w_column( self.pos * world_scale )
         ret.w_row()
 
@@ -94,7 +91,6 @@ class primitive(renderable):
 
     # Manually overload this member since the default arguments are variables.
     def rotate(self, angle, _axis, origin):
-        print("angl")
         R = rotation( angle, _axis, origin)
         fake_up = self.up
         if not self.axis.cross( fake_up):
@@ -113,7 +109,6 @@ class primitive(renderable):
 
     @property
     def pos(self):
-        #print_stack()
         return self._pos
     @pos.setter
     def pos(self, n_pos):

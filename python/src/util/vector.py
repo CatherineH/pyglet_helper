@@ -16,7 +16,7 @@ class vector:
             else:
                 raise ValueExcept("Vector must be of length 3!")
         else:
-            if type(a) is tuple:
+            if type(a) is tuple or type(a) is list:
                 self.x = a[0]
                 self.y = a[1]
                 self.z = a[2]

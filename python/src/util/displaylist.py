@@ -10,15 +10,14 @@ from traceback import print_stack
 
 class displaylist_impl:
     def __init__(self):
-        print_stack()
         self.handle = glGenLists(1)
         # on_gl_free.connect( gl_free, self.handle)
         print(self.handle)
         print("GL_COMPILE" + str(GL_COMPILE))
         glNewList(self.handle, GL_COMPILE)
 
-    def __del__(self):
-        self.compile_end()
+    #def __del__(self):
+        #self.compile_end()
 
     # on_gl_free.free( gl_free, self.handle)
 
@@ -26,13 +25,21 @@ class displaylist_impl:
         glDeleteLists(handle, 1)
 
     def compile_end(self):
+        #print_stack()
+        #print("is list? :"+str(glIsList(self.handle)))
+        glEndList(self.handle)
+        '''
         try:
-            glEndList()
+            glEndList(self.handle)
         except GLException as e:
-            print("Got GL Exception: " + str(e))
+            print("Got GL Exception on end list: " + str(e))
+        '''
 
     def call(self):
-        glCallList(self.handle)
+        try:
+            glCallList(self.handle)
+        except GLException as e:
+            print("Got GL Exception on call list: "+str(e))
 
 
 # A manager for OpenGL displaylists
@@ -55,7 +62,7 @@ class displaylist:
     # Perform the OpenGL commands cached with gl_compile_begin() and
     #	gl_compile_end().
     def gl_render(self):
-        self.impl.compile_end()
+        self.impl.call()
         self.built = True
 
     # @return true iff this object contains a compiled OpenGL program.

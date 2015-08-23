@@ -7,8 +7,8 @@ class gl_enable:
 
         self.value = GLenum(value)
         glEnable(self.value)
-    def __del__(self, value):
-        glDisable(value)
+    def __del__(self):
+        glDisable(self.value)
 
 
 class gl_enable_client:

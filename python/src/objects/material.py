@@ -22,10 +22,10 @@ class material:
 
     @property
     def shader(self):
-        if hasattr(self,'_shader'):
+        if hasattr(self,'_shader') and type(self._shader) == 'shader_program':
             return self._shader.get_source()
         else:
-            return ''
+            return None
 
     @shader.setter
     def shader(self, source):
@@ -42,7 +42,10 @@ class material:
         self._translucent = t
 
     def get_shader_program(self):
-        return self.shader.get()
+        if type(self.shader) == shader_program:
+            return self.shader.get()
+        else:
+            return None
 
 
 class apply_material:

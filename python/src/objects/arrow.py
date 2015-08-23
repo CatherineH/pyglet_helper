@@ -5,8 +5,10 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from objects.primitive import primitive
+from objects.box import box
+from objects.pyramid import pyramid
 from util.rgba import rgb
-
+from util.tmatrix import tmatrix, gl_matrix_stackguard
 
 # A 3D 4-sided arrow, with adjustable head and shaft.
 class arrow(primitive):
@@ -23,6 +25,8 @@ class arrow(primitive):
         self.headwidth = headwidth
         self.headlength = headlength
         self.shaftwidth = shaftwidth
+        self.box = None
+        self.pyramid = None
 
     def degenerate(self):
         return self.axis.mag() == 0.0
@@ -86,7 +90,7 @@ class arrow(primitive):
     def gl_render(self, scene):
         if (self.degenerate()):
             return
-        self.init_model(scene);
+        self.init_model(scene)
         self.color.gl_set(self.opacity)
         hw, sw, len, hl = self.effective_geometry(1.0)
         if self.mat and self.mat.get_shader_program():
@@ -98,7 +102,7 @@ class arrow(primitive):
         shaft = self.axis.dot(scene.camera - (self.pos + self.axis * (1 - hl / len))) < 0
         for part in range(0, 2):
             guard = gl_matrix_stackguard()
-            model_world_transform(scene.gcf).gl_mult();
+            self.model_world_transform(scene.gcf).gl_mult();
             if (part == shaft):
                 glScaled(len - hl, sw, sw)
                 glTranslated(0.5, 0, 0)
@@ -137,9 +141,11 @@ class arrow(primitive):
 
     def init_model(self, scene):
         if not scene.box_model.compiled():
-            box.init_model(scene, False)
+            self.box = box()
+            self.box.init_model(scene)
         if not scene.pyramid_model.compiled():
-            pyramid.init_model(scene)
+            self.pyramid = pyramid()
+            self.pyramid.init_model(scene)
 
     '''
     Initializes these four variables with the effective geometry for the
@@ -163,22 +169,22 @@ class arrow(primitive):
         max_headlength = 0.5
 
         eff_length = self.axis.mag() * gcf
-        if (shaftwidth):
-            eff_shaftwidth = shaftwidth * gcf
+        if (self.shaftwidth):
+            eff_shaftwidth = self.shaftwidth * gcf
         else:
             eff_shaftwidth = eff_length * def_sw
 
-        if (headwidth):
-            eff_headwidth = headwidth * gcf
+        if (self.headwidth):
+            eff_headwidth = self.headwidth * gcf
         else:
             eff_headwidth = eff_shaftwidth * def_hw
 
-        if (headlength):
-            eff_headlength = headlength * gcf
+        if (self.headlength):
+            eff_headlength = self.headlength * gcf
         else:
             eff_headlength = eff_shaftwidth * def_hl
 
-        if (fixedwidth):
+        if (self.fixedwidth):
             if (eff_headlength > max_headlength * eff_length):
                 eff_headlength = max_headlength * eff_length
         else:

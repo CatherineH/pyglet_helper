@@ -35,13 +35,18 @@ class box(rectangular):
         # Draw inside (reverse winding and normals)
         for f in range(skip_right_face, 6):
             glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
-            for v in range(0, 4):
+            for v in range(0, 3):
+                glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
+                            GLfloat(vertices[f][3 - v][2]))
+            for v in (0,2,3):
                 glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
                             GLfloat(vertices[f][3 - v][2]))
         # Draw outside
         for f in range(skip_right_face, 6):
             glNormal3f(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
-            for v in range(0, 4):
+            for v in range(0, 3):
+                glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
+            for v in (0,2,3):
                 glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
         glEnd()
         glDisable(GL_CULL_FACE)
@@ -51,7 +56,7 @@ class box(rectangular):
         # virtual void gl_pick_render( const view&);
 
     def gl_pick_render(self, scene):
-        gl_render(scene)
+        self.gl_render(scene)
 
     def gl_render(self, scene):
         if not scene.box_model.compiled():

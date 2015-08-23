@@ -5,7 +5,7 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from util.vector import vector
 from pyglet.gl import *
-from numpy import matrix, identity, nditer
+from numpy import matrix, identity, array
 from numpy.linalg import inv
 
 class vertex:
@@ -171,12 +171,9 @@ class tmatrix:
 
     # Multiplies the active OpenGL by this one.
     def gl_mult(self):
-        m = (GLdouble * 16)()
-        j = 0
-        for i in nditer(self.M):
-            m[j] = i
-            j+=1
-        glMultMatrixd(m)
+        ctypesMatrix = (GLdouble*16)(*array(self.M)[0].tolist())
+        print(self.M)
+        glMultMatrixd(ctypesMatrix)
 
     '''
      Initialize this tmatrix with the contents of the OpenGL modelview,
