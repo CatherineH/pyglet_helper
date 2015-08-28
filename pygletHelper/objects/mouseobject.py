@@ -12,8 +12,8 @@ filename = filename.replace("objects", "")
 sys.path.append(filename)
 
 
-from util.vector import vector
-from objects.renderable import renderable
+from pygletHelper.util.vector import vector
+from pygletHelper.objects.renderable import renderable
 
 from enum import Enum
 

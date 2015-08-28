@@ -4,9 +4,9 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from objects.rectangular import rectangular
-from util.rgba import rgb
-from util.tmatrix import gl_matrix_stackguard
+from pygletHelper.objects.rectangular import rectangular
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.tmatrix import gl_matrix_stackguard
 
 class box(rectangular):
     def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb()):

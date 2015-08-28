@@ -4,8 +4,8 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from objects.renderable import renderable
-from util.rgba import rgb
+from pygletHelper.objects.renderable import renderable
+from pygletHelper.util.rgba import rgb
 
 class label(renderable):
     def __init__(self, pos = [0, 0, 0], space = 0, xoffset = 0, yoffset = 0, \

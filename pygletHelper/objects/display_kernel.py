@@ -8,10 +8,10 @@ from math import pi
 
 from enum import Enum
 
-from objects.mouseobject import mousebase
-from objects.mouse_manager import mouse_button
-from util import color
-from util.vector import vector
+from pygletHelper.objects.mouseobject import mousebase
+from pygletHelper.objects.mouse_manager import mouse_button
+from pygletHelper.util import color
+from pygletHelper.util.vector import vector
 
 
 class mouse_mode_t(Enum):

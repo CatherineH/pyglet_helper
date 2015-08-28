@@ -4,12 +4,12 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from objects.rectangular import rectangular
+from pygletHelper.objects.rectangular import rectangular
 
-from util.rgba import rgb
-from util.vector import vector
-from util.displaylist import displaylist
-from util.tmatrix import gl_matrix_stackguard
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
+from pygletHelper.util.displaylist import displaylist
+from pygletHelper.util.tmatrix import gl_matrix_stackguard
 
 class pyramid(rectangular):
     def __init__(self, pos = vector(0,0,0), size = (1,1,1),color = rgb()):

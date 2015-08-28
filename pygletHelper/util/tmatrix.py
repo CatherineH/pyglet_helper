@@ -3,7 +3,7 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
-from util.vector import vector
+from pygletHelper.util.vector import vector
 from pyglet.gl import *
 from numpy import matrix, identity, array
 from numpy.linalg import inv
@@ -229,9 +229,13 @@ def rotation(angle, axis, origin = None):
     from math import cos, sin
     ret = tmatrix()
     if origin is not None:
+        origin = vector(origin)
+        print "origin type: "+str(type(origin))
         ret = rotation(angle, axis.norm())
         rot_vect = ret*origin
-        vect = vector(origin - ret * origin)
+        print type(rot_vect)
+        vect = origin - rot_vect
+        print vect
         ret.w_column(v = vect)
     else:
         c = cos(angle)

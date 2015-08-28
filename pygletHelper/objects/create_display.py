@@ -14,9 +14,9 @@ from pyglet.canvas.base import Display
 from pyglet.window import Window
 import platform
 
-from objects.display_kernel import display_kernel
-from objects.material import diffuse
-from objects.light import distant_light
+from pygletHelper.objects.display_kernel import display_kernel
+from pygletHelper.objects.material import diffuse
+from pygletHelper.objects.light import distant_light
 
 def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()

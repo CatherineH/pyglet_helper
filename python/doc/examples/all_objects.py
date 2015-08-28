@@ -7,17 +7,17 @@ filename = os.path.dirname(os.path.realpath(__file__))
 filename = filename.replace("doc/examples", "src")
 sys.path.append(filename)
 
-from objects.box import *
-from objects.sphere import *
-from objects.arrow import *
-from objects.cone import *
-from objects.cylinder import *
-from objects.pyramid import *
-from objects.ring import *
-from objects.ellipsoid import *
-from objects.create_display import *
-from objects.renderable import view
-from util import *
+from pygletHelper.objects.box import *
+from pygletHelper.objects.sphere import *
+from pygletHelper.objects.arrow import *
+from pygletHelper.objects.cone import *
+from pygletHelper.objects.cylinder import *
+from pygletHelper.objects.pyramid import *
+from pygletHelper.objects.ring import *
+from pygletHelper.objects.ellipsoid import *
+from pygletHelper.objects.create_display import *
+from pygletHelper.objects.renderable import view
+from pygletHelper.util import *
 
 global scene
 #scene = display()
@@ -63,14 +63,14 @@ from numpy import zeros
 
 from pyglet.gl import *
 #import pyglet
-from objects.pyramid import pyramid
-from objects.box import box
-from objects.arrow import arrow
-from objects.cone import cone
-from objects.cylinder import cylinder
-from objects.ring import ring
-from objects.ellipsoid import ellipsoid
-from objects.renderable import view
+from pygletHelper.objects.pyramid import pyramid
+from pygletHelper.objects.box import box
+from pygletHelper.objects.arrow import arrow
+from pygletHelper.objects.cone import cone
+from pygletHelper.objects.cylinder import cylinder
+from pygletHelper.objects.ring import ring
+from pygletHelper.objects.ellipsoid import ellipsoid
+from pygletHelper.objects.renderable import view
 from traceback import print_stack
 
 window = pyglet.window.Window()

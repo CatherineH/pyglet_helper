@@ -4,12 +4,12 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from objects.axial import axial
-from util.tmatrix import tmatrix, gl_matrix_stackguard
-from util.rgba import rgb
-from util.vector import vector
-from util.quadric import quadric
-from util.gl_enable import gl_enable
+from pygletHelper.objects.axial import axial
+from pygletHelper.util.tmatrix import tmatrix, gl_matrix_stackguard
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
+from pygletHelper.util.quadric import quadric
+from pygletHelper.util.gl_enable import gl_enable
 
 '''
 A simple monochrome sphere.

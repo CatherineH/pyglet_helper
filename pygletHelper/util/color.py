@@ -6,7 +6,7 @@
 '''
 I'm not exactly sure where in visual colors are defined, so I'm creating this namespace here.
 '''
-from util.rgba import rgb
+from pygletHelper.util.rgba import rgb
 
 blue = rgb(red = 0.0, green = 0.0, blue = 1.0)
 red = rgb(red = 1.0, green = 0.0, blue = 0.0)

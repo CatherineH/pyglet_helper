@@ -4,10 +4,10 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from objects.renderable import renderable
-from util.vector import vector
-from util.rgba import rgb
-from util.tmatrix import tmatrix, rotation
+from pygletHelper.objects.renderable import renderable
+from pygletHelper.util.vector import vector
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.tmatrix import tmatrix, rotation
 from traceback import print_stack
 from math import sqrt
 

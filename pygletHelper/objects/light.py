@@ -5,9 +5,9 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 
-from objects.renderable import renderable
-from util.rgba import rgb
-from util.vector import vector
+from pygletHelper.objects.renderable import renderable
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
 import abc
 
 class light(renderable):

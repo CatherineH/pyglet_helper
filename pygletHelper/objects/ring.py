@@ -8,11 +8,11 @@ from pyglet.graphics.vertexbuffer import create_buffer
 
 from numpy import zeros
 
-from objects.axial import axial
-from util.rgba import rgb
-from util.vector import vector
-from util.tmatrix import rotation, gl_matrix_stackguard
-from util.gl_enable import gl_enable_client
+from pygletHelper.objects.axial import axial
+from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
+from pygletHelper.util.tmatrix import rotation, gl_matrix_stackguard
+from pygletHelper.util.gl_enable import gl_enable_client
 
 
 from math import sqrt, pi
