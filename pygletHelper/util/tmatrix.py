@@ -31,7 +31,6 @@ class tmatrix:
         # This is a -precision matrix in _COLUMN MAJOR ORDER_.  User's beware.
         # It is in this order since that is what OpenGL uses internally - thus
         #eliminating a reformatting penalty.
-        #print(identity(4))
         if not t is None:
             self.M = t.M
         elif not A is None and not B is None:
@@ -43,7 +42,9 @@ class tmatrix:
         return self.M[key]
 
     def __mul__(self, o):
+        print type(o).__name__
         if type(o) == vector:
+            print("got vector")
             vertex = self.project(o)
             out_vect = vector()
             out_vect.x = vertex.x
@@ -58,6 +59,7 @@ class tmatrix:
 
     #Projects v using the current tmatrix values.
     def project(self, v):
+        print("project")
         o = vertex()
         o.x = self.M[0,0]*v.x + self.M[1,0]*v.y + self.M[2,0]*v.z + self.M[3,0]
         o.y = self.M[0,1]*v.x + self.M[1,1]*v.y + self.M[2,1]*v.z + self.M[3,1]
@@ -230,12 +232,13 @@ def rotation(angle, axis, origin = None):
     ret = tmatrix()
     if origin is not None:
         origin = vector(origin)
-        print "origin type: "+str(type(origin))
+        print type(origin)
         ret = rotation(angle, axis.norm())
         rot_vect = ret*origin
-        print type(rot_vect)
+        print(rot_vect)
+
         vect = origin - rot_vect
-        print vect
+        print(vect)
         ret.w_column(v = vect)
     else:
         c = cos(angle)
