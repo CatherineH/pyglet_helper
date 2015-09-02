@@ -29,7 +29,7 @@ class orientation(Enum):
     INSIDE = 2
 
 
-class quadric:
+class quadric(object):
     def __init__(self, q=0):
         self.q = gluNewQuadric()
         gluQuadricDrawStyle(self.q, GLU_FILL)

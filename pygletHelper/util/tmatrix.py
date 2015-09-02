@@ -8,7 +8,7 @@ from pyglet.gl import *
 from numpy import matrix, identity, array
 from numpy.linalg import inv
 
-class vertex:
+class vertex(object):
     def __init__(self, x = 0, y = 0, z = 0, w = 0, v = None):
         if not v is None:
             self.x = v.x
@@ -26,7 +26,7 @@ class vertex:
 '''
  A -precision 3D affine transformation matrix.
 '''
-class tmatrix:
+class tmatrix(object):
     def __init__(self, t = None, A = None, B = None):
         # This is a -precision matrix in _COLUMN MAJOR ORDER_.  User's beware.
         # It is in this order since that is what OpenGL uses internally - thus
@@ -42,9 +42,7 @@ class tmatrix:
         return self.M[key]
 
     def __mul__(self, o):
-        print type(o).__name__
         if type(o) == vector:
-            print("got vector")
             vertex = self.project(o)
             out_vect = vector()
             out_vect.x = vertex.x
@@ -174,7 +172,6 @@ class tmatrix:
     # Multiplies the active OpenGL by this one.
     def gl_mult(self):
         ctypesMatrix = (GLdouble*16)(*array(self.M)[0].tolist())
-        print(self.M)
         glMultMatrixd(ctypesMatrix)
 
     '''
@@ -232,13 +229,10 @@ def rotation(angle, axis, origin = None):
     ret = tmatrix()
     if origin is not None:
         origin = vector(origin)
-        print type(origin)
         ret = rotation(angle, axis.norm())
         rot_vect = ret*origin
-        print(rot_vect)
 
         vect = origin - rot_vect
-        print(vect)
         ret.w_column(v = vect)
     else:
         c = cos(angle)
@@ -263,7 +257,7 @@ def rotation(angle, axis, origin = None):
 # Pushes its constructor argument onto the active OpenGL matrix stack, and
 # multiplies the active matrix by the new one when constructed, and pops it off
 # when destructed.
-class gl_matrix_stackguard:
+class gl_matrix_stackguard(object):
     # A stackguard that only performs a push onto the matrix stack.
     # Postcondition: the stack is one matrix taller, but identical to before.
 

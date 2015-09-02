@@ -61,7 +61,7 @@ class renderable(object):
     of the members are simply references to the real values in the owning
     render_surface.
 '''
-class view:
+class view(object):
     def __init__(self, n_gcf = 1.0, view_width = 800, view_height = 600, anaglyph = False, coloranaglyph = False, forward_changed = False, gcf_changed = False, lod_adjust = 0, tan_hfov_x = 0, tan_hfov_y = 0, enable_shaders = True):
         # The position of the camera in world space.
         self.camera = vector()

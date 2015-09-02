@@ -43,7 +43,7 @@ class button_t(Enum):
  This common base class implements common functionality for event and mouse.
  It should never be used directly.
 '''
-class mousebase:
+class mousebase(object):
     def __init__(self):
         self.button_name = ''
         self.modifiers = [False]*4
@@ -331,7 +331,7 @@ class mousebutton:
  A thin wrapper for buffering cursor visibility information between the python loop
  and the rendering loop.
 '''
-class cursor_object:
+class cursor_object(object):
     def __init__(self, visible = True, last_visible = True):
         self.visible = visible # whether cursor should be visible
         self.last_visible = last_visible # previous state of cursor visibility

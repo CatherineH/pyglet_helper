@@ -90,10 +90,8 @@ class cone(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
-        print("radius: "+str(self.radius))
-        print("pos: "+str(self.pos))
-        matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius))
-        matrix.gl_mult()
+        #matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius))
+        #matrix.gl_mult()
 
         self.color.gl_set(self.opacity)
 

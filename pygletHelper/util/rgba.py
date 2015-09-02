@@ -9,7 +9,7 @@ from pyglet.gl import *
 	compatable with OpenGL's needs for the various vector forms of commands,
 	like glColor4fv(), and glColorPointer().
 '''
-class rgba:
+class rgba(object):
 	def __init__(self, red = 1.0, green = 1.0, blue = 1.0, opacity = 1.0, c = None):
 		if not c is None:
 			if len(c) == 4:
@@ -60,6 +60,8 @@ class rgb:
 			self.red = red
 			self.green = green
 			self.blue = blue
+	def __str__(self):
+		return "color: r"+str(self.red)+" b"+str(self.blue)+" g"+str(self.green)
 	@property
 	def rgb(self):
 		return [self.red, self.green, self.blue]

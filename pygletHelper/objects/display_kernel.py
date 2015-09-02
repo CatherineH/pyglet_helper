@@ -50,7 +50,7 @@ def set_display_visible(display_kernel, visible):
 '''
 
 
-class display_kernel:
+class display_kernel(object):
     def __init__(self, exit=True, visible=False, explicitly_invisible=False, \
                  fullscreen=False, title="Python", window_x=0, window_y=0, window_width=430, \
                  window_height=450, view_width=-1, view_height=-1, center=[0, 0, 0], \

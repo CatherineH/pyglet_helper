@@ -12,7 +12,7 @@ class mouse_button(Enum):
     RIGHT = 3
     MIDDLE = 4
 
-class mouse_manager:
+class mouse_manager(object):
     def __init__(self, display, px = 0, py = 0, left_down = False, \
      left_dragging = False, left_semidrag = False, middle_down = False, \
      middle_dragging = False, middle_semidrag = False, right_down = False, \

@@ -90,7 +90,7 @@ class cylinder(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
-        self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
+        #self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
 
         if (self.translucent()):
             cull_face = gl_enable(GL_CULL_FACE)

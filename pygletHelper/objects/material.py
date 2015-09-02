@@ -7,7 +7,7 @@ from pyglet.gl import *
 from pygletHelper.util.shader_program import shader_program
 from pygletHelper.util.texture import texture
 
-class material:
+class material(object):
     def __init__(self, translucent = False, shader_program = None):
         self.translucent = translucent
         self.textures = [texture()]
@@ -48,7 +48,7 @@ class material:
             return None
 
 
-class apply_material:
+class apply_material(object):
     def __init__(self, v, m, material_matrix, sp = None, shader_program = shader_program()):
         self.v = v
         self.m = m

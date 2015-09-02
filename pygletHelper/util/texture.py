@@ -18,7 +18,7 @@ A class to assist in managing OpenGL texture resources.
 '''
 
 
-class texture:
+class texture(object):
     def __init__(self, damaged=False, handle=0, have_opacity=False):
         self.damaged = damaged
         self.handle = handle

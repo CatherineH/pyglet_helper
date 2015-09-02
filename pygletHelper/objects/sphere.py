@@ -59,7 +59,7 @@ class sphere (axial):
             return
         '''
         sph = quadric()
-        sph.render_sphere( 1.0, 13, 7)
+        #sph.render_sphere( 1.0, 13, 7)
 
 
         scene.sphere_model[0].gl_compile_begin()
@@ -127,7 +127,7 @@ class sphere (axial):
         elif (lod < 0):
             lod = 0
         guard = gl_matrix_stackguard()
-        self.model_world_transform( geometry.gcf, self.scale ).gl_mult()
+        #self.model_world_transform( geometry.gcf, self.scale ).gl_mult()
         self.color.gl_set(self.opacity)
 
         lod = 3
@@ -144,4 +144,5 @@ class sphere (axial):
             geometry.sphere_model[lod].gl_render()
         else:
             # Render a simple sphere.
+            #lod = 0
             geometry.sphere_model[lod].gl_render()

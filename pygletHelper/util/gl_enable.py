@@ -2,7 +2,7 @@ from pyglet.gl import *
 
 
 # Stack-unwind safe versions of gl{Enable,Disable}{ClientState,}()
-class gl_enable:
+class gl_enable(object):
     def __init__(self, value):
 
         self.value = GLenum(value)
@@ -11,7 +11,7 @@ class gl_enable:
         glDisable(self.value)
 
 
-class gl_enable_client:
+class gl_enable_client(object):
     def __init__(self, v):
         self.value = GLenum(v)
         glEnableClientState(self.value)
@@ -20,7 +20,7 @@ class gl_enable_client:
         glDisableClientState(self.value)
 
 
-class gl_disable:
+class gl_disable(object):
     def __init__(self, v):
         self.value = GLenum(v)
         glDisable(self.value)

@@ -6,7 +6,7 @@
 from math import sqrt, acos, asin, pi
 
 
-class vector:
+class vector(object):
     def __init__(self, a=0.0, b=0.0, c=0.0, v=None):
         if not v is None:
             if len(v) == 3:

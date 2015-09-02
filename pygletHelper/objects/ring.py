@@ -18,14 +18,13 @@ from pygletHelper.util.gl_enable import gl_enable_client
 from math import sqrt, pi
 
 
-class model:
+class model(object):
     def __init__(self):
         self.indices = zeros(0)
         self.vertex_pos = zeros(0)
         self.vertex_pos_vbo = create_buffer(self.vertex_pos.nbytes)
         self.vertex_pos_vbo.bind()
         self.vertex_pos_vbo.set_data(self.vertex_pos.ctypes.data)
-        print("vertex pos type: "+str(type(self.vertex_pos_vbo)))
         self.vector_normal = zeros(0)
         self.vector_normal_vbo = create_buffer(self.vector_normal.nbytes)
         self.vector_normal_vbo.bind()
@@ -101,7 +100,7 @@ class ring(axial):
         normal_array = gl_enable_client(GL_NORMAL_ARRAY)
 
         guard = gl_matrix_stackguard()
-        self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
+        #self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
 
         self.color.gl_set(self.opacity)
 

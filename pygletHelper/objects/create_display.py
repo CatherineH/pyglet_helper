@@ -24,19 +24,19 @@ def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene
     elif len(args) == 1: _time.sleep(args[0])
     else: raise ValueError("Too many arguments for the wait() function.")
 
-_App = pyglet.app
+#_App = pyglet.app
 
 _plat = platform.system()
 
 #it is unnecessary to implement the window class, as it already exists in pyglet.
-_window = Window()
-_screenwidth = _window.get_size()[0]
-_screenheight = _window.get_size()[1]
+#_window = Window()
+#_screenwidth = _window.get_size()[0]
+#_screenheight = _window.get_size()[1]
 
 def exit():
     pyglet.exit()
 
-class _mouseTracker:
+class _mouseTracker(object):
     """
     mouseTracker is a simple class that's whole purpose in life is to
     keep track of the physical and logical state of the mouse so the
@@ -914,17 +914,17 @@ class _ManageDisplays(): # a singleton
             d._paint()
 
 _displays = _ManageDisplays()
-_evtloop = _App.EventLoop()
+#_evtloop = _App.EventLoop()
 #_evtloop.run()
 _isMac = False #('wxOSX' in _App.PlatformInfo)
-
+'''
 if _plat == 'Windows':
     # On Windows, the best timer is supposedly time.clock()
     _clock = _time.clock
 else:
     # On most other platforms, the best timer is supposedly time.time()
     _clock = _time.time
-
+'''
 _mouse_binding_names = set(['mousedown','mouseup','click'])   # these are the events that we need to grab using display.mouse.getevents()
 
 def _Interact():
@@ -1007,6 +1007,7 @@ def sleep(dt):
 # The canvas size is (self._width-_dwidth, self._height-_dheight)
 # except for Xubuntu, where some ad hoc corrections had to be made.
 # _dy is the number of pixels from the top of the window to the top of the display area
+
 if _plat == 'Macintosh':
     _dwidth = 0
     _dheight = 22

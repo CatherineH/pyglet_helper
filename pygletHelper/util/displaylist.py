@@ -8,12 +8,10 @@ from pyglet.gl import *
 from traceback import print_stack
 
 
-class displaylist_impl:
+class displaylist_impl(object):
     def __init__(self):
         self.handle = glGenLists(1)
         # on_gl_free.connect( gl_free, self.handle)
-        print(self.handle)
-        print("GL_COMPILE" + str(GL_COMPILE))
         glNewList(self.handle, GL_COMPILE)
 
     #def __del__(self):
@@ -43,7 +41,7 @@ class displaylist_impl:
 
 
 # A manager for OpenGL displaylists
-class displaylist:
+class displaylist(object):
     def __init__(self, built=False):
         self.built = built
         self.impl = None

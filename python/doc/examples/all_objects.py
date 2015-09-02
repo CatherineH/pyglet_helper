@@ -104,8 +104,11 @@ def on_resize(width, height):
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
+global screennum
+
 @window.event
 def on_draw():
+    global screennum
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     glTranslatef(0, 0, -4)
@@ -121,6 +124,13 @@ def on_draw():
     _ellipsoid.gl_render(scene)
     _cylinder.gl_render(scene)
     _ring.gl_render(scene)
+    '''
+    if screennum<99:
+        filename = '/home/c2hollow/screenshot%02d.png' % (screennum, )
+        pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+        screennum += 1
+    '''
+screennum = 0
 
 def setup():
     # One-time GL setup

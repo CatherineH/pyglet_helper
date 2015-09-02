@@ -5,7 +5,7 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from traceback import print_stack
 
-class shader_program:
+class shader_program(object):
     def __init__(self, source = None):
         self.source = source
         self.program = 0
@@ -115,7 +115,7 @@ class shader_program:
     def gl_free(self, program ):
         glDeleteObjectARB(program)
 
-class use_shader_program :
+class use_shader_program(object):
     def __init__(self, v, program = -1):
         # use_shader_program(NULL) does nothing, rather than enabling the fixed function
         #   pipeline explicitly.  This is convenient, but maybe we need a way to do the other thing?
