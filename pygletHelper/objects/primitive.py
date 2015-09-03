@@ -52,7 +52,7 @@ class primitive(renderable):
 
     # Returns a tmatrix that performs reorientation of the object from model
     # orientation to world (and view) orientation.
-    def model_world_transform(self, world_scale = 0.0, object_scale = vector(1,1,1) ):
+    def model_world_transform(self, world_scale=0.0, object_scale=vector(1,1,1)):
         '''
          Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
          ret = world_scale o translation o rotation o scale
@@ -61,7 +61,7 @@ class primitive(renderable):
         '''
         ret = tmatrix()
         # A unit vector along the z_axis.
-        z_axis = vector(0,0,1);
+        z_axis = vector(0,0,1)
         if (abs(self.axis.dot(self.up) / sqrt( self.up.mag2() * self.axis.mag2())) > 0.98):
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
@@ -80,7 +80,7 @@ class primitive(renderable):
         ret.w_column( self.pos * world_scale )
         ret.w_row()
 
-        ret.scale( object_scale * world_scale, 1 )
+        ret.scale(object_scale * world_scale, 1)
 
         return ret
 

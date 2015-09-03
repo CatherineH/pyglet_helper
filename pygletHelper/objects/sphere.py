@@ -127,7 +127,8 @@ class sphere (axial):
         elif (lod < 0):
             lod = 0
         guard = gl_matrix_stackguard()
-        #self.model_world_transform( geometry.gcf, self.scale ).gl_mult()
+        blo = self.model_world_transform( geometry.gcf, self.scale )#.gl_mult()
+        blo.gl_mult()
         self.color.gl_set(self.opacity)
 
         lod = 3

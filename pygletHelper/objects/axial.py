@@ -8,6 +8,7 @@ from pygletHelper.objects.primitive import primitive
 from math import pi
 from pygletHelper.util.rgba import rgb
 from pygletHelper.util.vector import vector
+from pygletHelper.util.tmatrix import tmatrix
 
 # A subbase class used to only export 'radius' as a property once to Python.
 class axial(primitive):

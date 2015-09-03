@@ -57,7 +57,6 @@ class tmatrix(object):
 
     #Projects v using the current tmatrix values.
     def project(self, v):
-        print("project")
         o = vertex()
         o.x = self.M[0,0]*v.x + self.M[1,0]*v.y + self.M[2,0]*v.z + self.M[3,0]
         o.y = self.M[0,1]*v.x + self.M[1,1]*v.y + self.M[2,1]*v.z + self.M[3,1]
@@ -171,6 +170,7 @@ class tmatrix(object):
 
     # Multiplies the active OpenGL by this one.
     def gl_mult(self):
+        print "multiplying matrix"
         ctypesMatrix = (GLdouble*16)(*array(self.M)[0].tolist())
         glMultMatrixd(ctypesMatrix)
 
@@ -263,8 +263,11 @@ class gl_matrix_stackguard(object):
 
     def __init__(self, m = None):
         glPushMatrix()
+        print "pushing matrix"
         if not m is None:
+            print m
             m.gl_mult()
 
     def __del__(self):
+        print "destroying matrix"
         glPopMatrix()
