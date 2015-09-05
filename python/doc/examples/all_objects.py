@@ -100,7 +100,7 @@ def on_resize(width, height):
      1, 4, 3, # eye
      0, 0, 0, # target
      0, 1, 0  # up
-    );
+    )
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
@@ -111,22 +111,22 @@ def on_draw():
     global screennum
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
-    glTranslatef(0, 0, -4)
+    #glTranslatef(-2, -3, -4)
     glRotatef(rz, 0, 0, 1)
     glRotatef(ry, 0, 1, 0)
     glRotatef(rx, 1, 0, 0)
     #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
-    #_arrow.gl_render(scene)
-    _ball.gl_render(scene)
+    _arrow.gl_render(scene)
+    #_ball.gl_render(scene)
     #_box.gl_render(scene)
-    #_cone.gl_render(scene)
+    _cone.gl_render(scene)
     #_pyramid.gl_render(scene)
     #_ellipsoid.gl_render(scene)
     #_cylinder.gl_render(scene)
-    #_ring.gl_render(scene)
+    _ring.gl_render(scene)
     '''
     if screennum<99:
-        filename = '/home/c2hollow/screenshot%02d.png' % (screennum, )
+        filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
         pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
     '''
@@ -160,20 +160,17 @@ def setup():
     glLightfv(GL_LIGHT1, GL_DIFFUSE, vec(.5, .5, .5, 1))
     glLightfv(GL_LIGHT1, GL_SPECULAR, vec(1, 1, 1, 1))
 
-    #glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vec(0.5, 0, 0.3, 1))
-    #glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vec(1, 1, 1, 1))
-    #glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
 # put all objects in a scene together
 
-_ball = sphere(pos=(0,0,0), color = color.red)
+_ball = sphere(pos=(0, 1, 0), radius=0.5, color = color.red)
 _box = box(length=2, height=0.5, width=2, color=color.blue)
-_pyramid = pyramid(pos=(0,0,0), size=(1,1,1), color = color.cyan)
+_pyramid = pyramid(pos=(0,0,2), size=(1,1,1), color = color.cyan)
 _arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.40, color = color.yellow)
 _cone = cone(pos=(0,-2,1), axis=(1,0,0), radius=0.5, color = color.green)
 _ring = ring(pos=(0,0,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-_ellipsoid = ellipsoid(pos=(0,0,0), length=2, height=1, width=3, color = color.white)
-_cylinder = cylinder(pos=(0,0,0), axis=(5,0,0), radius=1, color = color.black)
+_ellipsoid = ellipsoid(pos=(-1,0,1), length=1, height=0.5, width=2, color = color.green)
+_cylinder = cylinder(pos=(0,1,0), axis=(5,0,0), radius=1, color = color.black)
 
 
 setup()

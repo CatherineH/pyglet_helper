@@ -25,7 +25,7 @@ class cone(axial):
         for i in range(0, 6):
             print("rendering range: "+str(i))
             scene.cone_model[i].gl_compile_begin()
-            #self.render_cone_model(n_sides[i], n_stacks[i])
+            self.render_cone_model(n_sides[i], n_stacks[i])
             print("Ending compile")
             scene.cone_model[i].gl_compile_end()
 
@@ -44,6 +44,7 @@ class cone(axial):
 
     def gl_pick_render(self, scene):
         if (self.degenerate()):
+            print "cone is degenerate"
             return
         self.init_model(scene)
 
@@ -90,8 +91,8 @@ class cone(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
-        #matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius))
-        #matrix.gl_mult()
+        matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius))
+        matrix.gl_mult()
 
         self.color.gl_set(self.opacity)
 
@@ -99,8 +100,8 @@ class cone(axial):
             cull_face = gl_enable(GL_CULL_FACE)
 
             # Render the back half.
-            glCullFace(GL_FRONT)
-            scene.cone_model[lod].gl_render()
+            #glCullFace(GL_FRONT)
+            #scene.cone_model[lod].gl_render()
 
             # Render the front half.
             glCullFace(GL_BACK)
