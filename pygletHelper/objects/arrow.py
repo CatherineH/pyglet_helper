@@ -102,6 +102,7 @@ class arrow(primitive):
         # Render the shaft and the head in back to front order (the shaft is in front
         # of the head if axis points away from the camera)
         shaft = self.axis.dot(scene.camera - (self.pos + self.axis * (1 - hl / len))) < 0
+        glPushMatrix()
         self.model_world_transform(scene.gcf).gl_mult()
 
         for part in range(0, 2):
@@ -130,7 +131,7 @@ class arrow(primitive):
                 scene.pyramid_model.gl_render()
                 glScaled(1/hl, 1/hw, 1/hw)
                 glTranslated(-len + hl, 0, 0)
-
+        glPopMatrix()
 
 
     def grow_extent(self, world):

@@ -31,6 +31,22 @@ class model(object):
         self.vector_normal_vbo.set_data(self.vector_normal.ctypes.data)
 
 
+    @property
+    def vertex_pos(self):
+        return self._vertex_pos
+    @vertex_pos.setter
+    def vertex_pos(self, n_vertex_pos):
+        self._vertex_pos = n_vertex_pos
+        self.vertex_pos_vbo.set_data(self._vertex_pos.ctypes.data)
+
+    @property
+    def vector_normal(self):
+        return self._vector_normal
+    @vector_normal.setter
+    def vector_normal(self, n_vector_normal):
+        self._vector_normal = n_vector_normal
+        self.vector_normal_vbo.set_data(self._vector_normal.ctypes.data)
+
 class ring(axial):
     def __init__(self, thickness=0.0, model_rings=-1, radius=1.0, color=rgb(), pos=vector(0, 0, 0),
                  axis=vector(1, 0, 0)):
@@ -94,6 +110,7 @@ class ring(axial):
             self.model_radius = self.radius
             self.model_thickness = self.thickness
             self.model = self.create_model(rings, bands)
+        print self.model
         # clear_gl_error()
 
         vertex_array = gl_enable_client(GL_VERTEX_ARRAY)

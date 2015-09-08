@@ -76,12 +76,13 @@ class quadric(object):
         # cylinders along the +z axis, and they must be
         # reoriented along the +x axis for VPython's convention of rendering along
         # the "axis" vector.
-        #glRotatef(90, 0, 1, 0)
+        glRotatef(90, 0, 1, 0)
 
         if top_radius is None:
             gluCylinder(self.q, base_radius, base_radius, height, slices, stacks)
         else:
             gluCylinder(self.q, base_radius, top_radius, height, slices, stacks)
+        glRotatef(-90, 0, 1, 0)
 
 
 
@@ -89,4 +90,5 @@ class quadric(object):
     def render_disk(self, radius, slices, rings, rotation):
         glRotatef(90, 0, GLfloat(rotation), 0)
         gluDisk(self.q, 0.0, radius, slices, rings)
+        glRotatef(-90, 0, GLfloat(rotation), 0)
         #print_stack()

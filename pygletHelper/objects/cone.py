@@ -37,8 +37,10 @@ class cone(axial):
 
     def render_cone_model(self, n_sides, n_stacks):
         q = quadric()
+        #glPushMatrix()
         q.render_cylinder(1.0, 1.0, n_sides, n_stacks, top_radius = 0.0)
         q.render_disk(1.0, n_sides, n_stacks * 2, -1)
+        #glPopMatrix()
 
     def gl_pick_render(self, scene):
         if (self.degenerate()):
@@ -87,10 +89,9 @@ class cone(axial):
         elif (lod > 5):
             lod = 5
 
-        guard = gl_matrix_stackguard()
         length = self.axis.mag()
-        matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius))
-        matrix.gl_mult()
+        glPushMatrix()
+        matrix = self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
 
         self.color.gl_set(self.opacity)
         if self.translucent:
@@ -105,7 +106,7 @@ class cone(axial):
             scene.cone_model[lod].gl_render()
         else:
             scene.cone_model[lod].gl_render()
-
+        glPopMatrix()
         #check_gl_error()
 
     def grow_extent(self, e):

@@ -118,8 +118,8 @@ def on_draw():
     #glRotatef(rz, 0, 0, 1)
     #glRotatef(ry, 0, 1, 0)
     #glRotatef(rx, 1, 0, 0)
-    print("rs "+str(rx)+" "+str(ry))
-    print vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    #print("rs "+str(rx)+" "+str(ry))
+    #print vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _arrow.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _arrow.gl_render(scene)
     _ball.gl_render(scene)
@@ -134,7 +134,7 @@ def on_draw():
     _cylinder.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _cylinder.gl_render(scene)
     _ring.gl_render(scene)
-    _label.gl_render(scene)
+    #_label.gl_render(scene)
 
     '''
     if screennum<99:
@@ -179,7 +179,7 @@ _ball = sphere(pos=(1, 1, 0), radius=0.5, color = color.red)
 _box = box(pos=(1, 0, 0),length=0.4, height=0.5, width=1, color=color.blue)
 _pyramid = pyramid(pos=(1,-1,0), size=(1,1,1), color = color.cyan)
 _arrow = arrow(pos=(0,1,0),axis=(1,0,0), fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.20, color = color.yellow)
-_cone = cone(pos=(0,0,0), axis=(1,0,0), radius=0.5, color = color.green)
+_cone = cone(pos=(0,0,0), axis=(1,0,0), radius=0.5, color = color.gray)
 _ring = ring(pos=(0,-1,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
 _ellipsoid = ellipsoid(pos=(-1,-1,0), length=0.75, height=0.5, width=0.75, color = color.green)
 _cylinder = cylinder(pos=(-1,0,0), axis=(1.3,0,0), radius=0.24, color = color.purple)

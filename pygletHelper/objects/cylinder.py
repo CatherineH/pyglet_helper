@@ -26,7 +26,7 @@ class cylinder(axial):
         for i in range(0, 6):
 
             scene.cylinder_model[i].gl_compile_begin()
-            glRotatef(90, 0, 90, 0)
+            #glRotatef(90, 0, 90, 0)
             self.render_cylinder_model(n_faces[i], n_stacks[i])
             scene.cylinder_model[i].gl_compile_end()
 
@@ -45,10 +45,11 @@ class cylinder(axial):
     def render_cylinder_model(self, n_sides, n_stacks=1):
         q = quadric()
         q.render_cylinder(1.0, 1.0, n_sides, n_stacks)
-        q.render_disk(1.0, n_sides, 1, 0)  # left end of cylinder
-        guard = gl_matrix_stackguard()
-        glTranslatef(0.0, 0.0, 1.0)
-        q.render_disk(1.0, n_sides, 1, 0)  # right end of
+        glTranslatef(1.0, 0.0, 0.0)
+        q.render_disk(1.0, n_sides, 1, 1)  # left end of cylinder
+        glTranslatef(-1.0, 0.0, 0.0)
+        #
+        q.render_disk(1.0, n_sides, 1, -1)  # right end of
 
     def gl_pick_render(self, scene):
         if self.degenerate():
@@ -94,6 +95,7 @@ class cylinder(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
+        glPushMatrix()
         self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
 
         if self.translucent:
@@ -110,7 +112,7 @@ class cylinder(axial):
         else:
             self.color.gl_set(self.opacity)
             scene.cylinder_model[lod].gl_render()
-
+        glPopMatrix()
 
     def grow_extent(self, e):
         if self.degenerate():
