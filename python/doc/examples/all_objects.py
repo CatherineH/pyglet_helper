@@ -16,6 +16,7 @@ from pygletHelper.objects.pyramid import *
 from pygletHelper.objects.ring import *
 from pygletHelper.objects.ellipsoid import *
 from pygletHelper.objects.create_display import *
+from pygletHelper.objects.label import *
 from pygletHelper.objects.renderable import view
 from pygletHelper.util import *
 
@@ -71,19 +72,21 @@ from pygletHelper.objects.cylinder import cylinder
 from pygletHelper.objects.ring import ring
 from pygletHelper.objects.ellipsoid import ellipsoid
 from pygletHelper.objects.renderable import view
+from pygletHelper.util.vector import vector
 from traceback import print_stack
+from math import sin, cos, pi
 
 window = pyglet.window.Window()
 scene = view()
 
 def update(dt):
     global rx, ry, rz
-    rx += dt * 1
-    ry += dt * 80
-    rz += dt * 30
-    rx %= 360
-    ry %= 360
-    rz %= 360
+    rx += dt * pi/30.0
+    ry += dt * pi*2.0/9.0
+    rz += dt * pi*1/120.0
+    rx %= 2.0*pi
+    ry %= 2.0*pi
+    rz %= 2.0*pi
 
 
 pyglet.clock.schedule(update)
@@ -97,7 +100,7 @@ def on_resize(width, height):
     gluPerspective(45, width / float(height), .1, 1000)
 
     gluLookAt(
-     1, 4, 3, # eye
+     0, 0, 4, # eye
      0, 0, 0, # target
      0, 1, 0  # up
     )
@@ -112,18 +115,27 @@ def on_draw():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
     #glTranslatef(-2, -3, -4)
-    glRotatef(rz, 0, 0, 1)
-    glRotatef(ry, 0, 1, 0)
-    glRotatef(rx, 1, 0, 0)
-    #print("rs "+str(rx)+" "+str(ry)+" "+str(rz))
+    #glRotatef(rz, 0, 0, 1)
+    #glRotatef(ry, 0, 1, 0)
+    #glRotatef(rx, 1, 0, 0)
+    print("rs "+str(rx)+" "+str(ry))
+    print vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _arrow.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _arrow.gl_render(scene)
-    #_ball.gl_render(scene)
-    #_box.gl_render(scene)
+    _ball.gl_render(scene)
+    _box.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _box.gl_render(scene)
+    _cone.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _cone.gl_render(scene)
-    #_pyramid.gl_render(scene)
-    #_ellipsoid.gl_render(scene)
-    #_cylinder.gl_render(scene)
+    _pyramid.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _pyramid.gl_render(scene)
+    _ellipsoid.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _ellipsoid.gl_render(scene)
+    _cylinder.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _cylinder.gl_render(scene)
     _ring.gl_render(scene)
+    _label.gl_render(scene)
+
     '''
     if screennum<99:
         filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
@@ -163,18 +175,21 @@ def setup():
 
 # put all objects in a scene together
 
-_ball = sphere(pos=(0, 1, 0), radius=0.5, color = color.red)
-_box = box(length=2, height=0.5, width=2, color=color.blue)
-_pyramid = pyramid(pos=(0,0,2), size=(1,1,1), color = color.cyan)
-_arrow = arrow(fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.40, color = color.yellow)
-_cone = cone(pos=(0,-2,1), axis=(1,0,0), radius=0.5, color = color.green)
-_ring = ring(pos=(0,0,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-_ellipsoid = ellipsoid(pos=(-1,0,1), length=1, height=0.5, width=2, color = color.green)
-_cylinder = cylinder(pos=(0,1,0), axis=(5,0,0), radius=1, color = color.black)
+_ball = sphere(pos=(1, 1, 0), radius=0.5, color = color.red)
+_box = box(pos=(1, 0, 0),length=0.4, height=0.5, width=1, color=color.blue)
+_pyramid = pyramid(pos=(1,-1,0), size=(1,1,1), color = color.cyan)
+_arrow = arrow(pos=(0,1,0),axis=(1,0,0), fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.20, color = color.yellow)
+_cone = cone(pos=(0,0,0), axis=(1,0,0), radius=0.5, color = color.green)
+_ring = ring(pos=(0,-1,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
+_ellipsoid = ellipsoid(pos=(-1,-1,0), length=0.75, height=0.5, width=0.75, color = color.green)
+_cylinder = cylinder(pos=(-1,0,0), axis=(1.3,0,0), radius=0.24, color = color.purple)
+_label = label(pos=(-1,-1,0), text="hello")
 
 
 setup()
 rx = ry = rz = 0
+ry = 0
+rx = 1.57
 
 
 pyglet.app.run()

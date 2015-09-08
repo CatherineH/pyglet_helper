@@ -8,14 +8,15 @@ from pygletHelper.objects.primitive import primitive
 from pygletHelper.objects.box import box
 from pygletHelper.objects.pyramid import pyramid
 from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
 from pygletHelper.util.tmatrix import tmatrix, gl_matrix_stackguard
 
 # A 3D 4-sided arrow, with adjustable head and shaft.
 class arrow(primitive):
     # Default arrow.  Pointing along +x, unit length,
     # Where does axis come from????
-    def __init__(self, fixedwidth=False, headwidth=0, headlength=0, shaftwidth=0, color=rgb()):
-        super(arrow, self).__init__(color=color)
+    def __init__(self, fixedwidth=False, headwidth=0, headlength=0, shaftwidth=0, color=rgb(),pos = vector(0,0,0), axis=(1,0,0)):
+        super(arrow, self).__init__(color=color, pos=pos,axis=axis)
         # True if the width of the point and shaft should not vary with the length
         #  of the arrow.
         self.fixedwidth = fixedwidth
@@ -28,6 +29,7 @@ class arrow(primitive):
         self.box = None
         self.pyramid = None
 
+    @property
     def degenerate(self):
         return self.axis.mag() == 0.0
 
@@ -88,7 +90,7 @@ class arrow(primitive):
         m.swap(self.mat)
 
     def gl_render(self, scene):
-        if (self.degenerate()):
+        if self.degenerate:
             return
         self.init_model(scene)
         self.color.gl_set(self.opacity)
@@ -100,13 +102,13 @@ class arrow(primitive):
         # Render the shaft and the head in back to front order (the shaft is in front
         # of the head if axis points away from the camera)
         shaft = self.axis.dot(scene.camera - (self.pos + self.axis * (1 - hl / len))) < 0
+        self.model_world_transform(scene.gcf).gl_mult()
+
         for part in range(0, 2):
             guard = gl_matrix_stackguard()
-            self.model_world_transform(scene.gcf).gl_mult();
             if (part == shaft):
                 glScaled(len - hl, sw, sw)
                 glTranslated(0.5, 0, 0)
-
                 if (model_material_loc >= 0):  # TODO simplify
                     model_mat = tmatrix()
                     s = 1.0 / max(len, hw)
@@ -114,19 +116,25 @@ class arrow(primitive):
                     model_mat.scale(vector((len - hl), sw, sw) * s)
                     mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
                 scene.box_model.gl_render()
+                glTranslated(-0.5,0,0)
+                glScaled(1/(len-hl), 1/sw, 1/sw)
             else:
                 glTranslated(len - hl, 0, 0)
                 glScaled(hl, hw, hw)
-                if (model_material_loc >= 0):  # TODO simplify
+                if (model_material_loc >= 0):# TODO simplify
                     model_mat = tmatrix()
                     s = 1.0 / max(len, hw)
                     model_mat.translate(vector((len - hl) * s, 0.5, 0.5))
                     model_mat.scale(vector(hl, hw, hw) * s)
                     mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
                 scene.pyramid_model.gl_render()
+                glScaled(1/hl, 1/hw, 1/hw)
+                glTranslated(-len + hl, 0, 0)
+
+
 
     def grow_extent(self, world):
-        if (self.degenerate()):
+        if self.degenerate:
             return
         hw, sw, len, hl = effective_geometry(1.0)
         x = self.axis.cross(up).norm() * 0.5;
@@ -169,6 +177,7 @@ class arrow(primitive):
         max_headlength = 0.5
 
         eff_length = self.axis.mag() * gcf
+
         if (self.shaftwidth):
             eff_shaftwidth = self.shaftwidth * gcf
         else:

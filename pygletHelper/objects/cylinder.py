@@ -24,10 +24,13 @@ class cylinder(axial):
         n_faces = [8, 16, 32, 64, 96, 188]
         n_stacks = [1, 1, 3, 6, 10, 20]
         for i in range(0, 6):
+
             scene.cylinder_model[i].gl_compile_begin()
+            glRotatef(90, 0, 90, 0)
             self.render_cylinder_model(n_faces[i], n_stacks[i])
             scene.cylinder_model[i].gl_compile_end()
 
+    @property
     def degenerate(self):
         return not self.visible or self.radius == 0.0 or self.axis.mag() == 0.0
 
@@ -42,10 +45,10 @@ class cylinder(axial):
     def render_cylinder_model(self, n_sides, n_stacks=1):
         q = quadric()
         q.render_cylinder(1.0, 1.0, n_sides, n_stacks)
-        q.render_disk(1.0, n_sides, 1, -1)  # left end of cylinder
+        q.render_disk(1.0, n_sides, 1, 0)  # left end of cylinder
         guard = gl_matrix_stackguard()
-        glTranslatef(1.0, 0.0, 0.0)
-        q.render_disk(1.0, n_sides, 1, 1)  # right end of
+        glTranslatef(0.0, 0.0, 1.0)
+        q.render_disk(1.0, n_sides, 1, 0)  # right end of
 
     def gl_pick_render(self, scene):
         if self.degenerate():
@@ -56,6 +59,7 @@ class cylinder(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
+
         self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
 
         scene.cylinder_model[lod].gl_render()
@@ -90,9 +94,9 @@ class cylinder(axial):
 
         guard = gl_matrix_stackguard()
         length = self.axis.mag()
-        #self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
 
-        if (self.translucent()):
+        if self.translucent:
             cull_face = gl_enable(GL_CULL_FACE)
             self.color.gl_set(self.opacity)
 

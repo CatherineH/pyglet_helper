@@ -23,10 +23,8 @@ class cone(axial):
         n_sides = [8, 16, 32, 46, 68, 90]
         n_stacks = [1, 2, 4, 7, 10, 14]
         for i in range(0, 6):
-            print("rendering range: "+str(i))
             scene.cone_model[i].gl_compile_begin()
             self.render_cone_model(n_sides[i], n_stacks[i])
-            print("Ending compile")
             scene.cone_model[i].gl_compile_end()
 
     @property
@@ -95,13 +93,12 @@ class cone(axial):
         matrix.gl_mult()
 
         self.color.gl_set(self.opacity)
-
         if self.translucent:
             cull_face = gl_enable(GL_CULL_FACE)
 
             # Render the back half.
-            #glCullFace(GL_FRONT)
-            #scene.cone_model[lod].gl_render()
+            glCullFace(GL_FRONT)
+            scene.cone_model[lod].gl_render()
 
             # Render the front half.
             glCullFace(GL_BACK)
@@ -112,7 +109,7 @@ class cone(axial):
         #check_gl_error()
 
     def grow_extent(self, e):
-        if self.degenerate():
+        if self.degenerate:
             return
         e.add_circle(self.pos, self.axis.norm(), self.radius)
         e.add_point(self.pos + self.axis)
@@ -121,5 +118,6 @@ class cone(axial):
     def get_center(self):
         return self.pos + self.axis / 2.0
 
+    @property
     def degenerate(self):
         return self.radius == 0.0 or self.axis.mag() == 0.0

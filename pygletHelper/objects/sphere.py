@@ -39,6 +39,7 @@ class sphere (axial):
         out.scale( scale * (.5 / max(scale.x, max(scale.y, scale.z))) )
         return out
 
+    @property
     def degenerate(self):
         '''
         Returns true if this object should not be drawn.  Conditions are:
@@ -88,8 +89,7 @@ class sphere (axial):
         scene.sphere_model[5].gl_compile_end()
 
     def gl_pick_render(self, geometry):
-        if (self.degenerate()):
-            print("I'm a degenerate sphere!")
+        if self.degenerate:
             return
         self.init_model(geometry)
 
@@ -131,7 +131,7 @@ class sphere (axial):
         self.color.gl_set(self.opacity)
 
         lod = 3
-        if self.translucent():
+        if self.translucent:
             # Spheres are convex, so we don't need to sort
             cull_face = gl_enable( GL_CULL_FACE)
 

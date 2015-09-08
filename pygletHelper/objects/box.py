@@ -6,11 +6,12 @@
 from pyglet.gl import *
 from pygletHelper.objects.rectangular import rectangular
 from pygletHelper.util.rgba import rgb
+from pygletHelper.util.vector import vector
 from pygletHelper.util.tmatrix import gl_matrix_stackguard
 
 class box(rectangular):
-    def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb()):
-        super(box, self).__init__(width=width, height=height, color=color, length=length)
+    def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb(),pos = vector(0,0,0)):
+        super(box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
     # True if the box should not be rendered.
     # bool degenerate();

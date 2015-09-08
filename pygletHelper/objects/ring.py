@@ -93,14 +93,14 @@ class ring(axial):
             self.model_bands = bands
             self.model_radius = self.radius
             self.model_thickness = self.thickness
-            model = self.create_model(rings, bands)
+            self.model = self.create_model(rings, bands)
         # clear_gl_error()
 
         vertex_array = gl_enable_client(GL_VERTEX_ARRAY)
         normal_array = gl_enable_client(GL_NORMAL_ARRAY)
 
         guard = gl_matrix_stackguard()
-        #self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
 
         self.color.gl_set(self.opacity)
 

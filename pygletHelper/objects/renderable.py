@@ -34,6 +34,7 @@ class renderable(object):
     def material(self, m):
         self.mat = m
 
+    @property
     def translucent(self):
 
         return self.opacity != 1.0 or (self.mat and self.mat.translucent)

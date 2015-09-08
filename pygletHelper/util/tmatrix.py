@@ -7,6 +7,7 @@ from pygletHelper.util.vector import vector
 from pyglet.gl import *
 from numpy import matrix, identity, array, nditer
 from numpy.linalg import inv
+from traceback import print_stack
 
 class vertex(object):
     def __init__(self, x = 0, y = 0, z = 0, w = 0, v = None):
@@ -269,11 +270,8 @@ class gl_matrix_stackguard(object):
 
     def __init__(self, m = None):
         glPushMatrix()
-        print "pushing matrix"
         if not m is None:
-            print m
             m.gl_mult()
 
     def __del__(self):
-        print "destroying matrix"
         glPopMatrix()

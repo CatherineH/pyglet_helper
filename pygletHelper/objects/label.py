@@ -11,10 +11,10 @@ class label(renderable):
     def __init__(self, pos = [0, 0, 0], space = 0, xoffset = 0, yoffset = 0, \
       border = 5, font_description = None, font_size = 13, text_changed = False, \
       box_enabled = True, line_enabled = True, linecolor = rgb(), opacity = 0.66, \
-      handle = 0, other = None):
+      handle = 0, other = None, text = ''):
         # by default, the color of scene.background
         self.background = rgb(0.0, 0.0, 0.0)
-        self.text = ''
+        self.text = text
         if not other == None:
             self.pos = other.pos
             self.space = other.space
@@ -52,10 +52,10 @@ class label(renderable):
 
     @property
     def pos(self):
-        return self.pos
+        return self._pos
     @pos.setter
     def pos( self, n_pos):
-        self.pos = n_pos
+        self._pos = n_pos
 
     @property
     def x(self):
@@ -111,61 +111,61 @@ class label(renderable):
 
     @property
     def opacity(self):
-        return self.opacity
+        return self._opacity
     @opacity.setter
     def opacity( self, n_opacity):
-        self.opacity = n_opacity
+        self._opacity = n_opacity
 
     @property
     def text(self):
-        return self.text
+        return self._text
     @text.setter
     def text( self, n_text):
-        self.text = n_text
+        self._text = n_text
         self.text_changed = True
 
     @property
     def space(self):
-        return self.space
+        return self._space
     @space.setter
     def space( self, n_space):
-        self.space = n_space
+        self._space = n_space
 
     @property
     def xoffset(self):
-        return self.xoffset
+        return self._xoffset
     @xoffset.setter
     def xoffset( self, n_xoffset):
-        self.xoffset = n_xoffset
+        self._xoffset = n_xoffset
 
     @property
     def yoffset(self):
-        return self.yoffset
+        return self._yoffset
     @yoffset.setter
     def yoffset( self, n_yoffset):
-        self.yoffset = n_yoffset
+        self._yoffset = n_yoffset
 
     @property
     def border(self):
-        return self.border
+        return self._border
     @border.setter
     def border( self, n_border):
-        self.border = n_border
+        self._border = n_border
 
     @property
     def font_family(self):
-        return self.font_family
+        return self._font_family
     @font_family.setter
     def font_family( self, n_font_family):
-        self.font_family = n_font_family
+        self._font_family = n_font_family
         self.text_changed = True
 
     @property
     def font_size(self):
-        return self.font_size
+        return self._font_size
     @font_size.setter
     def font_size( self, n_font_size):
-        self.font_size = n_font_size
+        self._font_size = n_font_size
         self.text_changed = True
 
     def render_box(self, enabled):
@@ -180,21 +180,21 @@ class label(renderable):
 
     @property
     def linecolor(self):
-        return self.linecolor
+        return self._linecolor
     @linecolor.setter
     def linecolor( self, n_linecolor):
-        self.linecolor = n_linecolor
+        self._linecolor = n_linecolor
 
     @property
     def background(self):
-        return self.background
+        return self._background
     @background.setter
     def background( self, n_background):
-        self.background = n_background
+        self._background = n_background
 
     @property
     def bitmap(self):
-        return self.bitmap
+        return self._bitmap
     @bitmap.setter
     def bitmap(self, bm, width, height, back0, back1, back2):
         # bitmap is called from primitives.py/get_bitmap
@@ -204,42 +204,42 @@ class label(renderable):
         self.bitmap_width = width
         self.bitmap_height = height
         self.text_changed = True
-        self.bitmap = []*4*width*height
+        self._bitmap = []*4*width*height
 
         for j in range(0, height):
             for i in range(0, width):
                 is_background = True
 
                 b = data[3*width*j + 3*i]
-                bitmap[4*width*j + 4*i] = b
+                self._bitmap[4*width*j + 4*i] = b
                 if (b != back0):
                     is_background = False
 
                 b = data[3*width*j + 3*i + 1]
-                bitmap[4*width*j + 4*i + 1] = b
+                self._bitmap[4*width*j + 4*i + 1] = b
                 if (b != back1):
                     is_background = False
 
                 b = data[3*width*j + 3*i + 2]
-                bitmap[4*width*j + 4*i + 2] = b
+                self._bitmap[4*width*j + 4*i + 2] = b
                 if (b != back2):
                     is_background = False
 
                 if is_background:
-                    bitmap[4*width*j + 4*i + 3] = 0
+                    self._bitmap[4*width*j + 4*i + 3] = 0
                 else:
-                    bitmap[4*width*j + 4*i + 3] = 255
+                    self._bitmap[4*width*j + 4*i + 3] = 255
 
     # Sets handle and registers it to be freed at shutdown
     @property
     def handle(self):
-        return self.handle
+        return self._handle
     @handle.setter
-    def handle(self, view, h):
-        if (self.handle):
-            on_gl_free.free( bind( self.gl_free(), self.handle ) )
-        self.handle = h
-        on_gl_free.connect( bind(self.gl_free(), self.handle) )
+    def handle(self, h):
+        #if hasattr(self, '_handle'):
+        #    on_gl_free.free( bind( self.gl_free(), self._handle ) )
+        self._handle = h
+        #on_gl_free.connect( bind(self.gl_free(), self._handle) )
 
     @property
     def center(self):

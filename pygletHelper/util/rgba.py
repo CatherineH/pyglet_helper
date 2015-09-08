@@ -161,11 +161,9 @@ class rgb:
 
     def gl_set(self, opacity):
 
-        print str(self.red) + " " + str(self.green) + " " + str(self.blue) + " " + str(opacity)
         #glColor4f(self.red, self.green, self.blue, opacity)
 
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
-
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)

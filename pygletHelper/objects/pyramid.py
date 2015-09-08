@@ -55,7 +55,6 @@ class pyramid(rectangular):
         glEnd()
         glDisable(GL_CULL_FACE)
         self.compiled = True
-        print("ending compile")
 
         scene.pyramid_model.gl_compile_end()
         print("done")

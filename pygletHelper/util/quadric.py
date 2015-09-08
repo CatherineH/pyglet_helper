@@ -6,8 +6,7 @@
 
 from pyglet.gl.glu import *
 from pyglet.gl import *
-
-
+from traceback import print_stack
 from enum import Enum
 
 
@@ -73,18 +72,21 @@ class quadric(object):
     
     
     def render_cylinder(self, base_radius, height, slices, stacks, top_radius=None):
-        # GLU orients cylinders along the +z axis, and they must be
+        # GLU orients    print "rendering not translucent"
+        # cylinders along the +z axis, and they must be
         # reoriented along the +x axis for VPython's convention of rendering along
         # the "axis" vector.
-        glRotatef(90, 0, 1, 0)
+        #glRotatef(90, 0, 1, 0)
+
         if top_radius is None:
             gluCylinder(self.q, base_radius, base_radius, height, slices, stacks)
         else:
             gluCylinder(self.q, base_radius, top_radius, height, slices, stacks)
-    
+
 
 
     
     def render_disk(self, radius, slices, rings, rotation):
         glRotatef(90, 0, GLfloat(rotation), 0)
         gluDisk(self.q, 0.0, radius, slices, rings)
+        #print_stack()
