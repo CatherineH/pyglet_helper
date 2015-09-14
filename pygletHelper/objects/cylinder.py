@@ -93,7 +93,6 @@ class cylinder(axial):
         elif (lod > 5):
             lod = 5
 
-        guard = gl_matrix_stackguard()
         length = self.axis.mag()
         glPushMatrix()
         self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()

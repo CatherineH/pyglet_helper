@@ -133,8 +133,9 @@ def on_draw():
     _ellipsoid.gl_render(scene)
     _cylinder.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _cylinder.gl_render(scene)
+    _ring.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _ring.gl_render(scene)
-    #_label.gl_render(scene)
+    _label.gl_render(scene)
 
     '''
     if screennum<99:

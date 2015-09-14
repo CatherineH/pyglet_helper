@@ -46,7 +46,9 @@ class rgba(object):
         '''
          Make this the active OpenGL color using glColor().
         '''
-        glColor4fv(self.red)
+        color = (GLfloat * 4)(*[self.red, self.green, self.blue, self.opacity])
+
+        glColor4fv(color)
 
 
 class rgb:
@@ -65,6 +67,16 @@ class rgb:
 
     def __str__(self):
         return "color: r" + str(self.red) + " b" + str(self.blue) + " g" + str(self.green)
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.red
+        elif item == 1:
+            return self.green
+        elif item == 2:
+            return self.blue
+        else:
+            raise ValueError("no such component")
 
     @property
     def rgb(self):

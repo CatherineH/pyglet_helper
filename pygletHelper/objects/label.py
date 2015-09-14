@@ -5,13 +5,19 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from pygletHelper.objects.renderable import renderable
-from pygletHelper.util.rgba import rgb
+from pygletHelper.util.rgba import rgb, rgba
+from pygletHelper.util.vector import vector
+from pygletHelper.util.tmatrix import tmatrix
+from pygletHelper.util.displaylist import displaylist
+from pygletHelper.util.texture import next_power_of_two
 
 class label(renderable):
     def __init__(self, pos = [0, 0, 0], space = 0, xoffset = 0, yoffset = 0, \
       border = 5, font_description = None, font_size = 13, text_changed = False, \
       box_enabled = True, line_enabled = True, linecolor = rgb(), opacity = 0.66, \
-      handle = 0, other = None, text = ''):
+      handle = 0, other = None, text = '', bitmap_width = 0, bitmap_height = 0, color=rgb(0, 0, 0)):
+        super(label, self).__init__(color = color)
+
         # by default, the color of scene.background
         self.background = rgb(0.0, 0.0, 0.0)
         self.text = text
@@ -36,7 +42,7 @@ class label(renderable):
             self.opacity = other.opacity
             self.handle = other.handle
         else:
-            self.pos = pos
+            self.pos = vector(pos)
             self.space = space
             self.xoffset = xoffset
             self.yoffset = yoffset
@@ -49,6 +55,8 @@ class label(renderable):
             self.linecolor = linecolor
             self.opacity = opacity
             self.handle = handle
+            self.bitmap_height = bitmap_height
+            self.bitmap_width = bitmap_width
 
     @property
     def pos(self):
@@ -80,10 +88,10 @@ class label(renderable):
 
     @property
     def color(self):
-        return self.color
+        return self._color
     @color.setter
     def color( self, n_color):
-        self.color = n_color
+        self._color = n_color
 
     @property
     def red(self):
@@ -267,16 +275,18 @@ class label(renderable):
 
         text_pos = vector( self.border, box_height - self.border)
 
-        clear_gl_error()
-        label_pos = pos.scale(scene.gcfvec)
-        lst = tmatrix().gl_projection_get() * tmatrix().gl_modelview_get()
+        label_pos = self.pos.scale(scene.gcfvec)
+        proj = tmatrix().gl_projection_get()
+        model = tmatrix().gl_modelview_get()
+        lst = proj * model
 
-        translate = tmatrix
+        translate = tmatrix()
         translate.w_column( label_pos)
+
         lst = lst * translate
 
-        origin = vector(lst * vertex(vector(), 1.0)).project()
-
+        #origin = vector(lst * vertex(vector(), 1.0)).project()
+        origin = vector()
         # It is very important to make sure that the texture is positioned
         # accurately at a screen pixel location, to avoid artifacts around the texture.
         kx = scene.view_width/2.0
@@ -305,11 +315,9 @@ class label(renderable):
 
         stereo_linecolor.gl_set(1.0)
         # Zero out the existing matrices, rendering will be in screen coords.
-        guard = gl_matrix_stackguard()
         identity = tmatrix()
         identity.gl_load()
         glMatrixMode( GL_PROJECTION)  #< Zero out the projection matrix, too
-        guard2 = gl_matrix_stackguard()
         identity.gl_load()
 
         glTranslated( origin.x, origin.y, origin.z)
@@ -364,7 +372,7 @@ class label(renderable):
 
 
         # Render the text itself.
-        gl_render_to_quad(scene, self.text_pos)
+        self.gl_render_to_quad(scene, text_pos)
 
         glMatrixMode( GL_MODELVIEW)  # Pops the matrices back off the stack
         list.gl_compile_end()
@@ -424,7 +432,7 @@ class label(renderable):
         self.tcoord[3**bottom_up] = vector(tc_x, 0)
 
     def gl_render_to_quad(self, v, text_pos ):
-        gl_initialize(v)
+        self.gl_initialize(v)
 
         glBindTexture(GL_TEXTURE_2D, self.handle)
 

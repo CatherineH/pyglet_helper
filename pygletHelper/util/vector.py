@@ -4,7 +4,7 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from math import sqrt, acos, asin, pi
-
+from pyglet.gl import *
 
 class vector(object):
     def __init__(self, a=0.0, b=0.0, c=0.0, v=None):
@@ -245,7 +245,7 @@ class vector(object):
         return vector(fabs(self.x), fabs(self.y), fabs(self.z))
 
     def gl_render(self):
-        glVertex3dv(self.x)
+        glVertex3d(GLdouble(self.x), GLdouble(self.y), GLdouble(self.z))
 
     def gl_normal(self):
         glNormal3dv(self.x)

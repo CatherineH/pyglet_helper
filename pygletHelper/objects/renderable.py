@@ -96,7 +96,6 @@ class view(object):
         self.tan_hfov_x = tan_hfov_x #< The tangent of half the horzontal field of view.
         self.tan_hfov_y = tan_hfov_y#< The tangent of half the vertical field of view.
 
-        # not sure what this does...
 
         self.box_model = displaylist()
         self.sphere_model = [displaylist()]*6

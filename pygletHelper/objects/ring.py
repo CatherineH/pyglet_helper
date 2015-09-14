@@ -6,14 +6,13 @@
 from pyglet.gl import *
 from pyglet.graphics.vertexbuffer import create_buffer
 
-from numpy import zeros
+from numpy import zeros, asarray
 
 from pygletHelper.objects.axial import axial
 from pygletHelper.util.rgba import rgb
 from pygletHelper.util.vector import vector
 from pygletHelper.util.tmatrix import rotation, gl_matrix_stackguard
 from pygletHelper.util.gl_enable import gl_enable_client
-
 
 from math import sqrt, pi
 
@@ -22,30 +21,65 @@ class model(object):
     def __init__(self):
         self.indices = zeros(0)
         self.vertex_pos = zeros(0)
-        self.vertex_pos_vbo = create_buffer(self.vertex_pos.nbytes)
-        self.vertex_pos_vbo.bind()
-        self.vertex_pos_vbo.set_data(self.vertex_pos.ctypes.data)
         self.vector_normal = zeros(0)
-        self.vector_normal_vbo = create_buffer(self.vector_normal.nbytes)
-        self.vector_normal_vbo.bind()
-        self.vector_normal_vbo.set_data(self.vector_normal.ctypes.data)
-
 
     @property
     def vertex_pos(self):
         return self._vertex_pos
     @vertex_pos.setter
     def vertex_pos(self, n_vertex_pos):
+        '''
+        # if the input is not a numpy array, parse it as an array
+        if type(n_vertex_pos).__module__ is not type(zeros(3)).__module__:
+            n_vertex_pos = asarray(n_vertex_pos)
         self._vertex_pos = n_vertex_pos
+        if not hasattr(self, 'vertex_pos_vbo'):
+            self.vertex_pos_vbo = create_buffer(self.vertex_pos.nbytes)
+            self.vertex_pos_vbo.bind()
         self.vertex_pos_vbo.set_data(self._vertex_pos.ctypes.data)
+        #print "vertex_pos "+str(self._vertex_pos.ctypes.data)
+        '''
+        self._vertex_pos = []
+        for i in range(0,len(n_vertex_pos)):
+            self._vertex_pos.append(n_vertex_pos[i].x)
+            self._vertex_pos.append(n_vertex_pos[i].y)
+            self._vertex_pos.append(n_vertex_pos[i].z)
+        self.vertices_gl = (GLfloat * len(self._vertex_pos))(*self._vertex_pos)
+
 
     @property
     def vector_normal(self):
         return self._vector_normal
     @vector_normal.setter
     def vector_normal(self, n_vector_normal):
+        # if the input is not a numpy array, parse it as an array
+        '''
+        if type(n_vector_normal).__module__ is not type(zeros(3)).__module__:
+            n_vector_normal = asarray(n_vector_normal)
         self._vector_normal = n_vector_normal
+        if not hasattr(self, 'vector_normal_vbo'):
+            self.vector_normal_vbo = create_buffer(self.vector_normal.nbytes)
+            self.vector_normal_vbo.bind()
+        print "vector_normal "+str(self._vector_normal)
         self.vector_normal_vbo.set_data(self._vector_normal.ctypes.data)
+        print self.vector_normal
+        self.normals_gl = (GLfloat * len(self._vector_normal))(*self._vector_normal)
+        '''
+        self._vector_normal = []
+        for i in range(0,len(n_vector_normal)):
+            self._vector_normal.append(n_vector_normal[i].x)
+            self._vector_normal.append(n_vector_normal[i].y)
+            self._vector_normal.append(n_vector_normal[i].z)
+        self.normals_gl = (GLfloat * len(self._vector_normal))(*self._vector_normal)
+
+    @property
+    def indices(self):
+        return self._indices
+    @indices.setter
+    def indices(self, n_indices):
+        self._indices = [int(i) for i in n_indices]
+        self.indices_gl = (GLuint * len(self._indices))(*self._indices)
+
 
 class ring(axial):
     def __init__(self, thickness=0.0, model_rings=-1, radius=1.0, color=rgb(), pos=vector(0, 0, 0),
@@ -77,6 +111,7 @@ class ring(axial):
         out.scale(vector(self.radius, self.radius, self.radius) * (.5 / (self.radius + self.thickness)))
         return out
 
+    @property
     def degenerate(self):
         return self.radius == 0.0
 
@@ -84,7 +119,7 @@ class ring(axial):
         self.gl_render(scene)
 
     def gl_render(self, scene):
-        if self.degenerate():
+        if self.degenerate:
             return
         # Level of detail estimation.  See sphere::gl_render().
 
@@ -110,25 +145,27 @@ class ring(axial):
             self.model_radius = self.radius
             self.model_thickness = self.thickness
             self.model = self.create_model(rings, bands)
-        print self.model
-        # clear_gl_error()
 
-        vertex_array = gl_enable_client(GL_VERTEX_ARRAY)
-        normal_array = gl_enable_client(GL_NORMAL_ARRAY)
+        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+        glEnableClientState(GL_VERTEX_ARRAY)
+        glEnableClientState(GL_NORMAL_ARRAY)
 
-        guard = gl_matrix_stackguard()
         self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
-
+        #print "model vertex-pos: "+str(self.model._vertex_pos)
+        #print "model vector-normal: "+str(self.model._vector_normal)
         self.color.gl_set(self.opacity)
-
+        '''
         glVertexPointer(3, GL_FLOAT, 0, self.model.vertex_pos_vbo.ptr)
         glNormalPointer(GL_FLOAT, 0, self.model.vector_normal_vbo.ptr)
         glDrawElements(GL_TRIANGLES, self.model.indices.size, GL_UNSIGNED_SHORT, 0)
-
-        #check_gl_error()
+        '''
+        glVertexPointer(3, GL_FLOAT, 0, self.model.vertices_gl)
+        glNormalPointer(GL_FLOAT, 0, self.model.normals_gl)
+        glDrawElements(GL_TRIANGLES, len(self.model.indices), GL_UNSIGNED_SHORT, self.model.indices_gl)
+        glPopClientAttrib()
 
     def grow_extent(self, world):
-        if (self.degenerate()):
+        if self.degenerate:
             return
         # TODO: Not perfectly accurate (a couple more circles would help)
         a = self.axis.norm()
@@ -162,10 +199,8 @@ class ring(axial):
         for i in range(1, bands):
             circle[i] = rotator * circle[i - 1]
         m = model()
-        m.vertex_pos = [vector()]*(int(rings * bands))
-        m.vertex_normal = [vector()]*int(rings * bands)
-        vertexes = m.vertex_pos
-        normals = m.vertex_normal
+        vertexes = [vector()]*int(rings * bands)
+        normals = [vector()]*int(rings * bands)
 
         # ... and then sweep it in a circle around the x axis
         radial = vector(0, 1, 0)
@@ -173,13 +208,24 @@ class ring(axial):
         rotator = rotation(2.0 * pi / rings, vector(1, 0, 0), vector(0, 0, 0))
         for r in range(0, int(rings)):
             for b in range(0, int(bands)):
-                normals[i].x = circle[b].x
-                normals[i].y = radial.y * circle[b].y
-                normals[i].z = radial.z * circle[b].y
-                vertexes[i].x = normals[i].x
-                vertexes[i].y = normals[i].y + radial.y
-                vertexes[i].z = normals[i].z + radial.z
+                tmp_vertex = vector()
+                tmp_normal = vector()
+                tmp_normal.x = circle[b].x
+                tmp_normal.y = radial.y * circle[b].y
+                tmp_normal.z = radial.z * circle[b].y
+                normals[i] = tmp_normal
+                tmp_vertex.x = normals[i].x
+                tmp_vertex.y = normals[i].y + radial.y
+                tmp_vertex.z = normals[i].z + radial.z
+                vertexes[i] = tmp_vertex
+                i += 1
+                #if i==50:
+                #print "vertex: "+str(i)+" "+str(vertexes[i])+" "+str(tmp_vertex)
             radial = rotator * radial
+            #print "radial: "+str(radial)
+        print "vertexes :"+str(vertexes)
+        m.vector_normal = normals
+        m.vertex_pos = vertexes
 
         # Now generate triangle indices... could do this with triangle strips but I'm looking
         # ahead to next renderer design, where it would be nice to always use indexed tris

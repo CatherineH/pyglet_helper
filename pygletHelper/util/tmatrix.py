@@ -50,6 +50,10 @@ class tmatrix(object):
             out_vect.y = vertex.y
             out_vect.z = vertex.z
             return out_vect
+        elif type(o) == tmatrix:
+            tmp = tmatrix()
+            tmp.M = self.M*o.M
+            return tmp
         else:
             return self.M*o
 
@@ -167,7 +171,8 @@ class tmatrix(object):
 
     # Overwrites the currently active matrix in OpenGL with this one.
     def gl_load(self):
-        glLoadMatrixd( self.M[0])
+        ctypesMatrix = (GLdouble*16)(*[float(value) for value in nditer(self.M)])
+        glLoadMatrixd(ctypesMatrix)
 
     # Multiplies the active OpenGL by this one.
     def gl_mult(self):
@@ -187,12 +192,13 @@ class tmatrix(object):
      @return *this.
     '''
     def gl_modelview_get(self):
-        m = [[0]*4]*4
-        m[0] = glGetFloatv( GL_MODELVIEW_MATRIX, m[0])
+        ctypesMatrix = (GLfloat*16)()
+
+        glGetFloatv( GL_MODELVIEW_MATRIX, ctypesMatrix)
         for i in range(0,4):
             for j in range(0,4):
-                self.M[i,j] = m[i][j]
-        return self.M
+                self.M[i,j] = ctypesMatrix[i+4*j]
+        return self
 
     def gl_texture_get(self):
         m = [[0]*4]*4
@@ -211,12 +217,12 @@ class tmatrix(object):
         return self.M
 
     def gl_projection_get(self):
-        m = [[0]*4]*4
-        m[0] = glGetFloatv( GL_PROJECTION_MATRIX)
+        ctypesMatrix = (GLfloat*16)()
+        glGetFloatv( GL_PROJECTION_MATRIX, ctypesMatrix)
         for i in range(0, 4):
             for j in range(0,4):
-                self.M[i,j] = m[i][j]
-        return self.M
+                self.M[i,j] = ctypesMatrix[i+4*j]
+        return self
 
     '''
      Dump this matrix to a formatted string.
