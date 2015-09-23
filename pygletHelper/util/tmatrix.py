@@ -15,6 +15,14 @@ class vertex(object):
             self.x = v.x
             self.y = v.y
             self.z = v.z
+        elif type(x) == vector:
+            self.x = x.x
+            self.y = x.y
+            self.z = x.z
+        else:
+            self.x = x
+            self.y = y
+            self.z = z
         self.w = w
 
     def project(self):
@@ -23,6 +31,38 @@ class vertex(object):
 
     def gl_render(self):
         glVertex4d( self.x, self.y, self.z, self.w)
+
+    @property
+    def x(self):
+        return self._x
+
+    @x.setter
+    def x(self, s):
+        self._x = s
+
+    @property
+    def y(self):
+        return self._y
+
+    @y.setter
+    def y(self, s):
+        self._y = s
+
+    @property
+    def z(self):
+        return self._z
+
+    @z.setter
+    def z(self, s):
+        self._z = s
+
+    @property
+    def w(self):
+        return self._w
+
+    @w.setter
+    def w(self, s):
+        self._w = s
 
 '''
  A -precision 3D affine transformation matrix.
@@ -44,16 +84,22 @@ class tmatrix(object):
 
     def __mul__(self, o):
         if type(o) == vector:
+            out_vect = self.project(o)
+            '''
             vertex = self.project(o)
             out_vect = vector()
             out_vect.x = vertex.x
             out_vect.y = vertex.y
             out_vect.z = vertex.z
+            '''
             return out_vect
         elif type(o) == tmatrix:
             tmp = tmatrix()
             tmp.M = self.M*o.M
             return tmp
+        elif type(o) == vertex:
+            out_vect = self.project(o)
+            return out_vect
         else:
             return self.M*o
 
@@ -63,10 +109,14 @@ class tmatrix(object):
     #Projects v using the current tmatrix values.
     def project(self, v):
         o = vertex()
-        o.x = self.M[0,0]*v.x + self.M[1,0]*v.y + self.M[2,0]*v.z + self.M[3,0]
-        o.y = self.M[0,1]*v.x + self.M[1,1]*v.y + self.M[2,1]*v.z + self.M[3,1]
-        o.z = self.M[0,2]*v.x + self.M[1,2]*v.y + self.M[2,2]*v.z + self.M[3,2]
-        o.w = self.M[0,3]*v.x + self.M[1,3]*v.y + self.M[2,3]*v.z + self.M[3,3]
+        if type(v) == vertex:
+            w = v.w
+        else:
+            w = 1.0
+        o.x= self.M[0,0]*v.x + self.M[1,0]*v.y #+ self.M[2,0]*v.z + self.M[3,0]*w
+        o.y = self.M[0,1]*v.x + self.M[1,1]*v.y + self.M[2,1]*v.z + self.M[3,1]*w
+        o.z = self.M[0,2]*v.x + self.M[1,2]*v.y + self.M[2,2]*v.z + self.M[3,2]*w
+        o.w = self.M[0,3]*v.x + self.M[1,3]*v.y + self.M[2,3]*v.z + self.M[3,3]*w
         return o
 
     # Right-multiply this matrix by a scaling matrix.

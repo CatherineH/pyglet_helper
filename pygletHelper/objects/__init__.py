@@ -7,7 +7,6 @@ import pygletHelper.objects.cylinder
 import pygletHelper.objects.display_kernel
 import pygletHelper.objects.ellipsoid
 import pygletHelper.objects.frame
-import pygletHelper.objects.label
 import pygletHelper.objects.light
 import pygletHelper.objects.material
 import pygletHelper.objects.mouse_manager

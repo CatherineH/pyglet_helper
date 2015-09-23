@@ -16,7 +16,6 @@ from pygletHelper.objects.pyramid import *
 from pygletHelper.objects.ring import *
 from pygletHelper.objects.ellipsoid import *
 from pygletHelper.objects.create_display import *
-from pygletHelper.objects.label import *
 from pygletHelper.objects.renderable import view
 from pygletHelper.util import *
 
@@ -114,12 +113,7 @@ def on_draw():
     global screennum
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
-    #glTranslatef(-2, -3, -4)
-    #glRotatef(rz, 0, 0, 1)
-    #glRotatef(ry, 0, 1, 0)
-    #glRotatef(rx, 1, 0, 0)
-    #print("rs "+str(rx)+" "+str(ry))
-    #print vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+
     _arrow.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _arrow.gl_render(scene)
     _ball.gl_render(scene)
@@ -135,14 +129,11 @@ def on_draw():
     _cylinder.gl_render(scene)
     _ring.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
     _ring.gl_render(scene)
-    _label.gl_render(scene)
-
-    '''
     if screennum<99:
         filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
         pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
-    '''
+
 screennum = 0
 
 def setup():
@@ -183,8 +174,7 @@ _arrow = arrow(pos=(0,1,0),axis=(1,0,0), fixedwidth = False, headwidth = 0.4, he
 _cone = cone(pos=(0,0,0), axis=(1,0,0), radius=0.5, color = color.gray)
 _ring = ring(pos=(0,-1,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
 _ellipsoid = ellipsoid(pos=(-1,-1,0), length=0.75, height=0.5, width=0.75, color = color.green)
-_cylinder = cylinder(pos=(-1,0,0), axis=(1.3,0,0), radius=0.24, color = color.purple)
-_label = label(pos=(-1,-1,0), text="hello")
+_cylinder = cylinder(pos=(-1,0,0), axis=(1.3,0,0), radius=0.24, color = color.orange)
 
 
 setup()

@@ -14,7 +14,7 @@ from pygletHelper.util.vector import vector
 from pygletHelper.util.tmatrix import rotation, gl_matrix_stackguard
 from pygletHelper.util.gl_enable import gl_enable_client
 
-from math import sqrt, pi
+from math import pi, sin, cos, sqrt
 
 
 class model(object):
@@ -128,41 +128,81 @@ class ring(axial):
             band_coverage = scene.pixel_coverage(self.pos, self.thickness)
         else:
             band_coverage = scene.pixel_coverage(self.pos, self.radius * 0.1)
-        if (band_coverage < 0):
+        if band_coverage < 0:
             band_coverage = 1000
         bands = sqrt(band_coverage * 4.0)
         bands = clamp(4, bands, 40)
         # The number of subdivions around the hoop's tangential direction.
         ring_coverage = scene.pixel_coverage(self.pos, self.radius)
-        if (ring_coverage < 0):
+        if ring_coverage < 0:
             ring_coverage = 1000
         rings = sqrt(ring_coverage * 4.0)
         rings = clamp(4, rings, 80)
+        slices = int(rings)
+        inner_slices = int(bands)
+        radius = self.radius
+        inner_radius = self.thickness
 
-        if self.model_rings != rings or self.model_bands != bands or self.model_radius != self.radius or self.model_thickness != self.thickness:
-            self.model_rings = rings
-            self.model_bands = bands
-            self.model_radius = self.radius
-            self.model_thickness = self.thickness
-            self.model = self.create_model(rings, bands)
+        # Create the vertex and normal arrays.
+        vertices = []
+        normals = []
+
+        u_step = 2 * pi / (slices - 1)
+        v_step = 2 * pi / (inner_slices - 1)
+        u = 0.
+        for i in range(slices):
+            cos_u = cos(u)
+            sin_u = sin(u)
+            v = 0.
+            for j in range(inner_slices):
+                cos_v = cos(v)
+                sin_v = sin(v)
+
+                d = (radius + inner_radius * cos_v)
+                x = d * cos_u
+                y = d * sin_u
+                z = inner_radius * sin_v
+
+                nx = cos_u * cos_v
+                ny = sin_u * cos_v
+                nz = sin_v
+
+                vertices.extend([x, y, z])
+                normals.extend([nx, ny, nz])
+                v += v_step
+            u += u_step
+
+        # Create ctypes arrays of the lists
+        vertices = (GLfloat * len(vertices))(*vertices)
+        normals = (GLfloat * len(normals))(*normals)
+
+        # Create a list of triangle indices.
+        indices = []
+        for i in range(slices - 1):
+            for j in range(inner_slices - 1):
+                p = i * inner_slices + j
+                indices.extend([p, p + inner_slices, p + inner_slices + 1])
+                indices.extend([p,  p + inner_slices + 1, p + 1])
+        indices = (GLuint * len(indices))(*indices)
+
+        # Compile a display list
+        self.list = glGenLists(1)
+        glNewList(self.list, GL_COMPILE)
+        self.color.gl_set(self.opacity)
 
         glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_NORMAL_ARRAY)
-
         self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
-        #print "model vertex-pos: "+str(self.model._vertex_pos)
-        #print "model vector-normal: "+str(self.model._vector_normal)
-        self.color.gl_set(self.opacity)
-        '''
-        glVertexPointer(3, GL_FLOAT, 0, self.model.vertex_pos_vbo.ptr)
-        glNormalPointer(GL_FLOAT, 0, self.model.vector_normal_vbo.ptr)
-        glDrawElements(GL_TRIANGLES, self.model.indices.size, GL_UNSIGNED_SHORT, 0)
-        '''
-        glVertexPointer(3, GL_FLOAT, 0, self.model.vertices_gl)
-        glNormalPointer(GL_FLOAT, 0, self.model.normals_gl)
-        glDrawElements(GL_TRIANGLES, len(self.model.indices), GL_UNSIGNED_SHORT, self.model.indices_gl)
+
+        glVertexPointer(3, GL_FLOAT, 0, vertices)
+        glNormalPointer(GL_FLOAT, 0, normals)
+        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, indices)
         glPopClientAttrib()
+
+        glEndList()
+        glCallList(self.list)
+
 
     def grow_extent(self, world):
         if self.degenerate:
@@ -180,80 +220,50 @@ class ring(axial):
         return world
 
     def create_model(self, rings, bands):
-        # In Visual 3, rendered thickness was (incorrectly) double what was documented.
-        # The documentation said that thickness was the diameter of a cross section of
-        # a solid part of the ring, but in fact ring.thickness was the radius of the
-        # cross section. Presumably we have to maintain the incorrect Visual 3 behavior
-        # and change the documentation.
-        scaled_radius = 1.0
         scaled_thickness = 0.2
-        if self.thickness != 0.0:
-            scaled_thickness = 2 * self.thickness / self.radius
-
-        # First generate a circle of radius thickness in the xy plane
-        if (bands > 80):
-            raise ValueError("ring create_model: More bands than expected.")
-        circle = [vector()] * 80
-        circle[0] = vector(0, scaled_thickness * 0.5, 0)
-        rotator = rotation(2.0 * pi / bands, vector(0, 0, 1), vector(0, 0, 0))
-        for i in range(1, bands):
-            circle[i] = rotator * circle[i - 1]
+        #if self.thickness != 0.0:
+        #    scaled_thickness = 2*self.thickness / self.radius
         m = model()
-        vertexes = [vector()]*int(rings * bands)
-        normals = [vector()]*int(rings * bands)
+        m.vertices = []
+        m.normals = []
 
-        # ... and then sweep it in a circle around the x axis
-        radial = vector(0, 1, 0)
-        i = 0
-        rotator = rotation(2.0 * pi / rings, vector(1, 0, 0), vector(0, 0, 0))
-        for r in range(0, int(rings)):
-            for b in range(0, int(bands)):
-                tmp_vertex = vector()
-                tmp_normal = vector()
-                tmp_normal.x = circle[b].x
-                tmp_normal.y = radial.y * circle[b].y
-                tmp_normal.z = radial.z * circle[b].y
-                normals[i] = tmp_normal
-                tmp_vertex.x = normals[i].x
-                tmp_vertex.y = normals[i].y + radial.y
-                tmp_vertex.z = normals[i].z + radial.z
-                vertexes[i] = tmp_vertex
-                i += 1
-                #if i==50:
-                #print "vertex: "+str(i)+" "+str(vertexes[i])+" "+str(tmp_vertex)
-            radial = rotator * radial
-            #print "radial: "+str(radial)
-        print "vertexes :"+str(vertexes)
-        m.vector_normal = normals
-        m.vertex_pos = vertexes
+        u_step = 2 * pi / (rings - 1)
+        v_step = 2 * pi / (bands - 1)
+        u = 0.
+        for i in range(rings):
+            cos_u = cos(u)
+            sin_u = sin(u)
+            v = 0.
+            for j in range(bands):
+                cos_v = cos(v)
+                sin_v = sin(v)
 
-        # Now generate triangle indices... could do this with triangle strips but I'm looking
-        # ahead to next renderer design, where it would be nice to always use indexed tris
-        m.indices = zeros(int(rings * bands * 6))
-        ind = m.indices
-        i = 0
-        ind_ind = 0
-        for r in range(0, int(rings)):
-            for b in range(0, int(bands)):
-                ind[ind_ind+0] = i
-                ind[ind_ind+1] = i + bands
-                ind[ind_ind+2] = i + 1
-                ind[ind_ind+3] = i + bands
-                ind[ind_ind+4] = i + bands + 1
-                ind[ind_ind+5] = i + 1
-                i += 1
-                # not 100% sure what this does...
-                ind_ind+= 6
-            ind[ind_ind+2 - 6] -= bands
-            ind[ind_ind+4 - 6] -= bands
-            ind[ind_ind+5 - 6] -= bands
-        ind_ind -= 6 * bands
-        for b in range(0, bands):
-            ind[ind_ind+1] -= rings * bands
-            ind[ind_ind+3] -= rings * bands
-            ind[ind_ind+4] -= rings * bands
-            ind_ind += 6
-        m.indices = ind
+                d = (self.radius + self.thickness * cos_v)
+                x = d * cos_u
+                y = d * sin_u
+                z = self.thickness * sin_v
+
+                nx = cos_u * cos_v
+                ny = sin_u * cos_v
+                nz = sin_v
+
+                m.vertices.extend([x, y, z])
+                m.normals.extend([nx, ny, nz])
+                v += v_step
+            u += u_step
+
+        # Create ctypes arrays of the lists
+        m.vertices_gl = (GLfloat * len(m.vertices))(*m.vertices)
+        m.normals_gl = (GLfloat * len(m.normals))(*m.normals)
+
+        # Create a list of triangle indices.
+        m.indices = []
+        for i in range(rings - 1):
+            for j in range(bands - 1):
+                p = i * bands + j
+                m.indices.extend([p, p + bands, p + bands + 1])
+                m.indices.extend([p,  p + bands + 1, p + 1])
+        m.indices_gl = (GLuint * len(m.indices))(*m.indices)
         return m
 
 def clamp(lower, value, upper):

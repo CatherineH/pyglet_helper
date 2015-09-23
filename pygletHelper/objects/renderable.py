@@ -111,6 +111,7 @@ class view(object):
         self.light_color = vector()# in eye coordinates!
 
         self.enable_shaders = enable_shaders
+        self.screen_objects = []
 
     '''
      Called on a copy of a parent view to make this a view in a child
