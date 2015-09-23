@@ -122,8 +122,8 @@ class view(object):
         self.forward = wft.times_v( self.forward )
         self.center = wft * self.center
         self.up = wft.times_v(self.up)
-        tso = screen_objects_t( (z_comparator(self.forward)) )
-        screen_objects.swap( tso )
+        tso = self.screen_objects_t( (z_comparator(self.forward)) )
+        self.screen_objects.swap( tso )
 
     '''
      Compute the apparent diameter, in pixels, of a circle that is parallel

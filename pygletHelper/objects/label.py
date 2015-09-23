@@ -10,6 +10,8 @@ from pygletHelper.util.vector import vector
 from pygletHelper.util.tmatrix import tmatrix
 from pygletHelper.util.displaylist import displaylist
 from pygletHelper.util.texture import next_power_of_two
+import ctypes
+
 
 class label(renderable):
     def __init__(self, pos = [0, 0, 0], space = 0, xoffset = 0, yoffset = 0, \
@@ -57,6 +59,12 @@ class label(renderable):
             self.handle = handle
             self.bitmap_height = bitmap_height
             self.bitmap_width = bitmap_width
+
+        self.coord = []
+        self.tcoord = []
+        for i in range(0, 4):
+            self.coord.append(vector())
+            self.tcoord.append(vector())
 
     @property
     def pos(self):
@@ -202,7 +210,10 @@ class label(renderable):
 
     @property
     def bitmap(self):
-        return self._bitmap
+        if hasattr(self, '_bitmap'):
+            return self._bitmap
+        else:
+            return None
     @bitmap.setter
     def bitmap(self, bm, width, height, back0, back1, back2):
         # bitmap is called from primitives.py/get_bitmap
@@ -376,15 +387,19 @@ class label(renderable):
 
         glMatrixMode( GL_MODELVIEW)  # Pops the matrices back off the stack
         list.gl_compile_end()
-        check_gl_error()
+        #check_gl_error()
         scene.screen_objects.insert( make_pair(self.pos, list))
 
     def grow_extent(self, e):
         e.add_point( self.pos )
 
     def gl_initialize(self, view):
+        print "label coord type pre: "
+        print type(self.coord[0])
         bottom_up = self.bitmap_height < 0
-        if (self.bitmap_height < 0):
+
+
+        if self.bitmap_height < 0:
             self.bitmap_height = -self.bitmap_height
 
         # next_power_of_two is in texture.cpp
@@ -393,45 +408,48 @@ class label(renderable):
         tc_x = (self.bitmap_width) / tx_width
         tc_y = (self.bitmap_height) / tx_height
 
-        type = GL_TEXTURE_2D
+        text_type = GL_TEXTURE_2D
 
         if not self.handle:
-            self.handle = glGenTextures(1, self.handle)
-            set_handle( view,self.handle )
+            self.handle = GLuint(0)
+            glGenTextures(1, ctypes.byref(self.handle))
 
-        glBindTexture(type, self.handle)
+        glBindTexture(text_type, self.handle)
 
         # No filtering - we want the exact pixels from the texture
-        glTexParameteri( type, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri( type, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(text_type, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(text_type, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
         glPixelStorei( GL_UNPACK_ALIGNMENT, 1 )
         glPixelStorei( GL_UNPACK_ROW_LENGTH, self.bitmap_width )
 
-        check_gl_error()
+        #check_gl_error()
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tx_width, tx_height, 0,
-                        GL_RGBA, GL_UNSIGNED_BYTE, NULL)
-        check_gl_error()
+                        GL_RGBA, GL_UNSIGNED_BYTE, None)
+        #check_gl_error()
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.bitmap_width, self.bitmap_height,
                         GL_RGBA, GL_UNSIGNED_BYTE, self.bitmap)
-        check_gl_error()
+        #check_gl_error()
 
         glPixelStorei( GL_UNPACK_ALIGNMENT, 4 )
         glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 )
-
-
         self.coord[0] = vector()
         self.coord[1] = vector(0, -self.bitmap_height)
         self.coord[2] = vector(self.bitmap_width, -self.bitmap_height)
         self.coord[3] = vector(self.bitmap_width, 0)
-
+        print "label coord type: "
+        print type(self.coord[0])
         self.tcoord[0**bottom_up] = vector()
         self.tcoord[1**bottom_up] = vector(0, tc_y)
         self.tcoord[2**bottom_up] = vector(tc_x, tc_y)
         self.tcoord[3**bottom_up] = vector(tc_x, 0)
+        print "label tcoord type: "+str(type(self.tcoord[0]))
 
     def gl_render_to_quad(self, v, text_pos ):
+        print "label gl_render_to_quad: "
+        print type(self.coord[0])
+
         self.gl_initialize(v)
 
         glBindTexture(GL_TEXTURE_2D, self.handle)
@@ -440,11 +458,14 @@ class label(renderable):
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE )
         self.draw_quad()
 
-        check_gl_error()
+        #check_gl_error()
 
     def draw_quad(self):
         glBegin(GL_QUADS)
         for i in range(0,4):
-            glTexCoord2d( self.tcoord[i].x, self.tcoord[i].y )
+            print "tcoord type: "
+            print type(self.tcoord[i])
+            print "tcoord points: "+str(self.tcoord[i].x)+" "+str(self.tcoord[i].y)
+            glTexCoord2d(GLdouble(self.tcoord[i].x), GLdouble(self.tcoord[i].y))
             self.coord[i].gl_render()
         glEnd()
