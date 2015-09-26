@@ -4,8 +4,8 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.renderable import renderable
-from pygletHelper.util.vector import vector
+from pygletHelper.objects.renderable import Renderable
+from pygletHelper.util.vector import Vector
 
 '''
 Operations on frame objects include:
@@ -27,8 +27,8 @@ another oolie: A transparent object that intersects a frame containing other
 '''
 
 
-class Frame(renderable):
-    def __init__(self, axis=vector(1, 0, 0), up=vector(0, 1, 0), pos=vector(0, 0, 0), other=None):
+class Frame(Renderable):
+    def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), other=None):
         super(Frame, self).__init___(pos=pos)
         # The position and orientation of the body in World space.
         if other is None:
@@ -143,7 +143,7 @@ class Frame(renderable):
             self.trans_children.pop_back()
 
     def get_objects(self):
-        ret = self.get_children()
+        ret = self.get_children([])
         return ret
 
     def lookup_name(self, name_top, name_end):
@@ -161,7 +161,7 @@ class Frame(renderable):
         ret = self.trans_children[name_top - size]
         if name_end - name_top > 1:
             ref_frame = ret.get()
-            assert ( ref_frame != None)
+            assert ( ref_frame is not None)
             return ref_frame.lookup_name(name_top + 1, name_end)
         else:
             return ret
@@ -248,6 +248,7 @@ class Frame(renderable):
         local.apply_frame_transform(self.world_frame_transform())
         i = child_iterator(self.children.begin())
         i_end = child_iterator(self.children.end())
+        j_end = None
         while i != i_end:
             i.render_lights(local)
             j = trans_child_iterator(self.trans_children.begin())
@@ -289,7 +290,6 @@ class Frame(renderable):
             if self.obj_initialized:
                 trail_update(self.primitive_object)
 
-
     @property
     def x(self):
         return self.pos.x
@@ -322,7 +322,6 @@ class Frame(renderable):
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
-
 
     @property
     def axis(self):

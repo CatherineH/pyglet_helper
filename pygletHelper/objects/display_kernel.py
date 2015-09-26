@@ -10,26 +10,26 @@ from enum import Enum
 
 from pygletHelper.objects.mouseobject import mousebase
 from pygletHelper.objects.mouse_manager import mouse_button
-from pygletHelper.util import color
-from pygletHelper.util.vector import vector
+from pygletHelper.util import Color
+from pygletHelper.util.vector import Vector
 
 
-class mouse_mode_t(Enum):
+class MouseModeT(Enum):
     ZOOM_ROTATE = 1
     ZOOM_ROLL = 2
     PAN = 3
     FIXED = 4
 
 
-class stereo_mode_t(Enum):
+class StereoModeT(Enum):
     NO_STEREO = 1
     PASSIVE_STEREO = 2
     ACTIVE_STEREO = 3
-    CROSSEYED_STEREO = 4
-    REDBLUE_STEREO = 5
-    REDCYAN_STEREO = 6
-    YELLOWBLUE_STEREO = 7
-    GREENMAGENTA_STEREO = 8
+    CROSS_EYED_STEREO = 4
+    RED_BLUE_STEREO = 5
+    RED_CYAN_STEREO = 6
+    YELLOW_BLUE_STEREO = 7
+    GREEN_MAGENTA_STEREO = 8
 
 
 displays_visible = 0
@@ -37,7 +37,7 @@ enable_shaders = True
 
 
 def set_display_visible(display_kernel, visible):
-    if (visible):
+    if visible:
         displays_visible += 1
     else:
         displays_visible -= 1
@@ -49,18 +49,18 @@ def set_display_visible(display_kernel, visible):
  rendering context and mouse and keyboard interaction.
 '''
 
-
-class display_kernel(object):
-    def __init__(self, exit=True, visible=False, explicitly_invisible=False, \
-                 fullscreen=False, title="Python", window_x=0, window_y=0, window_width=430, \
-                 window_height=450, view_width=-1, view_height=-1, center=[0, 0, 0], \
-                 forward=[0, 0, -1], internal_forward=[0, 0, -1], up=[0, 1, 0], forward_changed=True, \
-                 fov=60 * pi / 180.0, autoscale=True, autocenter=False, uniform=True, \
-                 camera=[0, 0, 0], user_scale=1.0, gcf=1.0, gcfvec=[1.0, 1.0, 1.0], \
-                 gcf_changed=False, ambient=[0.2, 0.2, 0.2], show_toolbar=False, last_time=0, \
-                 background=[0, 0, 0], spin_allowed=True, zoom_allowed=True, mouse_mode=mouse_mode_t.ZOOM_ROTATE, \
-                 stereo_mode=stereo_mode_t.NO_STEREO, stereodepth=0.0, lod_adjust=0, realized=False, \
+class DisplayKernel(object):
+    def __init__(self, exit=True, visible=False, explicitly_invisible=False,
+                 fullscreen=False, title="Python", window_x=0, window_y=0, window_width=430,
+                 window_height=450, view_width=-1, view_height=-1, center=[0, 0, 0],
+                 forward=[0, 0, -1], internal_forward=[0, 0, -1], up=[0, 1, 0], forward_changed=True,
+                 fov=60 * pi / 180.0, auto_scale=True, auto_center=False, uniform=True,
+                 camera=[0, 0, 0], user_scale=1.0, gcf=1.0, gcfvec=[1.0, 1.0, 1.0],
+                 gcf_changed=False, ambient=[0.2, 0.2, 0.2], show_toolbar=False, last_time=0,
+                 background=[0, 0, 0], spin_allowed=True, zoom_allowed=True, mouse_mode=MouseModeT.ZOOM_ROTATE,
+                 stereo_mode=StereoModeT.NO_STEREO, stereo_depth=0.0, lod_adjust=0, realized=False,
                  mouse=mousebase(), range_auto=0.0, range=[0, 0, 0], world_extent=0.0, foreground=color.white):
+        self._show_toolbar = None
         self.extensions = ''
         self.renderer = ''
         self.version = ''
@@ -85,10 +85,10 @@ class display_kernel(object):
         self.world_extent = world_extent  # /< The extent of the current world.
 
         self.fov = fov  # /< The field of view, in radians
-        self.stereodepth = stereodepth  # < How far in or out of the screen the scene seems to be
-        self.autoscale = autoscale  # /< True if Visual should scale the camera's position automatically.
+        self.stereo_depth = stereo_depth  # < How far in or out of the screen the scene seems to be
+        self.auto_scale = auto_scale  # /< True if Visual should scale the camera's position automatically.
         # True if Visual should automatically reposition the center of the scene.
-        self.autocenter = autocenter
+        self.auto_center = auto_center
         # True if the autoscaler should compute uniform axes.
         self.uniform = uniform
         # A scaling factor determined by middle mouse button scrolling.
@@ -98,7 +98,7 @@ class display_kernel(object):
         self.gcf = gcf
         # Vector version of the global scaling factor used when scene.uniform=0.
         # Affects just curve, points, faces, label, frame, and conversion of mouse coordinates.
-        self.gcfvec = gcfvec
+        self.gcf_vec = gcf_vec
 
         # True if the gcf has changed since the last render cycle.  Set to false
         # after every rendering cycle.
@@ -117,8 +117,8 @@ class display_kernel(object):
         # self.world_iterator = indirect_iterator()
 
         # objects with a nonzero level of transparency that need to be depth sorted
-        #	prior to rendering.
-        self.layer_world_transparent = vector()
+        # prior to rendering.
+        self.layer_world_transparent = Vector()
         # self.world_trans_iterator = indirect_iterator()
         # Mouse and keyboard objects
         self.mouse = mouse
@@ -157,14 +157,14 @@ class display_kernel(object):
         self.realized = realized
 
         # self.glext = gl_extensions()
-        self.mouse_mode_t = mouse_mode_t
+        self.mouse_mode_t = MouseModeT
         self.mouse_button = mouse_button
-        self.stereo_mode_t = stereo_mode_t
+        self.stereo_mode_t = StereoModeT
 
     def enable_lights(self, scene):
-        '''
+        """
         Called at the beginning of a render cycle to establish lighting.
-        '''
+        """
         scene.light_count[0] = 0
         scene.light_pos.clear()
         scene.light_color.clear()
@@ -182,7 +182,6 @@ class display_kernel(object):
         p = vertex()
 
         # Clear modelview matrix since we are multiplying the light positions ourselves
-        guard = gl_matrix_stackguard()
         glLoadIdentity()
         limit = min([scene.light_count[0], 8])
         for i in range(0, limit):
@@ -209,16 +208,14 @@ class display_kernel(object):
         glEnable(GL_LIGHTING)
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, self.ambient.red)
 
-        check_gl_error()
-
     def disable_lights(self):
-        '''
+        """
         Called at the end of a render cycle to complete lighting.
-        '''
+        """
         glDisable(GL_LIGHTING)
 
     def world_to_view_transform(self, view, whicheye=0, forpick=False):
-        '''
+        """
         Set up matrices for transforms from world coordinates to view coordinates
         Precondition: the OpenGL Modelview and Projection matrix stacks should be
         at the bottom.
@@ -226,13 +223,13 @@ class display_kernel(object):
         the bottom.  Viewing transformations have been applied.  geometry.camera
         is initialized.
         whicheye: -1 for left, 0 for center, 1 for right.
-        '''
+        """
         # See http://www.stereographics.com/support/developers/pcsdk.htm for a
         # discussion regarding the design basis for the frustum offset code.
 
         # gcf scales the region encompassed by scene.range_* into a ROUGHLY 2x2x2 cube.
         # Note that this is NOT necessarily the entire world, since scene.range
-        #   can be changed.
+        # can be changed.
         # This coordinate system is used for most of the calculations below.
 
         scene_center = self.center.scale(self.gcfvec)
@@ -252,12 +249,10 @@ class display_kernel(object):
         cam_to_center_without_zoom = 1e150
 
         if self.range_auto:
-            cam_to_center_without_zoom = min([cam_to_center_without_zoom, \
-                                              range_auto])
+            cam_to_center_without_zoom = min([cam_to_center_without_zoom, range_auto])
         if self.range.nonzero():
-            cam_to_center_without_zoom = min(cam_to_center_without_zoom, \
-                                             range.x * cot_hfov / 1.02)
-        if (cam_to_center_without_zoom >= 1e150):
+            cam_to_center_without_zoom = min(cam_to_center_without_zoom, range.x * cot_hfov / 1.02)
+        if cam_to_center_without_zoom >= 1e150:
             cam_to_center_without_zoom = 10.0 / sin(self.fov * 0.5)
         cam_to_center_without_zoom *= self.gcf * 1.02
 
@@ -265,9 +260,9 @@ class display_kernel(object):
         #   OR a 2*user_scale cube will fit.  The former is tighter for "non cubical" ranges
         #   and the latter is tighter for cubical ones.
         scene_camera = scene_center - cam_to_center_without_zoom * self.user_scale * self.scene_forward
+        # nearest and farthest points relative to scene.center when projected onto forward
 
-        [nearest, farthest] = world_extent.get_near_and_far(internal_forward, nearest,
-                                                            farthest)  # nearest and farthest points relative to scene.center when projected onto forward
+        [nearest, farthest] = world_extent.get_near_and_far(internal_forward, nearest, farthest)
         nearest = nearest * self.gcf
         farthest = farthest * self.gcf
 
@@ -290,7 +285,8 @@ class display_kernel(object):
         '''
         fwz = cam_to_center_without_zoom + 1.0
         nearclip = fwz * fwz / (100 + fwz) * self.user_scale
-        # TODO: nearclip = max( nearclip, (cam_to_center + nearest) * 0.95 )  #< ?? boost z buffer resolution if there's nothing close to camera?
+        # TODO: nearclip = max( nearclip, (cam_to_center + nearest) * 0.95 )
+        #  ?? boost z buffer resolution if there's nothing close to camera?
         farclip = (farthest + cam_to_center) * 1.05  # < actual maximum z in scene plus a little
         farclip = max([farclip, nearclip * 1.001])  # < just in def set_everything is behind the camera!
 
@@ -306,13 +302,11 @@ class display_kernel(object):
         # Translate camera left/right 2% of the viewable width of the scene at
         # the distance of its center.
         camera_stereo_offset = tan_hfov_x * focallength * 0.02
-        camera_stereo_delta = camera_stereo_offset \
-                              * self.up.cross(scene_camera).norm() * whicheye
+        camera_stereo_delta = camera_stereo_offset * self.up.cross(scene_camera).norm() * whicheye
         scene_camera += camera_stereo_delta
         scene_center += camera_stereo_delta
         # The amount to translate the frustum to the left and right.
-        frustum_stereo_offset = camera_stereo_offset * nearclip \
-                                / focallength * whicheye
+        frustum_stereo_offset = camera_stereo_offset * nearclip / focallength * whicheye
 
         # Finally, the OpenGL transforms based on the geometry just calculated.
         clear_gl_error()
@@ -325,26 +319,24 @@ class display_kernel(object):
         max_mv_stack_depth = glGetIntegerv(GL_MAX_MODELVIEW_STACK_DEPTH)
         proj_stack_depth = glGetIntegerv(GL_PROJECTION_STACK_DEPTH)
         mv_stack_depth = glGetIntegerv(GL_MODELVIEW_STACK_DEPTH)
-        print
-        "scene_geometry: camera:" + str(scene_camera) \
-        + " true camera:" + str(self.camera) + "\n" \
-        + " center:" + str(scene_center) + " true center:" + str(self.center) + "\n" \
-        + " forward:" + str(scene_forward) + " true forward:" + str(self.forward) + "\n" \
-        + " up:" + str(scene_up) + " range:" + str(self.range) + " gcf:" + str(self.gcf) + "\n" \
-        + " nearclip:" + str(nearclip) + " nearest:" + str(self.nearest) + "\n" \
-        + " farclip:" + str(farclip) + " farthest:" + str(self.farthest) + "\n" \
-        + " user_scale:" + str(user_scale) + "\n" \
-        + " cot_hfov:" + str(cot_hfov) + " tan_hfov_x:" + str(tan_hfov_x) + "\n" \
-        + " tan_hfov_y: " + str(tan_hfov_y) + "\n" \
-        + " window_width:" + str(window_width) + " window_height:" + str(window_height) + "\n" \
-        + " max_proj_depth:" + str(max_proj_stack_depth) + " current_proj_depth:" + str(proj_stack_depth) + "\n" \
-        + " max_mv_depth:" + str(max_mv_stack_depth) + " current_mv_depth:" + str(mv_stack_depth) + "\n"
+        print "scene_geometry: camera:" + str(scene_camera) \
+              + " true camera:" + str(self.camera) + "\n" \
+              + " center:" + str(scene_center) + " true center:" + str(self.center) + "\n" \
+              + " forward:" + str(scene_forward) + " true forward:" + str(self.forward) + "\n" \
+              + " up:" + str(scene_up) + " range:" + str(self.range) + " gcf:" + str(self.gcf) + "\n" \
+              + " nearclip:" + str(nearclip) + " nearest:" + str(self.nearest) + "\n" \
+              + " farclip:" + str(farclip) + " farthest:" + str(self.farthest) + "\n" \
+              + " user_scale:" + str(user_scale) + "\n" \
+              + " cot_hfov:" + str(cot_hfov) + " tan_hfov_x:" + str(tan_hfov_x) + "\n" \
+              + " tan_hfov_y: " + str(tan_hfov_y) + "\n" \
+              + " window_width:" + str(window_width) + " window_height:" + str(window_height) + "\n" \
+              + " max_proj_depth:" + str(max_proj_stack_depth) + " current_proj_depth:" + str(proj_stack_depth) + "\n" \
+              + " max_mv_depth:" + str(max_mv_stack_depth) + " current_mv_depth:" + str(mv_stack_depth) + "\n"
         self.world_extent.dump_extent()
 
-        gluLookAt( \
-            scene_camera.x, scene_camera.y, scene_camera.z, \
-            scene_center.x, scene_center.y, scene_center.z, \
-            scene_up.x, scene_up.y, scene_up.z)
+        gluLookAt(scene_camera.x, scene_camera.y, scene_camera.z,
+                  scene_center.x, scene_center.y, scene_center.z,
+                  scene_up.x, scene_up.y, scene_up.z)
 
         world_camera = gl_modelview_get()
         inverse(geometry.camera_world, world_camera)
@@ -362,16 +354,14 @@ class display_kernel(object):
             raise RunTimeEror("degenerate projection: " + str(self.nearclip) + " " + str(self.farclip) + " " + str(
                 tan_hfov_x) + " " + str(tan_hfov_y))
 
-        glFrustum( \
-            -self.nearclip * tan_hfov_x + frustum_stereo_offset, \
-            self.nearclip * tan_hfov_x + frustum_stereo_offset, \
-            -self.nearclip * tan_hfov_y, \
-            self.nearclip * tan_hfov_y, \
-            self.nearclip, \
-            self.farclip)
+        glFrustum(-self.nearclip * tan_hfov_x + frustum_stereo_offset,
+                  self.nearclip * tan_hfov_x + frustum_stereo_offset,
+                  -self.nearclip * tan_hfov_y,
+                  self.nearclip * tan_hfov_y,
+                  self.nearclip,
+                  self.farclip)
 
         glMatrixMode(GL_MODELVIEW)
-        check_gl_error()
 
         # The true camera position, in world space.
         self.camera = scene_camera / gcf
@@ -384,7 +374,7 @@ class display_kernel(object):
         geometry.up = internal_forward.cross_b_cross_c(up, internal_forward).norm()
 
     def draw(self, scene_geometry, whicheye=0):
-        '''
+        """
          Renders the scene for one eye.
             @param scene The dimensions of the scene, to be propogated to this
                 display_kernel's children.
@@ -394,15 +384,15 @@ class display_kernel(object):
                 desaturation or grayscaling.
             @param scene_geometry.coloranaglyph  True if colors must be grayscaled, false if colors
                 must be desaturated.
-        '''
+        """
         # Set up the base modelview and projection matrices
         self.world_to_view_transform(scene_geometry, whicheye)
         # Render all opaque objects in the world space layer
         enable_lights(scene_geometry)
         i = world_iterator(layer_world.begin())
         i_end = world_iterator(layer_world.end())
-        while (i != i_end):
-            if (i.translucent()):
+        while i != i_end:
+            if i.translucent():
                 # The color of the object has become transparent when it was not
                 # initially.  Move it to the transparent layer.  The penalty for
                 # being rendered in the transparent layer when it is opaque is only
@@ -413,31 +403,27 @@ class display_kernel(object):
                 self.layer_world_transparent.push_back(i.base())
                 i = layer_world.erase(i.base())
                 continue
-            check_gl_error()
             i.outer_render(scene_geometry)
-            check_gl_error()
             i += 1
 
-
         # Perform a depth sort of the transparent world from back to front.
-        if (self.layer_world_transparent.size() > 1):
-            stable_sort( \
-                self.layer_world_transparent.begin(), self.layer_world_transparent.end(), \
-                z_comparator(self.internal_forward.norm()))
+        if self.layer_world_transparent.size() > 1:
+            stable_sort(self.layer_world_transparent.begin(), self.layer_world_transparent.end(),
+                        z_comparator(self.internal_forward.norm()))
 
         # Render translucent objects in world space.
         j = world_trans_iterator(layer_world_transparent.begin())
         j_end = world_trans_iterator(layer_world_transparent.end())
-        while (j != j_end):
+        while j != j_end:
             j.outer_render(scene_geometry)
             j += 1
 
         # Render all objects in screen space.
         disable_lights()
-        depth_test = gl_disable(GL_DEPTH_TEST)
+        gl_disable(GL_DEPTH_TEST)
         k = screen_iterator(scene_geometry.screen_objects.begin())
         k_end = screen_iterator(scene_geometry.screen_objects.end())
-        while (k != k_end):
+        while k != k_end:
             k.second.gl_render()
             k += 1
 
@@ -452,42 +438,42 @@ class display_kernel(object):
         [tan_hfov_x, tan_hfov_y] = self.tan_hfov(tan_hfov_x, tan_hfov_y)
         tan_hfov = max([tan_hfov_x, tan_hfov_y])
 
-        while (1):  # < Might have to do this twice for autocenter
+        while True:  # < Might have to do this twice for autocenter
             world_extent = self.extent_data(tan_hfov)
             l_cw.translate(-center)
             ext = extent(world_extent, l_cw)
             i = world_iterator(layer_world.begin())
             end = world_iterator(layer_world.end())
-            while (i != end):
+            while i != end:
                 i.grow_extent(ext)
                 i += 1
 
             j = world_trans_iterator(layer_world_transparent.begin())
             j_end = world_trans_iterator(layer_world_transparent.end())
-            while (j != j_end):
+            while j != j_end:
                 j.grow_extent(ext)
                 j += 1
 
-            if (self.autocenter):
+            if self.autocenter:
                 c = world_extent.get_center() + self.center
-                if ((self.center - c).mag2() > (self.center.mag2() + c.mag2()) * 1e-6):
+                if (self.center - c).mag2() > (self.center.mag2() + c.mag2()) * 1e-6:
                     # Change center and recalculate extent (since camera_z depends on center)
                     self.center = c
                     continue
             break
 
-        if (self.autoscale and self.uniform):
+        if self.autoscale and self.uniform:
             r = world_extent.get_camera_z()
-            if (r > range_auto):
+            if r > range_auto:
                 range_auto = r
-            elif (3.0 * r < range_auto):
+            elif 3.0 * r < range_auto:
                 range_auto = 3.0 * r
 
         # Rough scale calculation for gcf.  Doesn't need to be exact.
         # TODO: If extent and range are very different in scale, we are using extent to drive
-        #   gcf.  Both options have pros and cons.
+        # gcf.  Both options have pros and cons.
         mr = world_extent.get_range(vector(0, 0, 0)).mag()
-        if mr != None or mr != 0.0:
+        if mr is not None or mr != 0.0:
             scale = 1.0 / mr
         else:
             scale = 1.0
@@ -503,7 +489,7 @@ class display_kernel(object):
         else:
             # TODO: Instead of changing gcf so much, we could change it only when it is 2x
             # off, to aid primitives whose caching may depend on gcf (but are there any?)
-            if (self.gcf != scale):
+            if self.gcf is Not scale:
                 self.gcf = scale
                 self.gcf_changed = True
             self.gcfvec = vector(self.gcf, self.gcf, self.gcf)
@@ -514,9 +500,9 @@ class display_kernel(object):
         # tangent of half the field of view.
         tan_hfov = tan(self.fov * 0.5)
         aspect_ratio = self.view_height / self.view_width
-        if (self.stereo_mode == PASSIVE_STEREO or self.stereo_mode == CROSSEYED_STEREO):
+        if self.stereo_mode == PASSIVE_STEREO or self.stereo_mode == CROSSEYED_STEREO:
             aspect_ratio *= 2.0
-        if (aspect_ratio > 1.0):
+        if aspect_ratio > 1.0:
             # Tall window
             x = tan_hfov / aspect_ratio
             y = tan_hfov
@@ -538,9 +524,7 @@ class display_kernel(object):
             renderer = glGetString(GL_RENDERER)
 
         # The test is a hack so that subclasses not bothering to implement getProcAddress just
-        #   don't get any extensions.
-        # if (getProcAddress("display_kernel::getProcAddress") != notImplemented)
-        #	glext.init( *self )
+        # don't get any extensions.
 
 
         # Those features of OpenGL that are always used are set up here.
@@ -568,7 +552,7 @@ class display_kernel(object):
         glAlphaFunc(GL_GREATER, 0.0)
 
         # FSAA.  Doesn't seem to have much of an effect on my TNT2 card.  Grrr.
-        if (hasExtension("GL_ARB_multisample")):
+        if has_extension("GL_ARB_multisample"):
             glEnable(GL_MULTISAMPLE_ARB)
             n_samples = glGetIntegerv(GL_SAMPLES_ARB)
             n_buffers = glGetIntegerv(GL_SAMPLE_BUFFERS_ARB)
@@ -579,10 +563,10 @@ class display_kernel(object):
             self.visible = True
 
     def add_renderable(self, obj):
-        '''
+        """
         Add a normal renderable object to the list of objects to be rendered into
         world space.
-        '''
+        """
         if not obj.translucent():
             self.layer_world.push_back(obj)
         else:
@@ -591,10 +575,10 @@ class display_kernel(object):
             self.implicit_activate()
 
     def remove_renderable(self, obj):
-        '''
+        """
           Remove a renderable object from this display, regardless of which layer
            it resides in.
-        '''
+        """
         if not obj.translucent():
             remove(self.layer_world.begin(), self.layer_world.end(), obj)
             self.layer_world.pop_back()
@@ -607,12 +591,12 @@ class display_kernel(object):
         return self.camera
 
     def render_scene(self):
-        '''
+        """
          Renders the scene once.  The enveloping widget is resposible for calling
          this function appropriately.
           @return If false, something catastrophic has happened and the
           application should probably exit.
-        '''
+        """
         print("starting render")
         # TODO: Exception handling?
         if not self.realized:
@@ -621,7 +605,7 @@ class display_kernel(object):
         try:
             self.recalc_extent()
 
-            scene_geometry = view(self.internal_forward.norm(), self.center, self.view_width, \
+            scene_geometry = view(self.internal_forward.norm(), self.center, self.view_width,
                                   self.view_height, self.forward_changed, self.gcf, self.gcfvec, self.gcf_changed,
                                   self.glext)
             scene_geometry.lod_adjust = self.lod_adjust
@@ -631,10 +615,11 @@ class display_kernel(object):
             on_gl_free.frame()
 
             glClearColor(self.background.red, self.background.green, self.background.blue, 0)
-            modes = {NO_STEREO: self.set_NO_STEREO, ACTIVE_STEREO: self.set_ACTIVE_STEREO, \
-                     REDBLUE_STEREO: self.set_REDBLUE_STEREO, REDCYAN_STEREO: self.set_REDCYAN_STEREO, \
-                     YELLOWBLUE_STEREO: self.set_YELLOWBLUE_STEREO, GREENMAGENTA_STEREO: self.set_GREENMAGENTA_STEREO, \
-                     PASSIVE_STEREO: self.set_PASSIVE_STEREO, CROSSEYED_STEREO: self.set_CROSSEYED_STEREO}
+            modes = {NO_STEREO: self.set_no_stere, ACTIVE_STEREO: self.set_active_stereo,
+                     RED_BLUE_STEREO: self.set_red_blue_stereo, RED_CYAN_STEREO: self.set_red_cyan_stereo,
+                     YELLOW_BLUE_STEREO: self.set_yellow_blue_stereo,
+                     GREEN_MAGENTA_STEREO: self.set_green_magenta_stereo, PASSIVE_STEREO: self.set_passive_stereo,
+                     CROSS_EYED_STEREO: self.set_cross_eyed_stereo}
             modes[self.stereo_mode]()
             print("stereo mode: " + str(self.stereo_mode))
             # Cleanup
@@ -644,28 +629,24 @@ class display_kernel(object):
 
         except gl_error as e:
             raise RunTimeError("render_scene OpenGL error: " + e.what() + ", aborting.\n")
-        except:
-            print
-            "something went wrong"
+        except Exception as e:
+            print "something went wrong: " + str(e)
 
         # TODO: Can we delay picking until the Python program actually wants one of these attributes?
         mouse.get_mouse().cam = camera
-        # not exactly sure what this is doing...
-        # boost::tie( mouse.get_mouse().pick, mouse.get_mouse().pickpos, mouse.get_mouse().position) =
-        #	pick( mouse.get_x(), mouse.get_y() )
 
         on_gl_free.frame()
 
         return True
 
-    def set_NO_STEREO(self, scene_geometry):
+    def set_no_stereo(self, scene_geometry):
         scene_geometry.anaglyph = False
         scene_geometry.coloranaglyph = False
         glViewport(0, 0, self.view_width, self.view_height)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         self.draw(scene_geometry, 0)
 
-    def set_ACTIVE_STEREO(self, scene_geometry):
+    def set_active_stereo(self, scene_geometry):
         scene_geometry.anaglyph = False
         scene_geometry.coloranaglyph = False
         glViewport(0, 0, self.view_width, self.view_height)
@@ -676,7 +657,7 @@ class display_kernel(object):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         self.draw(scene_geometry, 1)
 
-    def set_REDBLUE_STEREO(self, scene_geometry):
+    def set_red_blue_stereo(self, scene_geometry):
         # Red channel
         scene_geometry.anaglyph = True
         scene_geometry.coloranaglyph = False
@@ -691,7 +672,7 @@ class display_kernel(object):
         # Put everything back
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)
 
-    def set_REDCYAN_STEREO(self, scene_geometry):
+    def set_red_cyan_stereo(self, scene_geometry):
         # Red channel
         scene_geometry.anaglyph = True
         scene_geometry.coloranaglyph = True
@@ -706,7 +687,7 @@ class display_kernel(object):
         # Put everything back
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)
 
-    def set_YELLOWBLUE_STEREO(self, scene_geometry):
+    def set_yellow_blue_stereo(self, scene_geometry):
         # Red and green channels
         scene_geometry.anaglyph = True
         scene_geometry.coloranaglyph = True
@@ -721,7 +702,7 @@ class display_kernel(object):
         # Put everything back
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)
 
-    def set_GREENMAGENTA_STEREO(self, scene_geometry):
+    def set_green_majenta_stereo(self, scene_geometry):
         # Green channel
         scene_geometry.anaglyph = True
         scene_geometry.coloranaglyph = True
@@ -736,7 +717,7 @@ class display_kernel(object):
         # Put everything back
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE)
 
-    def set_PASSIVE_STEREO(self, scene_geometry):
+    def set_passive_stereo(self, scene_geometry):
         # Also handle viewport modifications.
         scene_geometry.view_width = self.view_width / 2
         scene_geometry.anaglyph = False
@@ -750,7 +731,7 @@ class display_kernel(object):
         glViewport(stereo_width + 1, 0, self.stereo_width, self.view_height)
         self.draw(scene_geometry, 1)
 
-    def set_CROSSEYED_STEREO(self, scene_geometry):
+    def set_cross_eyed_stereo(self, scene_geometry):
         # Also handle viewport modifications.
         scene_geometry.view_width = view_width / 2
         scene_geometry.anaglyph = False
@@ -759,16 +740,16 @@ class display_kernel(object):
         # Left eye
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glViewport(0, 0, self.stereo_width, self.view_height)
-        self.draw(self.scene_geometry, 1);
+        self.draw(self.scene_geometry, 1)
         # Right eye
         glViewport(self.stereo_width + 1, 0, self.stereo_width, self.view_height)
         self.draw(scene_geometry, -1)
 
     def report_closed(self):
-        '''
+        """
          Inform this object that the window has been closed (is no longer physically
          visible)
-        '''
+        """
         if self.visible:
             self.set_display_visible(self, False)
         self.realized = False
@@ -776,12 +757,12 @@ class display_kernel(object):
         self.explicitly_invisible = True
 
     def report_camera_motion(self, dx, dy, button):
-        '''
+        """
         Called by mouse_manager to report mouse movement that should affect the camera.
         Report that the mouse moved with one mouse button down.
             @param dx horizontal change in mouse position in pixels.
             @param dy vertical change in mouse position in pixels.
-        '''
+        """
 
         # This stuff handles automatic movement of the camera in response to user
         # input. See also view_to_world_transform for how the affected variables
@@ -803,10 +784,10 @@ class display_kernel(object):
         # mouse has traveled for this event.
         # TODO: Implement ZOOM_ROLL modes.
         vfrac = float(dy / self.view_height)
-        if self.stereo_mode == PASSIVE_STEREO or stereo_mode == CROSSEYED_STEREO:
+        if self.stereo_mode == PASSIVE_STEREO or stereo_mode == CROSS_EYED_STEREO:
             hfrac = float(dx / (self.view_width * 0.5))
         else:
-            hfrac = float(dx / (self.view_width))
+            hfrac = float(dx / self.view_width)
 
         # The amount by which the scene should be shifted in response to panning
         # motion.
@@ -822,44 +803,43 @@ class display_kernel(object):
                     self.center += pan_rate * vfrac * self.internal_forward.norm()
             if self.mouse_mode == ZOOM_ROLL or self.mouse_mode == ZOOM_ROTATE:
                 # Zoom in/out.
-                if (self.zoom_allowed):
+                if self.zoom_allowed:
                     self.user_scale *= pow(10.0, vfrac)
         if button == RIGHT:
             if self.mouse_mode == PAN:
                 # Pan up/down and left/right.
                 # A vector pointing along the camera's horizontal axis.
-                horiz_dir = self.internal_forward.cross(self.up).norm();
+                horiz_dir = self.internal_forward.cross(self.up).norm()
                 # A vector pointing along the camera's vertical axis.
-                vert_dir = self.horiz_dir.cross(self.internal_forward).norm();
-                if (self.spin_allowed):
-                    self.center += -horiz_dir * pan_rate * hfrac;
-                    self.center += vert_dir * pan_rate * vfrac;
+                vert_dir = self.horiz_dir.cross(self.internal_forward).norm()
+                if self.spin_allowed:
+                    self.center += -horiz_dir * pan_rate * hfrac
+                    self.center += vert_dir * pan_rate * vfrac
             if self.mouse_mode == ZOOM_ROTATE:
                 if self.spin_allowed:
                     # Rotate
                     # First perform the rotation about the up vector.
-                    R = rotation(-hfrac * 2.0, self.up.norm())
-                    self.internal_forward = R * self.internal_forward
+                    r = rotation(-hfrac * 2.0, self.up.norm())
+                    self.internal_forward = r * self.internal_forward
 
                     # Then perform rotation about an axis orthogonal to up and forward.
                     vertical_angle = vfrac * 2.0
                     max_vertical_angle = self.up.diff_angle(-self.internal_forward.norm())
 
                     # Over the top (or under the bottom) rotation
-                    if not (vertical_angle >= max_vertical_angle or \
-                                        vertical_angle <= max_vertical_angle - pi):
+                    if not (vertical_angle >= max_vertical_angle or vertical_angle <= max_vertical_angle - pi):
                         # Over the top (or under the bottom) rotation
-                        R = rotation(-vertical_angle, self.internal_forward.cross(self.up).norm());
-                        self.forward = self.internal_forward = R * self.internal_forward
+                        r = rotation(-vertical_angle, self.internal_forward.cross(self.up).norm())
+                        self.forward = self.internal_forward = r * self.internal_forward
                         self.forward_changed = True
 
     def report_window_resize(self, win_x, win_y, win_w, win_h):
-        '''
+        """
         Report that the position and/or size of the window or drawing area widget has changed.
         Some platforms might not know about position changes they can pass (x,y,new_width,new_height)
         win_* give the window rectangle (see self.window_*)
         v_* give the view rectangle (see self.view_*)
-        '''
+        """
         self.window_x = win_x
         self.window_y = win_y
         self.window_width = win_w
@@ -870,7 +850,7 @@ class display_kernel(object):
         self.view_height = max(v_h, 1)
 
     def pick(self, x, y, d_pixels=2.0):
-        '''
+        """
         Determine which object (if any) was picked by the cursor.
         @param x the x-position of the mouse cursor, in pixels.
         @param y the y-position of the mouse cursor, in pixels.
@@ -880,7 +860,8 @@ class display_kernel(object):
         the position of the mouse cursor on the near clipping plane.
         retval.get<0>() may be NULL if nothing was hit, in which def set_the
         positions are undefined.
-        '''
+        """
+        best_pick = vector()
         pickpos = vector()
         mousepos = vector()
         try:
@@ -931,7 +912,7 @@ class display_kernel(object):
             # Iterate across the world, rendering each body for picking.
             i = layer_world.begin()
             i_end = layer_world.end()
-            while (i != i_end):
+            while i != i_end:
                 glLoadName(name_table.size())
                 name_table.push_back(i)
                 i.gl_pick_render(scene_geometry)
@@ -939,7 +920,7 @@ class display_kernel(object):
 
             j = self.layer_world_transparent.begin()
             j_end = self.layer_world_transparent.end()
-            while (j != j_end):
+            while j != j_end:
                 glLoadName(name_table.size())
                 name_table.push_back(j)
                 j.gl_pick_render(scene_geometry)
@@ -963,49 +944,38 @@ class display_kernel(object):
                 if hit_record + 3 + n_names > hit_buffer_end:
                     break
                 min_hit_depth = hit_record[1] / 268435455
-                if (min_hit_depth < best_pick_depth):
+                if min_hit_depth < best_pick_depth:
                     best_pick_depth = min_hit_depth
                     best_pick = name_table[hit_record + 3]
-                if (n_names > 1):
+                if n_names > 1:
                     # Then the picked object is the child of a frame.
                     ref_frame = best_pick.get()
-                    assert (ref_frame != None)
+                    assert (ref_frame is not None)
                     best_pick = ref_frame.lookup_name(hit_record + 4, hit_record + 3 + n_names)
 
                 hit_record += 3 + n_names
                 n_hits -= 1
 
-            if (hit_record > hit_buffer_end):
-                raise ( \
-                    "More objects were picked than could be reported by the GL." \
-                    "  The hit buffer size was too small.")
+            if hit_record > hit_buffer_end:
+                raise ("More objects were picked than could be reported by the GL."
+                       "  The hit buffer size was too small.")
 
             modelview.gl_modelview_get()
             projection = tmatrix()
             projection.gl_projection_get()
-            pickpos.x, pickpos.y, pickpos.z = gluUnProject( \
-                x, self.view_height - y, self.best_pick_depth, \
-                modelview.matrix_addr(), \
-                projection.matrix_addr(), \
-                viewport_bounds)
+            pickpos.x, pickpos.y, pickpos.z = gluUnProject(x, self.view_height - y, self.best_pick_depth,
+                                                           modelview.matrix_addr(), projection.matrix_addr(),
+                                                           viewport_bounds)
             # TODO: Replace the calls to gluUnProject() with own tmatrix inverse
             # and such for optimization
-            tcenter.x, tcenter.y, tcenter.z = gluProject(self.center.x * self.gcf, \
-                                                         self.center.y * self.gcf, self.center.z * sel.fgcf, \
-                                                         modelview.matrix_addr(), \
-                                                         projection.matrix_addr(), \
-                                                         viewport_bounds, \
-                                                         )
-
-            mousepos.x, mousepos.y, mousepos.z = gluUnProject( \
-                x, self.view_height - y, tcenter.z, \
-                modelview.matrix_addr(), \
-                projection.matrix_addr(), \
-                viewport_bounds)
+            tcenter.x, tcenter.y, tcenter.z = gluProject(self.center.x * self.gcf, self.center.y * self.gcf,
+                                                         self.center.z * sel.fgcf, modelview.matrix_addr(),
+                                                         projection.matrix_addr(), viewport_bounds)
+            mousepos.x, mousepos.y, mousepos.z = gluUnProject(x, self.view_height - y, tcenter.z,
+                                                              modelview.matrix_addr(), projection.matrix_addr(),
+                                                              viewport_bounds)
         except gl_error as e:
-            msg = "pick OpenGL error: " + e + ", aborting.\n"
-            raise (msg)
-            sys.exit(1)
+            raise "pick OpenGL error: " + e + ", aborting.\n"
 
         pickpos.x /= self.gcfvec.x
         pickpos.y /= self.gcfvec.y
@@ -1016,18 +986,17 @@ class display_kernel(object):
         return [best_pick, pickpos, mousepos]
 
     def gl_free(self):
-        '''
+        """
         Release GL resources.  Call this as many times as you like during the
         shutdown.  However, neither pick() nor render_scene() may be called on
         any display_kernel after gl_free() has been invoked.
-        '''
+        """
         try:
             clear_gl_error()
             on_gl_free.shutdown()
             check_gl_error()
-        except (error):
-            raise ("Caught OpenGL error during shutdown: " \
-                   + error + " Continuing with the shutdown.")
+        except Exception as error:
+            raise ("Caught OpenGL error during shutdown: " + error + " Continuing with the shutdown.")
 
     def allow_spin(self, b):
         self.spin_allowed = b
@@ -1036,10 +1005,10 @@ class display_kernel(object):
         return self.spin_allowed
 
     def allow_zoom(self, b):
-        zoom_allowed = b
+        self.zoom_allowed = b
 
     def zoom_is_allowed(self):
-        return zoom_allowed
+        return self.zoom_allowed
 
     # Python properties
     @property
@@ -1048,17 +1017,17 @@ class display_kernel(object):
 
     @up.setter
     def up(self, n_up):
-        if (n_up == vector()):
+        if n_up == vector():
             raise ValueError("Up cannot be zero.")
-            v = n_up.norm()
-            if (v.cross(
-                    self.internal_forward) == vector()):  # if internal_forward parallel to new up, move it away from new up
-                if (v.cross(self.forward) == vector()):
-                    # old internal_forward was not parallel to old up
-                    self.internal_forward = (self.forward - 0.0001 * self.up).norm()
-                else:
-                    self.internal_forward = self.forward
-            self.up = v
+        v = n_up.norm()
+        # if internal_forward parallel to new up, move it away from new up
+        if v.cross(self.internal_forward) == vector():
+            # old internal_forward was not parallel to old up
+            if v.cross(self.forward) == vector():
+                self.internal_forward = (self.forward - 0.0001 * self.up).norm()
+            else:
+                self.internal_forward = self.forward
+        self.up = v
 
     @property
     def forward(self):
@@ -1066,14 +1035,14 @@ class display_kernel(object):
 
     @forward.setter
     def forward(self, n_forward):
-        if (n_forward == vector()):
+        if n_forward == vector():
             raise ValueError("Forward cannot be zero.")
         v = n_forward.norm()
-        if (v.cross(self.up) == vector()):
+        if v.cross(self.up) == vector():
             # if new forward parallel to up, move internal_forward away from up
             # old internal_forward was not parallel to up
-            self.internal_forward = (
-            v.dot(self.up) * self.up + 0.0001 * self.up.cross(self.internal_forward.cross(self.up))).norm()
+            self.internal_forward = (v.dot(self.up) * self.up +
+                                     0.0001 * self.up.cross(self.internal_forward.cross(self.up))).norm()
         else:
             # since new forward not parallel to up, new forward is okay
             self.internal_forward = v
@@ -1088,7 +1057,7 @@ class display_kernel(object):
 
     @scale.setter
     def scale(self, n_scale):
-        if (n_scale.x == 0.0 or n_scale.y == 0.0 or n_scale.z == 0.0):
+        if n_scale.x == 0.0 or n_scale.y == 0.0 or n_scale.z == 0.0:
             raise ValueError("The scale of each axis must be non-zero.")
         n_range = vector(1.0 / n_scale.x, 1.0 / n_scale.y, 1.0 / n_scale.z)
         self.range(n_range)
@@ -1107,11 +1076,10 @@ class display_kernel(object):
 
     @fov.setter
     def fov(self, n_fov):
-        if (n_fov == 0.0):
+        if n_fov == 0.0:
             raise ValueError("Orthogonal projection is not supported.")
-        elif (n_fov < 0.0 or n_fov >= pi):
-            raise ValueError("attribute visual.display.fov must be between 0.0" \
-                             "and math.pi (exclusive)")
+        elif n_fov < 0.0 or n_fov >= pi:
+            raise ValueError("attribute visual.display.fov must be between 0.0 and math.pi (exclusive)")
         self.fov = n_fov
 
     @property
@@ -1120,7 +1088,7 @@ class display_kernel(object):
 
     @lod_adjust.setter
     def lod_adjust(self, n_lod):
-        if (n_lod > 0 or n_lod < -6):
+        if n_lod > 0 or n_lod < -6:
             raise ValueError("attribute visual.display.lod must be between -6 and 0")
         self.lod_adjust = n_lod
 
@@ -1149,31 +1117,31 @@ class display_kernel(object):
         self.foreground = n_foreground
 
     @property
-    def autoscale(self):
+    def auto_scale(self):
         return self.autoscale
 
-    @autoscale.setter
-    def autoscale(self, n_autoscale):
+    @auto_scale.setter
+    def auto_scale(self, n_auto_scale):
         if not n_autoscale and self.autoscale:
             # Autoscale is disabled, but range_auto remains
-            #   set to the current autoscaled scene, until and unless
+            # set to the current autoscaled scene, until and unless
             #   range is set explicitly.
             self.recalc_extent()
             self.range = vector(0, 0, 0)
-        self.autoscale = n_autoscale
+        self.auto_scale = n_autoscale
 
     @property
     def range(self):
-        if self.autoscale or not range.nonzero():
+        if self.auto_scale or not range.nonzero():
             raise Exception("Reading .scale and .range is not supported when autoscale is enabled.")
         return self.range
 
     @range.setter
     def range(self, n_range):
         if not type(n_range) == 'double':
-            if (n_range.x == 0.0 or n_range.y == 0.0 or n_range.z == 0.0):
+            if n_range.x == 0.0 or n_range.y == 0.0 or n_range.z == 0.0:
                 raise ValueError("attribute visual.display.range may not be zero.")
-            self.autoscale = False
+            self.auto_scale = False
             self.range = n_range
             self.range_auto = 0.0
         else:
@@ -1186,44 +1154,44 @@ class display_kernel(object):
     @ambient.setter
     def ambient(self, n_ambient):
         if type(n_ambient) == 'float':
-            self.ambient = rgb(n_ambient, n_ambient, n_ambient)
+            self.ambient = Rgb(n_ambient, n_ambient, n_ambient)
         else:
             self.ambient = n_ambient
 
     @property
-    def stereodepth(self):
-        return self.stereodepth
+    def stereo_depth(self):
+        return self.stereo_depth
 
-    @stereodepth.setter
-    def stereodepth(self, n_stereodepth):
-        if (self.visible):
+    @stereo_depth.setter
+    def stereo_depth(self, n_stereo_depth):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.stereodepth = n_stereodepth
+            self.stereo_depth = n_stereo_depth
 
     @property
-    def stereomode(self):
+    def stereo_mode(self):
         # The only mode that cannot be changed after initialization is active,
         # which will result in a gl_error exception when rendered.  The completing
         # display class will have to perform some filtering on this parameter.  This
         # properties setter will not change the mode if the new one is invalid.
-        stereo_values = {'NO_STEREO': 'nostereo', 'ACTIVE_STEREO': 'active', \
-                         'PASSIVE_STEREO': 'passive', 'CROSSEYED_STEREO': 'crosseyed', \
-                         'REDBLUE_STEREO': 'redblue', 'REDCYAN_STEREO': 'redcyan', \
-                         'YELLOWBLUE_STEREO': 'yellowblue', 'GREENMAGENTA_STEREO': 'greenmagenta'}
-        if not hasattr(stereo_values, self.stereomode):
+        stereo_values = {'NO_STEREO': 'no_stereo', 'ACTIVE_STEREO': 'active',
+                         'PASSIVE_STEREO': 'passive', 'CROSS_EYED_STEREO': 'cross_eyed',
+                         'RED_BLUE_STEREO': 'red_blue', 'RED_CYAN_STEREO': 'red_cyan',
+                         'YELLOW_BLUE_STEREO': 'yellow_blue', 'GREEN_MAGENTA_STEREO': 'green_magenta'}
+        if not hasattr(stereo_values, self.stereo_mode):
             # Not strictly required, this just silences a warning about control
             # reaching the end of a non-void funciton.
-            return "nostereo"
+            return "no_stereo"
         else:
-            return stereo_values[self.stereomode]
+            return stereo_values[self.stereo_mode]
 
-    @stereomode.setter
-    def stereomode(self, mode):
-        stereo_values = {'NO_STEREO': 'nostereo', 'ACTIVE_STEREO': 'active', \
-                         'PASSIVE_STEREO': 'passive', 'CROSSEYED_STEREO': 'crosseyed', \
-                         'REDBLUE_STEREO': 'redblue', 'REDCYAN_STEREO': 'redcyan', \
-                         'YELLOWBLUE_STEREO': 'yellowblue', 'GREENMAGENTA_STEREO': 'greenmagenta'}
+    @stereo_mode.setter
+    def stereo_mode(self, mode):
+        stereo_values = {'NO_STEREO': 'no_stereo', 'ACTIVE_STEREO': 'active',
+                         'PASSIVE_STEREO': 'passive', 'CROSS_EYED_STEREO': 'cross_eyed',
+                         'RED_BLUE_STEREO': 'red_blue', 'RED_CYAN_STEREO': 'red_cyan',
+                         'YELLOW_BLUE_STEREO': 'yellow_blue', 'GREEN_MAGENTA_STEREO': 'green_magenta'}
 
         for key, value in stereo_values.iteritems():
             if mode == value:
@@ -1248,7 +1216,7 @@ class display_kernel(object):
         if not self.extensions:
             return "Renderer inactive.\n"
         else:
-            s += "OpenGL renderer active.\n  Vendor: " + self.vendor + "\n  Version: " \
+            s = "OpenGL renderer active.\n  Vendor: " + self.vendor + "\n  Version: " \
                  + self.version + "\n  Renderer: " + self.renderer + "\n  Extensions: "
 
             # self.extensions is a list of extensions
@@ -1262,7 +1230,7 @@ class display_kernel(object):
 
     @window_x.setter
     def window_x(self, n_x):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.window_x = n_x
@@ -1273,7 +1241,7 @@ class display_kernel(object):
 
     @window_y.setter
     def window_y(self, n_y):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.window_y = n_y
@@ -1284,7 +1252,7 @@ class display_kernel(object):
 
     @window_z.setter
     def window_z(self, n_z):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.window_z = n_z
@@ -1295,7 +1263,7 @@ class display_kernel(object):
 
     @window_width.setter
     def window_width(self, n_width):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.window_width = n_width
@@ -1306,7 +1274,7 @@ class display_kernel(object):
 
     @window_height.setter
     def window_height(self, n_height):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.window_height = n_height
@@ -1331,7 +1299,7 @@ class display_kernel(object):
 
     @title.setter
     def title(self, n_title):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.title = n_title
@@ -1342,7 +1310,7 @@ class display_kernel(object):
 
     @fullscreen.setter
     def fullscreen(self, n_fullscreen):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self.fullscreen = n_fullscreen
@@ -1361,7 +1329,7 @@ class display_kernel(object):
 
     @show_toolbar.setter
     def show_toolbar(self, n_show_toolbar):
-        if (self.visible):
+        if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
             self._show_toolbar = n_show_toolbar
@@ -1378,14 +1346,14 @@ class display_kernel(object):
     def selected(self, d):
         self.selected = d
 
-    def hasExtension(self, ext):
+    def has_extension(self, ext):
         return self.extensions.find(ext) != extensions.end()
 
-    # def pushkey(self, k):
+        # def pushkey(self, k):
 
-    # typedef void (APIENTRYP EXTENSION_FUNCTION)()
-    # virtual EXTENSION_FUNCTION getProcAddress( const char* )
+        # typedef void (APIENTRYP EXTENSION_FUNCTION)()
+        # virtual EXTENSION_FUNCTION getProcAddress( const char* )
 
-    # EXTENSION_FUNCTION getProcAddress( const char* )
+        # EXTENSION_FUNCTION getProcAddress( const char* )
 
-    # virtual void activate( bool active ) = 0
+        # virtual void activate( bool active ) = 0

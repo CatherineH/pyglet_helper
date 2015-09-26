@@ -4,13 +4,17 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.sphere import sphere
-from pygletHelper.util.rgba import rgb
-from pygletHelper.util.vector import vector
+from pygletHelper.objects.sphere import Sphere
+from pygletHelper.util.rgba import Rgb
+from pygletHelper.util.vector import Vector
 
-class ellipsoid(sphere):
-    def __init__(self, height = 1.0, width = 1.0, length = 1.0, color = rgb(), pos = vector(0,0,0)):
-        super(ellipsoid, self).__init__(color = color, pos = pos)
+
+class Ellipsoid(Sphere):
+    def __init__(self, height=1.0, width=1.0, length=1.0, color=rgb(), pos=vector(0, 0, 0)):
+        super(Ellipsoid, self).__init__(color=color, pos=pos)
+        self.axis = None
+        self._height = None
+        self._width = None
         self.height = height
         self.width = width
         self.length = length
@@ -18,48 +22,52 @@ class ellipsoid(sphere):
     @property
     def length(self):
         return self.axis.mag()
+
     @length.setter
     def length(self, l):
-        if (l < 0):
-            raise ValueError( "length cannot be negative")
+        if l < 0:
+            raise ValueError("length cannot be negative")
         self.axis = self.axis.norm() * l
 
     @property
     def height(self):
         return self._height
+
     @height.setter
     def height(self, h):
-        if (h < 0):
-            raise ValueError( "height cannot be negative")
+        if h < 0:
+            raise ValueError("height cannot be negative")
         self._height = h
 
     @property
     def width(self):
         return self._width
+
     @width.setter
     def width(self, w):
-        if (w < 0):
-            raise ValueError( "width cannot be negative")
+        if w < 0:
+            raise ValueError("width cannot be negative")
         self._width = w
 
     @property
     def size(self):
         return vector(self.axis.mag(), self.height, self.width)
+
     @size.setter
-    def size( self, s):
-        if (s.x < 0):
-            raise ValueError( "length cannot be negative")
-        if (s.y < 0):
-            raise ValueError( "height cannot be negative")
-        if (s.z < 0):
-            raise ValueError( "width cannot be negative")
+    def size(self, s):
+        if s.x < 0:
+            raise ValueError("length cannot be negative")
+        if s.y < 0:
+            raise ValueError("height cannot be negative")
+        if s.z < 0:
+            raise ValueError("width cannot be negative")
         self.axis = self.axis.norm() * s.x
         self.height = s.y
         self.width = s.z
 
     @property
     def scale(self):
-        return vector( self.axis.mag(), self.height, self.width)*0.5
+        return vector(self.axis.mag(), self.height, self.width) * 0.5
 
     def degenerate(self):
         return not self.visible or self.height == 0.0 or self.width == 0.0 or self.axis.mag() == 0.0
@@ -68,6 +76,6 @@ class ellipsoid(sphere):
         if self.degenerate():
             return
         # TODO: not accurate (overestimates extent)
-        s = vector(self.axis.mag(),self.height,self.width)*0.5
-        world.add_box( self.model_world_transform(1.0), -s, s )
+        s = vector(self.axis.mag(), self.height, self.width) * 0.5
+        world.add_box(self.model_world_transform(1.0), -s, s)
         world.add_body()

@@ -13,6 +13,7 @@ is_wheel = 'bdist_wheel' in sys.argv
 if is_wheel:
     excluded.append('extlibs.future')
 
+
 def exclude_package(pkg):
     for exclude in excluded:
         if pkg.startswith(exclude):
@@ -27,8 +28,8 @@ def create_package_list(base_package):
              in find_packages(base_package)
              if not exclude_package(pkg)])
 
-def main():
 
+def main():
     setup(
         name='PygletHelper',
         description=DESCRIPTION,
@@ -36,18 +37,20 @@ def main():
         author_email='milankie@gmail.com',
         platforms=['POSIX', 'MacOS', 'Windows'],
         license='other',
-        #packages=['vis'],
+        # packages=['vis'],
         package_dir={
             'vis': os.path.join(SITE_PACKAGES, 'vis'),
-            },
+        },
         requires=[
             'numpy',
             'pyglet'
         ],
-         # Package info
+        # Package info
         packages=create_package_list('pygletHelper'),
         #py_modules=['util', 'objects'],
         zip_safe=False)
+
+
 '''
 # fetch values from package.xml
 setup(

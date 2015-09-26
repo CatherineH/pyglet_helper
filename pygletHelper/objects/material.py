@@ -4,25 +4,30 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.util.shader_program import shader_program
-from pygletHelper.util.texture import texture
+from pygletHelper.util.shader_program import ShaderProgram
+from pygletHelper.util.texture import Texture
 
-class material(object):
-    def __init__(self, translucent = False, shader_program = None):
+
+class Material(object):
+    def __init__(self, translucent=False, shader_program=None):
+        self._textures = None
+        self._shader = None
+        self._translucent = None
         self.translucent = translucent
-        self.textures = [texture()]
+        self.textures = [Texture()]
         self.shader = shader_program
 
     @property
     def textures(self):
         return self._textures
+
     @textures.setter
     def textures(self, tex):
         self._textures = tex
 
     @property
     def shader(self):
-        if hasattr(self,'_shader') and type(self._shader) == 'shader_program':
+        if hasattr(self, '_shader') and type(self._shader) == 'shader_program':
             return self._shader.get_source()
         else:
             return None
@@ -37,6 +42,7 @@ class material(object):
     @property
     def translucent(self):
         return self._translucent
+
     @translucent.setter
     def translucent(self, t):
         self._translucent = t
@@ -48,12 +54,12 @@ class material(object):
             return None
 
 
-class apply_material(object):
-    def __init__(self, v, m, material_matrix, sp = None, shader_program = shader_program()):
+class ApplyMaterial(object):
+    def __init__(self, v, m, material_matrix, sp=None, shader_program=shader_program()):
         self.v = v
         self.m = m
         self.material_matrix = material_matrix
-        if sp == None:
+        if sp is None:
             if m:
                 sp = shader_program(v, m.shader)
             else:
@@ -62,33 +68,34 @@ class apply_material(object):
         if not self.m or not sp.ok():
             return
         self.texa = "tex0"
-        for t in range(0,self.m.textures.size()):
-            if (t and self.v.glext.ARB_multitexture):
+        for t in range(0, self.m.textures.size()):
+            if t and self.v.glext.ARB_multitexture:
                 self.v.glext.glActiveTexture(GL_TEXTURE0 + t)
             self.m.textures[t].gl_activate(self.v)
             if self.m.shader and self.v.glext.ARB_shader_objects:
-                texa[3] = '0'+t
-                self.v.glext.glUniform1iARB( self.m.shader.get_uniform_location( self.v, self.texa ), t )
+                texa[3] = '0' + t
+                self.v.glext.glUniform1iARB(self.m.shader.get_uniform_location(self.v, self.texa), t)
             if not self.v.glext.ARB_multitexture:
                 break
 
         # For compatibility, set the texture unit back
         if self.m.textures.size() > 1 and self.v.glext.ARB_multitexture:
             self.v.glext.glActiveTexture(GL_TEXTURE0)
-        loc = self.m.shader.get_uniform_location( self.v, "model_material" )
-        if ( loc >= 0 ):
-            self.m.shader.set_uniform_matrix( self.v, self.loc, self.model_material )
-        loc = self.m.shader.get_uniform_location( self.v, "light_count" )
-        if ( loc >= 0 ):
-            self.v.glext.glUniform1iARB( self.loc, self.v.light_count[0] )
-        loc = self.m.shader.get_uniform_location( self.v, "light_pos" )
-        if ( loc >= 0 and self.v.light_count[0]):
-            self.v.light_pos[0] = self.v.glext.glUniform4fvARB( loc, self.v.light_count[0])
-        loc = self.m.shader.get_uniform_location( self.v, "light_color" )
-        if ( loc >= 0 and self.v.light_count[0] ):
-            self.v.light_color[0] = self.v.glext.glUniform4fvARB( loc, self.v.light_count[0])
+        loc = self.m.shader.get_uniform_location(self.v, "model_material")
+        if loc >= 0:
+            self.m.shader.set_uniform_matrix(self.v, self.loc, self.model_material)
+        loc = self.m.shader.get_uniform_location(self.v, "light_count")
+        if loc >= 0:
+            self.v.glext.glUniform1iARB(self.loc, self.v.light_count[0])
+        loc = self.m.shader.get_uniform_location(self.v, "light_pos")
+        if loc >= 0 and self.v.light_count[0]:
+            self.v.light_pos[0] = self.v.glext.glUniform4fvARB(loc, self.v.light_count[0])
+        loc = self.m.shader.get_uniform_location(self.v, "light_color")
+        if loc >= 0 and self.v.light_count[0]:
+            self.v.light_color[0] = self.v.glext.glUniform4fvARB(loc, self.v.light_count[0])
 
-unshaded = material(shader_program = """
+
+unshaded = Material(shader_program="""
 [vertex]
         void main() {
             gl_Position = ftransform();
@@ -98,7 +105,7 @@ unshaded = material(shader_program = """
         void main() {
             gl_FragColor = gl_Color;
         }""")
-emissive = material( shader_program = """
+emissive = Material(shader_program="""
     [fragment]
     void material_main() {
         float d = dot(normalize(-position), normal);
@@ -107,20 +114,20 @@ emissive = material( shader_program = """
         material_color = object_color * d;
         material_opacity = object_opacity;
     }""")
-diffuse = material(shader_program = """
+diffuse = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = lightAt( normalize(normal), normalize(-position), object_color, vec3(0,0,0), 0.0 );
             material_opacity = object_opacity;
         }""")
-plastic = material(shader_program = """
+plastic = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = lightAt( normalize(normal), normalize(-position), object_color, vec3(.8,.8,.8), 64.0 );
             material_opacity = object_opacity;
         }
         """)
-rough  = material(shader_program = """
+rough = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -139,7 +146,7 @@ rough  = material(shader_program = """
             material_opacity = object_opacity;
         }
         """)
-shiny = material( shader_program = """
+shiny = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -158,7 +165,7 @@ shiny = material( shader_program = """
             material_opacity = object_opacity;
         }
         """)
-chrome = material(shader_program = """
+chrome = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -178,7 +185,7 @@ chrome = material(shader_program = """
         }
         """),
 
-ice = material( shader_program = """
+ice = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -198,7 +205,7 @@ ice = material( shader_program = """
         }
         """)
 
-glass = material(shader_program = """
+glass = Material(shader_program="""
         [varying]
         varying vec3 gln;
         [vertex]
@@ -219,7 +226,7 @@ glass = material(shader_program = """
         }
         """)
 
-blazed = material(shader_program = """
+blazed = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -238,7 +245,7 @@ blazed = material(shader_program = """
             material_opacity = 1.0;
         }
         """),
-silver = material(shader_program = """
+silver = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -258,7 +265,7 @@ silver = material(shader_program = """
         }
         """)
 
-wood = material(shader_program = """
+wood = Material(shader_program="""
         [fragment]
         uniform sampler2D tex0;  // wood cross-section
         uniform sampler3D tex1;  // 3D turbulence
@@ -280,7 +287,7 @@ wood = material(shader_program = """
             material_opacity = object_opacity;
         }
         """)
-marble =material( shader_program = """
+marble = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -302,7 +309,7 @@ marble =material( shader_program = """
         }
         """),
 # TODO: fancy earth renderer with atmosphere, gloss map, bump map
-earth =material(shader_program = """
+earth = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos * .5;
@@ -314,9 +321,9 @@ earth =material(shader_program = """
             if ( mat_pos.z < 0. || mat_pos.z > 1. ) material_color = vec3(0.8,0.8,1.);
             material_opacity = object_opacity;
         }
-        """ )
+        """)
 # fancy earth renderer with clouds
-BlueMarble = material( shader_program = """
+BlueMarble = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos * .5;
@@ -328,11 +335,11 @@ BlueMarble = material( shader_program = """
             if ( mat_pos.z < 0. || mat_pos.z > 1. ) material_color = vec3(0.8,0.8,1.);
             material_opacity = object_opacity;
         }
-        """ )
-bricks = material(shader_program = """
+        """)
+bricks = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos;
             material_opacity = object_opacity;
         }
-        """ )
+        """)

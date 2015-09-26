@@ -11,9 +11,9 @@ from pyglet.gl import *
 '''
 
 
-class rgba(object):
+class Rgba(object):
     def __init__(self, red=1.0, green=1.0, blue=1.0, opacity=1.0, c=None):
-        if not c is None:
+        if c is not None:
             if len(c) == 4:
                 self.red = c[0]
                 self.green = c[1]
@@ -28,17 +28,17 @@ class rgba(object):
             self.opacity = opacity
 
     def desaturate(self):
-        ''' Convert to HSVA, lower saturation by 50%, convert back to RGBA.
+        """ Convert to HSVA, lower saturation by 50%, convert back to RGBA.
             @return The desaturated color.
-        '''
+        """
         ret = rgb(red=self.red, green=self.green, blue=self.blue).desaturate()
         return rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
     def grayscale(self):
-        ''' Convert to greyscale, accounting for differences in perception.  This
+        """ Convert to greyscale, accounting for differences in perception.  This
             function makes 4 calls to pow(), and is very slow.
             @return The scaled color.
-        '''
+        """
         ret = rgb(red=self.red, green=self.green, blue=self.blue).grayscale()
         return rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
@@ -173,7 +173,7 @@ class rgb:
 
     def gl_set(self, opacity):
 
-        #glColor4f(self.red, self.green, self.blue, opacity)
+        # glColor4f(self.red, self.green, self.blue, opacity)
 
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)

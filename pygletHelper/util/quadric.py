@@ -10,36 +10,34 @@ from traceback import print_stack
 from enum import Enum
 
 
-class drawing_style(Enum):
+class DrawingStyle(Enum):
     POINT = 1
     LINE = 2
     FILL = 3
     SILHOUETTE = 4
 
 
-class normal_style(Enum):
+class NormalStyle(Enum):
     NONE = 1
     FLAT = 2
     SMOOTH = 3
 
 
-class orientation(Enum):
+class Orientation(Enum):
     OUTSIDE = 1
     INSIDE = 2
 
 
-class quadric(object):
+class Quadric(object):
     def __init__(self, q=0):
         self.q = gluNewQuadric()
         gluQuadricDrawStyle(self.q, GLU_FILL)
         gluQuadricNormals(self.q, GLU_SMOOTH)
         gluQuadricOrientation(self.q, GLU_OUTSIDE)
 
-
     def __del__(self):
         gluDeleteQuadric(self.q)
-    
-    
+
     def set_draw_style(self, style):
         if style == drawing_style.POINT:
             gluQuadricDrawStyle(self.q, GLU_POINT)
@@ -49,8 +47,7 @@ class quadric(object):
             gluQuadricDrawStyle(self.q, GLU_FILL)
         elif style == drawing_style.SILHOUETTE:
             gluQuadricDrawStyle(self.q, GLU_SILHOUETTE)
-    
-    
+
     def set_normal_style(self, style):
         if style == normal_style.NONE:
             gluQuadricNormals(q, GLU_NONE)
@@ -58,19 +55,16 @@ class quadric(object):
             gluQuadricNormals(q, GLU_FLAT)
         elif style == normal_style.SMOOTH:
             gluQuadricNormals(q, GLU_SMOOTH)
-    
-    
+
     def set_orientation(self, side):
         if side == orientation.OUTSIDE:
             gluQuadricOrientation(q, GLU_OUTSIDE)
         else:
             gluQuadricOrientation(q, GLU_INSIDE)
-    
-    
+
     def render_sphere(self, radius, slices, stacks):
         gluSphere(self.q, radius, slices, stacks)
-    
-    
+
     def render_cylinder(self, base_radius, height, slices, stacks, top_radius=None):
         # GLU orients    print "rendering not translucent"
         # cylinders along the +z axis, and they must be
@@ -84,11 +78,7 @@ class quadric(object):
             gluCylinder(self.q, base_radius, top_radius, height, slices, stacks)
         glRotatef(-90, 0, 1, 0)
 
-
-
-    
     def render_disk(self, radius, slices, rings, rotation):
         glRotatef(90, 0, GLfloat(rotation), 0)
         gluDisk(self.q, 0.0, radius, slices, rings)
         glRotatef(-90, 0, GLfloat(rotation), 0)
-        #print_stack()

@@ -4,13 +4,13 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.rectangular import rectangular
-from pygletHelper.util.rgba import rgb
-from pygletHelper.util.vector import vector
-from pygletHelper.util.tmatrix import gl_matrix_stackguard
+from pygletHelper.objects.rectangular import Rectangular
+from pygletHelper.util.rgba import Rgb
+from pygletHelper.util.vector import Vector
 
-class box(rectangular):
-    def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb(),pos = vector(0,0,0)):
+
+class Box(Rectangular):
+    def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb(), pos=vector(0, 0, 0)):
         super(box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
     # True if the box should not be rendered.
@@ -24,37 +24,34 @@ class box(rectangular):
         glBegin(GL_TRIANGLES)
 
         s = 0.5
-        vertices = [ \
+        vertices = [
             [[+s, +s, +s], [+s, -s, +s], [+s, -s, -s], [+s, +s, -s]],  # Right face
             [[-s, +s, -s], [-s, -s, -s], [-s, -s, +s], [-s, +s, +s]],  # Left face
             [[-s, -s, +s], [-s, -s, -s], [+s, -s, -s], [+s, -s, +s]],  # Bottom face
             [[-s, +s, -s], [-s, +s, +s], [+s, +s, +s], [+s, +s, -s]],  # Top face
             [[+s, +s, +s], [-s, +s, +s], [-s, -s, +s], [+s, -s, +s]],  # Front face
             [[-s, -s, -s], [-s, +s, -s], [+s, +s, -s], [+s, -s, -s]]  # Back face
-            ]
+        ]
         normals = [[+1, 0, 0], [-1, 0, 0], [0, -1, 0], [0, +1, 0], [0, 0, +1], [0, 0, -1]]
         # Draw inside (reverse winding and normals)
         for f in range(skip_right_face, 6):
             glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
             for v in range(0, 3):
                 glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
-                            GLfloat(vertices[f][3 - v][2]))
-            for v in (0,2,3):
+                           GLfloat(vertices[f][3 - v][2]))
+            for v in (0, 2, 3):
                 glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
-                            GLfloat(vertices[f][3 - v][2]))
+                           GLfloat(vertices[f][3 - v][2]))
         # Draw outside
         for f in range(skip_right_face, 6):
             glNormal3f(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
             for v in range(0, 3):
                 glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
-            for v in (0,2,3):
+            for v in (0, 2, 3):
                 glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
         glEnd()
         glDisable(GL_CULL_FACE)
         scene.box_model.gl_compile_end()
-        # check_gl_error()
-
-        # virtual void gl_pick_render( const view&);
 
     def gl_pick_render(self, scene):
         self.gl_render(scene)
@@ -66,7 +63,6 @@ class box(rectangular):
         guard = gl_matrix_stackguard()
         self.apply_transform(scene)
         scene.box_model.gl_render()
-        #check_gl_error()
 
     def grow_extent(self, e):
         tm = self.model_world_transform(1.0, vector(self.axis.mag(), self.height, self.width) * 0.5)

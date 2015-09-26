@@ -20,7 +20,7 @@ from pygletHelper.objects.renderable import view
 from pygletHelper.util import *
 
 global scene
-#scene = display()
+# scene = display()
 
 #print (scene)
 
@@ -78,17 +78,19 @@ from math import sin, cos, pi
 window = pyglet.window.Window()
 scene = view()
 
+
 def update(dt):
     global rx, ry, rz
-    rx += dt * pi/30.0
-    ry += dt * pi*2.0/9.0
-    rz += dt * pi*1/120.0
-    rx %= 2.0*pi
-    ry %= 2.0*pi
-    rz %= 2.0*pi
+    rx += dt * pi / 30.0
+    ry += dt * pi * 2.0 / 9.0
+    rz += dt * pi * 1 / 120.0
+    rx %= 2.0 * pi
+    ry %= 2.0 * pi
+    rz %= 2.0 * pi
 
 
 pyglet.clock.schedule(update)
+
 
 @window.event
 def on_resize(width, height):
@@ -99,14 +101,16 @@ def on_resize(width, height):
     gluPerspective(45, width / float(height), .1, 1000)
 
     gluLookAt(
-     0, 0, 4, # eye
-     0, 0, 0, # target
-     0, 1, 0  # up
+        0, 0, 4,  # eye
+        0, 0, 0,  # target
+        0, 1, 0  # up
     )
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
+
 global screennum
+
 
 @window.event
 def on_draw():
@@ -114,27 +118,29 @@ def on_draw():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
 
-    _arrow.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _arrow.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _arrow.gl_render(scene)
     _ball.gl_render(scene)
-    _box.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _box.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _box.gl_render(scene)
-    _cone.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _cone.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _cone.gl_render(scene)
-    _pyramid.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _pyramid.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _pyramid.gl_render(scene)
-    _ellipsoid.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _ellipsoid.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ellipsoid.gl_render(scene)
-    _cylinder.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _cylinder.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _cylinder.gl_render(scene)
-    _ring.axis = vector(sin(rx)*cos(ry), sin(rx)*sin(ry), cos(rx))
+    _ring.axis = vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ring.gl_render(scene)
-    if screennum<99:
+    if screennum < 99:
         filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
         pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
 
+
 screennum = 0
+
 
 def setup():
     # One-time GL setup
@@ -167,20 +173,19 @@ def setup():
 
 # put all objects in a scene together
 
-_ball = sphere(pos=(1, 1, 0), radius=0.5, color = color.red)
-_box = box(pos=(1, 0, 0),length=0.4, height=0.5, width=1, color=color.blue)
-_pyramid = pyramid(pos=(1,-1,0), size=(1,1,1), color = color.cyan)
-_arrow = arrow(pos=(0,1,0),axis=(1,0,0), fixedwidth = False, headwidth = 0.4, headlength = 0.50, shaftwidth = 0.20, color = color.yellow)
-_cone = cone(pos=(0,0,0), axis=(1,0,0), radius=0.5, color = color.gray)
-_ring = ring(pos=(0,-1,0), axis=(0,1,0), radius=0.5, thickness=0.1, color = color.magenta)
-_ellipsoid = ellipsoid(pos=(-1,-1,0), length=0.75, height=0.5, width=0.75, color = color.green)
-_cylinder = cylinder(pos=(-1,0,0), axis=(1.3,0,0), radius=0.24, color = color.orange)
-
+_ball = sphere(pos=(1, 1, 0), radius=0.5, color=color.red)
+_box = box(pos=(1, 0, 0), length=0.4, height=0.5, width=1, color=color.blue)
+_pyramid = pyramid(pos=(1, -1, 0), size=(1, 1, 1), color=color.cyan)
+_arrow = arrow(pos=(0, 1, 0), axis=(1, 0, 0), fixedwidth=False, headwidth=0.4, headlength=0.50, shaftwidth=0.20,
+               color=color.yellow)
+_cone = cone(pos=(0, 0, 0), axis=(1, 0, 0), radius=0.5, color=color.gray)
+_ring = ring(pos=(0, -1, 0), axis=(0, 1, 0), radius=0.5, thickness=0.1, color=color.magenta)
+_ellipsoid = ellipsoid(pos=(-1, -1, 0), length=0.75, height=0.5, width=0.75, color=color.green)
+_cylinder = cylinder(pos=(-1, 0, 0), axis=(1.3, 0, 0), radius=0.24, color=color.orange)
 
 setup()
 rx = ry = rz = 0
 ry = 0
 rx = 1.57
-
 
 pyglet.app.run()

@@ -4,5 +4,5 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-#unimplemented for now...
+# unimplemented for now...
 #class gl_free_manager:

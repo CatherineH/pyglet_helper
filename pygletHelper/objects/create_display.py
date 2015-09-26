@@ -18,13 +18,17 @@ from pygletHelper.objects.display_kernel import display_kernel
 from pygletHelper.objects.material import diffuse
 from pygletHelper.objects.light import distant_light
 
-def wait(*args): # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
-    _Interact()
-    if len(args) == 0: return
-    elif len(args) == 1: _time.sleep(args[0])
-    else: raise ValueError("Too many arguments for the wait() function.")
 
-#_App = pyglet.app
+def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
+    _Interact()
+    if len(args) == 0:
+        return
+    elif len(args) == 1:
+        _time.sleep(args[0])
+    else:
+        raise ValueError("Too many arguments for the wait() function.")
+
+# _App = pyglet.app
 
 _plat = platform.system()
 
@@ -35,6 +39,7 @@ _plat = platform.system()
 
 def exit():
     pyglet.exit()
+
 
 class _mouseTracker(object):
     """
@@ -154,15 +159,17 @@ class _mouseTracker(object):
         return result
 
     def __repr__(self):
-##      return '<%s lastZoom=%s, lastSpin=%s>' % (
-##        self.__class__.__name__, `self.lastZooming`, `self.lastSpinning`)
-      return '<%s lastZoom=%s, lastSpin=%s>' % (
-        self.__class__.__name__, self.lastZooming, self.lastSpinning)
+        ##      return '<%s lastZoom=%s, lastSpin=%s>' % (
+        ##        self.__class__.__name__, `self.lastZooming`, `self.lastSpinning`)
+        return '<%s lastZoom=%s, lastSpin=%s>' % (
+            self.__class__.__name__, self.lastZooming, self.lastSpinning)
+
 
 class binding_enabler(object):
     """
     just here to enable or disable bindings
     """
+
     def __init__(self, display, namestring, fn=None, enabled=True):
         self.display = display
         self.name = namestring
@@ -187,6 +194,7 @@ class binding_enabler(object):
             for name in self.name.split():
                 self.display._enable_binding(name, self.fn, self.enabled)
 
+
 class eventInfo(object):
     """
     Generic object used to supply event information to event handlers
@@ -199,8 +207,10 @@ class eventInfo(object):
     produces and object with x, y and time attributes set accordingly.
 
     """
+
     def __init__(self, **kw):
         self.__dict__.update(kw)
+
 
 class kb(object):
     def __init__(self):
@@ -221,23 +231,26 @@ class kb(object):
 
     keys = property(keys_in_queue, None, None)
 
+
 _legal_event_types = ['mousedown', 'mousemove', 'mouseup', 'click',
                       'keydown', 'keyup', 'char',
                       'redraw', 'draw_complete']
 
-def set_cursor(win, visible):
-        if visible:
-            if 'phoenix' in _App.PlatformInfo:
-                win.SetCursor(_App.Cursor(_App.CURSOR_ARROW)) # Phoenix
-            else:
-                win.SetCursor(_App.StockCursor(_App.CURSOR_ARROW)) # Classic
-        else:
-            if 'phoenix' in _App.PlatformInfo:
-                win.SetCursor(_App.Cursor(_App.CURSOR_BLANK)) # Phoenix
-            else:
-                win.SetCursor(_App.StockCursor(_App.CURSOR_BLANK)) # Classic
 
-class cursor(object): # used for both display.cursor.visible and window.cursor.visible
+def set_cursor(win, visible):
+    if visible:
+        if 'phoenix' in _App.PlatformInfo:
+            win.SetCursor(_App.Cursor(_App.CURSOR_ARROW))  # Phoenix
+        else:
+            win.SetCursor(_App.StockCursor(_App.CURSOR_ARROW))  # Classic
+    else:
+        if 'phoenix' in _App.PlatformInfo:
+            win.SetCursor(_App.Cursor(_App.CURSOR_BLANK))  # Phoenix
+        else:
+            win.SetCursor(_App.StockCursor(_App.CURSOR_BLANK))  # Classic
+
+
+class cursor(object):  # used for both display.cursor.visible and window.cursor.visible
     def __init__(self, win=None, visible=True):
         self.win = win
         self._visible = visible
@@ -251,6 +264,7 @@ class cursor(object): # used for both display.cursor.visible and window.cursor.v
 
     visible = property(_get_visible, _set_visible)
 
+
 class display(display_kernel):
     # wrap_display_kernel.cpp makes available to Python, in addition to
     # render_scene, report_mouse_state, and report_mouse_state,
@@ -263,8 +277,8 @@ class display(display_kernel):
         self.window = None
         self.menus = False
         self.N = -1
-        self._lastx = self._lasty = None # previous mouse position
-        self.fillswindow = True # assume canvas fills the window
+        self._lastx = self._lasty = None  # previous mouse position
+        self.fillswindow = True  # assume canvas fills the window
         self._visible = True
         self._fullscreen = False
 
@@ -284,7 +298,7 @@ class display(display_kernel):
             setattr(self, kw, keywords[kw])
         if v is not None: setattr(self, 'visible', v)
         if 'ambient' not in keywords:
-            self.ambient = (0.2,0.2,0.2)
+            self.ambient = (0.2, 0.2, 0.2)
         if self.window is not None:
             self.fillswindow = False
             self.win = self.window.win
@@ -324,8 +338,8 @@ class display(display_kernel):
         self.select()
 
         if 'lights' not in keywords:
-            distant_light( direction=(0.22, 0.44, 0.88), color=(0.8,0.8,0.8) )
-            distant_light( direction=(-0.88, -0.22, -.44), color=(0.3,0.3,0.3) )
+            distant_light(direction=(0.22, 0.44, 0.88), color=(0.8, 0.8, 0.8))
+            distant_light(direction=(-0.88, -0.22, -.44), color=(0.3, 0.3, 0.3))
 
         self._bindings = {}
         self._waiting = []
@@ -350,10 +364,10 @@ class display(display_kernel):
         s = ''
         for name in names:
             if name == 'redraw' or name == 'draw_complete' or name not in _legal_event_types:
-                s += name+' or '
+                s += name + ' or '
         if s != '':
             s = s[:-4]
-            raise ValueError('waitfor event type cannot be '+s)
+            raise ValueError('waitfor event type cannot be ' + s)
         self.waiting = True
         self.bind(namestring, self.waitfor_event)
         while self.waiting:
@@ -366,9 +380,9 @@ class display(display_kernel):
         attach events listed in namestring to function 'fn'
         """
         names = namestring.split()
-        enabled = True # start out enabled
+        enabled = True  # start out enabled
         for name in names:
-            elist = self._bindings.get(name,[])
+            elist = self._bindings.get(name, [])
             elist.append((enabled, fn, args, kw))  # each entry is a list [enabled, fn]
             self._bindings[name] = elist
 
@@ -382,7 +396,7 @@ class display(display_kernel):
         for name in namestring.split():
             new_list = []
             if in_fn is not None:
-                for enabled, fn, args, kw in self._bindings.get(name,[]):
+                for enabled, fn, args, kw in self._bindings.get(name, []):
                     if in_fn != fn:
                         new_list.append((enabled, fn, args, kw))
 
@@ -393,7 +407,7 @@ class display(display_kernel):
 
     def _enable_binding(self, name, in_fn, enable):
         new_list = []
-        for enabled, fn, args, kw in self._bindings.get(name,[]):
+        for enabled, fn, args, kw in self._bindings.get(name, []):
             if in_fn is fn:
                 new_list.append((enable, fn, args, kw))
             else:
@@ -408,19 +422,19 @@ class display(display_kernel):
             except:
                 pass
 
-        for enabled, fn, args, kw in self._bindings.get(name,[]):
+        for enabled, fn, args, kw in self._bindings.get(name, []):
             if enabled:
 
-                newKW = {}              # potential keyword arguments
+                newKW = {}  # potential keyword arguments
                 if evt is not None:
                     newArgs = (evt,) + args  # potential positional arguments
                 else:
                     newArgs = args
 
                 if dargs is not None:
-                    newArgs += dargs   # args comes first... then dargs if not None
+                    newArgs += dargs  # args comes first... then dargs if not None
 
-                argspec = getargspec(fn) # inspect the bound function and see what it's expecting
+                argspec = getargspec(fn)  # inspect the bound function and see what it's expecting
 
                 newKW.update(kwArgs)
                 if kw is not None:
@@ -437,14 +451,16 @@ class display(display_kernel):
                     applyKW = newKW
                 else:
                     applyKW = {}  # the keywords to actually apply to the bound function
-                    [applyKW.update({name:newKW.get(name)}) for name in argspec.args if name is not 'self' and (name in newKW)] # populate the available keywords
+                    [applyKW.update({name: newKW.get(name)}) for name in argspec.args if
+                     name is not 'self' and (name in newKW)]  # populate the available keywords
 
                 try:
                     # Not sure how to deal with the complexity of the applyKW dictionary, so ignore for now
                     fn(*applyArgs)
-##                    apply(fn, applyArgs, applyKW)  # apply doesn't exist in Python 3
+                ##                    apply(fn, applyArgs, applyKW)  # apply doesn't exist in Python 3
                 except:
                     import traceback
+
                     traceback.print_exc()
 
     def trigger(self, namestring, *args, **kw):
@@ -452,26 +468,26 @@ class display(display_kernel):
         trigger arbitrary events with keywords...
         """
         for name in namestring.split():
-##            if args:
-##                kw.update({'dargs':args})
-##            apply(self._dispatch_event, (name,), kw)  # apply doesn't exist in Python 3
+            ##            if args:
+            ##                kw.update({'dargs':args})
+            ##            apply(self._dispatch_event, (name,), kw)  # apply doesn't exist in Python 3
             self._dispatch_event(name, args[0])
 
     def _make_canvas(self, parent):
         x = y = 0
-        w = self._width-_dwidth
-        h = self._height-_dheight
+        w = self._width - _dwidth
+        h = self._height - _dheight
         if _plat == 'Unix' or _plat == 'Linux':
             y = 0
             h = h
-        if self.fillswindow: # the canvas fills a window created by us
+        if self.fillswindow:  # the canvas fills a window created by us
             if self.window._fullscreen:
                 w, h = _App.GetDisplaySize()
                 self._width = w
                 self._height = h
                 self._x = self._y = 0
                 self._report_resize()
-        else: # place canvas in window already created by user
+        else:  # place canvas in window already created by user
             x = self._x
             y = self._y
             w = self._width
@@ -482,13 +498,15 @@ class display(display_kernel):
                       _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
                       0]
         if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-            c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
+            c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h),
+                                                                    attribList=attribList)
         else:
             attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 16,
                           _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
                           0]
             if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h), attribList = attribList)
+                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h),
+                                                                        attribList=attribList)
             else:
                 c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h))
 
@@ -516,22 +534,22 @@ class display(display_kernel):
 
     def _report_resize(self):
         self.report_window_resize(int(self._x), int(self._y), int(self._width), int(self._height))
-        w = self._width-_dwidth
+        w = self._width - _dwidth
         if _plat == 'Unix' or _plat == 'Linux':
-            h = self._height-_menuheight
+            h = self._height - _menuheight
         else:
-            h = self._height-_dheight
+            h = self._height - _dheight
         if self.menus: h -= _menuheight
-        if not self.fillswindow: # canvas was placed in user-created window
+        if not self.fillswindow:  # canvas was placed in user-created window
             w = self._width
             h = self._height
         self.report_view_resize(int(w), int(h))
 
-    def _activate( self, a ): # this is called from C++ code in display_kernel.cpp
+    def _activate(self, a):  # this is called from C++ code in display_kernel.cpp
         self._activated = a
         if a:
             global _do_loop
-            _do_loop = True # if a display has been activated, execute wait loop at exit
+            _do_loop = True  # if a display has been activated, execute wait loop at exit
             _displays.add(self)
             if not self._window_initialized:
                 self._create()
@@ -544,7 +562,7 @@ class display(display_kernel):
         self._y = self.y
         self._width = self.window_width
         self._height = self.window_height
-        if self.fillswindow: # the display fills the window; no panel created
+        if self.fillswindow:  # the display fills the window; no panel created
             self.window = window(menus=self.menus, _make_panel=False, x=self._x, y=self._y,
                                  width=self._width, height=self._height, title=self.title,
                                  visible=self._visible, fullscreen=self._fullscreen)
@@ -584,7 +602,7 @@ class display(display_kernel):
             print("window not initialized")
             return
         self._canvas.SetCurrent(self._context)
-        print ("about to call render")
+        print("about to call render")
         self.render_scene()
         self._canvas.SwapBuffers()
 
@@ -606,7 +624,7 @@ class display(display_kernel):
     def _OnLeftMouseDown(self, evt):
         self._mt.leftDown()
         self._report_mouse_state(evt)
-        evt.Skip() # to permit setting focus
+        evt.Skip()  # to permit setting focus
 
     def _OnLeftMouseUp(self, evt):
         self._mt.leftUp()
@@ -615,7 +633,7 @@ class display(display_kernel):
     def _OnRightMouseDown(self, evt):
         self._mt.rightDown()
         self._report_mouse_state(evt)
-        evt.Skip() # to permit setting focus
+        evt.Skip()  # to permit setting focus
 
     def _OnRightMouseUp(self, evt):
         self._mt.rightUp()
@@ -624,31 +642,31 @@ class display(display_kernel):
     def _OnMiddleMouseDown(self, evt):
         self._mt.midDown()
         self._report_mouse_state(evt)
-        evt.Skip() # to permit setting focus
+        evt.Skip()  # to permit setting focus
 
     def _OnMiddleMouseUp(self, evt):
         self._mt.midUp()
         self._report_mouse_state(evt)
 
-##    def OnMouseWheel(self, evt): # not supported by VPython 5.x
-##        print(evt.GetWheelRotation(), evt.GetWheelDelta())
+    ##    def OnMouseWheel(self, evt): # not supported by VPython 5.x
+    ##        print(evt.GetWheelRotation(), evt.GetWheelDelta())
 
     def _OnMouseMotion(self, evt):
         x, y = evt.GetPosition()
         if x != self._lastx or y != self._lasty:
             self._report_mouse_state(evt)
             self._dispatch_event('mousemove', self.mouse)
-        evt.Skip() # to permit setting focus
+        evt.Skip()  # to permit setting focus
 
     def _OnCaptureLost(self, evt):
         pass
 
-# On Mac:
-# CTRL + 1-button mouse = no CTRL, right button, presumably because CTRL-mouse == "right button"
-# ALT  + 1-button mouse = ALT, left button
-# CMD  + 1-button mouse = CTRL and CMD, left button
+    # On Mac:
+    # CTRL + 1-button mouse = no CTRL, right button, presumably because CTRL-mouse == "right button"
+    # ALT  + 1-button mouse = ALT, left button
+    # CMD  + 1-button mouse = CTRL and CMD, left button
 
-    def _report_mouse_state(self, evt): # wx gives x,y relative to upper left corner
+    def _report_mouse_state(self, evt):  # wx gives x,y relative to upper left corner
         x, y = evt.GetPosition()
         if self._lastx is None:
             self._lastx = x
@@ -665,7 +683,7 @@ class display(display_kernel):
                 self._cursorx, self._cursory = (x, y)
             else:
                 # cursor is based on (0,0) of the window; our (x,y) is based on (0,0) of the 3D display
-                self._cursorx, self._cursory = (int(self._x)+x, int(self._y)+y)
+                self._cursorx, self._cursory = (int(self._x) + x, int(self._y) + y)
             self._canvas.CaptureMouse()
             self._captured = True
         elif self._captured and not (spinning or zooming):
@@ -696,34 +714,34 @@ class display(display_kernel):
             #
             ctrl = False
 
-#         labels = [s.strip() for s in "x, y, left, middle, right, shift, ctrl, alt, cmd, spin, zoom, lock, cap".split(',')]
-#         vals = (x, y, left, middle, right, shift, ctrl, alt, cmd, spinning, zooming, lock, self._captured)
-#         fmts = ["%9s"]*len(vals)
-#         for l,f in zip(labels,fmts):
-#             print(f % l, end='')
-#         print()
-#         for v,f in zip(vals,fmts):
-#             print(f % `v`, end='')
-#         print()
-##        if trigger == 'leftdown' and not self._rightdown:
-##            if ctrl:
-##                right = 1
-##                left = 0
-##            elif alt:
-##                middle = 1
-##                left = 0
+        #         labels = [s.strip() for s in "x, y, left, middle, right, shift, ctrl, alt, cmd, spin, zoom, lock, cap".split(',')]
+        #         vals = (x, y, left, middle, right, shift, ctrl, alt, cmd, spinning, zooming, lock, self._captured)
+        #         fmts = ["%9s"]*len(vals)
+        #         for l,f in zip(labels,fmts):
+        #             print(f % l, end='')
+        #         print()
+        #         for v,f in zip(vals,fmts):
+        #             print(f % `v`, end='')
+        #         print()
+        ##        if trigger == 'leftdown' and not self._rightdown:
+        ##            if ctrl:
+        ##                right = 1
+        ##                left = 0
+        ##            elif alt:
+        ##                middle = 1
+        ##                left = 0
 
-#        if (spinning or zooming) and (x == self._lastx) and (y == self._lasty): return
+        #        if (spinning or zooming) and (x == self._lastx) and (y == self._lasty): return
 
         self.report_mouse_state([left, right, middle],
-                self._lastx, self._lasty, x, y,
-                [shift, ctrl, alt, cmd])
+                                self._lastx, self._lasty, x, y,
+                                [shift, ctrl, alt, cmd])
         # For some reason, handling spin/zoom in terms of movements away
         # from a fixed cursor position fails on the Mac. As you drag the
         # mouse, repeated move mouse events mostly give the fixed cursor position.
         # Hence, for now, dragging off-screen stops spin/zoom on the Mac.
         # Similar problems on Ubuntu 12.04, plus wx.CURSOR_BLANK not available on Linux.
-        if (spinning or zooming) and (_plat != 'Macintosh'): # reset mouse to original location
+        if (spinning or zooming) and (_plat != 'Macintosh'):  # reset mouse to original location
             self.win.WarpPointer(self._cursorx, self._cursory)
             if self.fillswindow:
                 self._lastx = self._cursorx
@@ -743,31 +761,54 @@ class display(display_kernel):
         key = evt.GetKeyCode()
         shift = evt.ShiftDown()
         if key > 127:
-            if   key == 310: k = 'break'
-            elif key == 312: k = 'end'
-            elif key == 313: k = 'home'
-            elif key == 314: k = 'left'
-            elif key == 315: k = 'up'
-            elif key == 316: k = 'right'
-            elif key == 317: k = 'down'
-            elif key == 322: k = 'insert'
-            elif key == 340: k = 'f1'
-            elif key == 341: k = 'f2'
-            elif key == 342: k = 'f3'
-            elif key == 343: k = 'f4'
-            elif key == 344: k = 'f5'
-            elif key == 345: k = 'f6'
-            elif key == 346: k = 'f7'
-            elif key == 347: k = 'f8'
-            elif key == 348: k = 'f9'
-            elif key == 349: k = 'f10'
-            elif key == 366: k = 'page up'
-            elif key == 367: k = 'page down'
-            else: k = 'invalid key'
+            if key == 310:
+                k = 'break'
+            elif key == 312:
+                k = 'end'
+            elif key == 313:
+                k = 'home'
+            elif key == 314:
+                k = 'left'
+            elif key == 315:
+                k = 'up'
+            elif key == 316:
+                k = 'right'
+            elif key == 317:
+                k = 'down'
+            elif key == 322:
+                k = 'insert'
+            elif key == 340:
+                k = 'f1'
+            elif key == 341:
+                k = 'f2'
+            elif key == 342:
+                k = 'f3'
+            elif key == 343:
+                k = 'f4'
+            elif key == 344:
+                k = 'f5'
+            elif key == 345:
+                k = 'f6'
+            elif key == 346:
+                k = 'f7'
+            elif key == 347:
+                k = 'f8'
+            elif key == 348:
+                k = 'f9'
+            elif key == 349:
+                k = 'f10'
+            elif key == 366:
+                k = 'page up'
+            elif key == 367:
+                k = 'page down'
+            else:
+                k = 'invalid key'
         else:
             # key code 311 is the caps lock key
-            if shift or _App.GetKeyState(311): k = _shifted[key]
-            else: k = _unshifted[key]
+            if shift or _App.GetKeyState(311):
+                k = _shifted[key]
+            else:
+                k = _unshifted[key]
         if k == 'invalid key':
             return k
         self.keyboard.key = k
@@ -784,7 +825,7 @@ class display(display_kernel):
             prefix += 'shift+'
         if _plat == 'Macintosh' and self.keyboard.cmd:
             prefix += 'cmd+'
-        return prefix+k
+        return prefix + k
 
     def _OnKeyDown(self, evt):
         k = self._ProcessChar(evt)
@@ -792,9 +833,9 @@ class display(display_kernel):
             self.kb.pushkey(k)
             self._dispatch_event('keydown', self.keyboard)
         #print ("got keydown:", evt.GetKeyCode(), codeLookup.get(evt.GetKeyCode(),k))
-        if evt.GetKeyCode() == VPY_MAC_CTRL and _plat=='Macintosh':
+        if evt.GetKeyCode() == VPY_MAC_CTRL and _plat == 'Macintosh':
             self._mt.macCtrlDown()
-        #evt.Skip()
+            #evt.Skip()
 
     def _OnKeyUp(self, evt):
         k = self._ProcessChar(evt)
@@ -802,18 +843,19 @@ class display(display_kernel):
             # old key up didn't count as an event
             self._dispatch_event('keyup', self.keyboard)
         #print ("got keyup:",evt.GetKeyCode(), codeLookup.get(evt.GetKeyCode(),k))
-        if evt.GetKeyCode() == VPY_MAC_CTRL and _plat=='Macintosh':
+        if evt.GetKeyCode() == VPY_MAC_CTRL and _plat == 'Macintosh':
             self._mt.macCtrlUp()
         evt.Skip()
 
     def _return_objects(self):
-        return tuple([ o for o in self._get_objects() if not isinstance(o, light) ])
-    objects = property( _return_objects, None, None)
+        return tuple([o for o in self._get_objects() if not isinstance(o, light)])
+
+    objects = property(_return_objects, None, None)
 
     def _get_lights(self):
         # TODO: List comprehension used for Python 2.3 compatibility; replace with
         #   generator comprehension
-        return tuple([ o for o in self._get_objects() if isinstance(o, light) ])
+        return tuple([o for o in self._get_objects() if isinstance(o, light)])
 
     def _set_lights(self, n_lights):
         old_lights = self._get_lights()
@@ -821,16 +863,16 @@ class display(display_kernel):
             lt.visible = False
 
         if (type(n_lights) is not list) and (type(n_lights) is not tuple):
-            n_lights = [n_lights] # handles case of scene.lights = single light
+            n_lights = [n_lights]  # handles case of scene.lights = single light
         for lt in n_lights:
-            if isinstance( lt, light ):  #< TODO: should this be allowed?
+            if isinstance(lt, light):  #< TODO: should this be allowed?
                 lt.display = self
                 lt.visible = True
             else:
                 lum = vector(lt).mag
-                distant_light( direction=vector(lt).norm(),
-                               color=(lum,lum,lum),
-                               display=self )
+                distant_light(direction=vector(lt).norm(),
+                              color=(lum, lum, lum),
+                              display=self)
 
     def _get_visible(self):
         if self.fillswindow:
@@ -840,7 +882,7 @@ class display(display_kernel):
 
     def _set_visible(self, v):
         if self.fillswindow:
-            if self.window: # means that a window has been created for the display
+            if self.window:  # means that a window has been created for the display
                 self.window.visible = v
             else:
                 self._visible = v
@@ -855,19 +897,21 @@ class display(display_kernel):
 
     def _set_fullscreen(self, full):
         if self.fillswindow:
-            if self.window: # means that a window has been created for the display
+            if self.window:  # means that a window has been created for the display
                 self.window.fullscreen = full
             else:
                 self._fullscreen = full
         else:
             raise AttributeError('When a graphics -display- is only part of a window, set -fullscreen- of the window.')
 
-    visible = property( _get_visible, _set_visible )
-    fullscreen = property( _get_fullscreen, _set_fullscreen )
+    visible = property(_get_visible, _set_visible)
+    fullscreen = property(_get_fullscreen, _set_fullscreen)
 
-    lights = property( _get_lights, _set_lights, None)
+    lights = property(_get_lights, _set_lights, None)
+
 
 from vis.site_settings import enable_shaders
+
 display.enable_shaders = enable_shaders
 
 # This is an atexit handler so that programs remain 'running' after they've finished
@@ -878,20 +922,23 @@ display.enable_shaders = enable_shaders
 
 _do_loop = False
 
-def _close_final(): # There is a window, or an activated display
+
+def _close_final():  # There is a window, or an activated display
     global _do_loop
     if _do_loop:
-        _do_loop = False # make sure we don't trigger this twice
-        while True: # at end of user program, wait for user to close the program
+        _do_loop = False  # make sure we don't trigger this twice
+        while True:  # at end of user program, wait for user to close the program
             rate(1)
-    #_App.EventLoop().exit()
+            #_App.EventLoop().exit()
+
 
 _atexit.register(_close_final)
 # The following is needed by Python 3, else running from vidle3/run.py
 # doesn't drive _close_final:
 _sys.exitfunc = _close_final
 
-class _ManageDisplays(): # a singleton
+
+class _ManageDisplays():  # a singleton
     def __init__(self):
         #I don't believe this does anything at the moment
         #set_wait(wait)
@@ -913,10 +960,11 @@ class _ManageDisplays(): # a singleton
         for d in self.displays:
             d._paint()
 
+
 _displays = _ManageDisplays()
 #_evtloop = _App.EventLoop()
 #_evtloop.run()
-_isMac = False #('wxOSX' in _App.PlatformInfo)
+_isMac = False  #('wxOSX' in _App.PlatformInfo)
 '''
 if _plat == 'Windows':
     # On Windows, the best timer is supposedly time.clock()
@@ -925,13 +973,15 @@ else:
     # On most other platforms, the best timer is supposedly time.time()
     _clock = _time.time
 '''
-_mouse_binding_names = set(['mousedown','mouseup','click'])   # these are the events that we need to grab using display.mouse.getevents()
+_mouse_binding_names = set(
+    ['mousedown', 'mouseup', 'click'])  # these are the events that we need to grab using display.mouse.getevents()
+
 
 def _Interact():
-# The essence of _Interact was provided by Robin Dunn, developer of wxPython
+    # The essence of _Interact was provided by Robin Dunn, developer of wxPython
 
-##    global _lastInteract
-##    _lastInteract = _clock()
+    ##    global _lastInteract
+    ##    _lastInteract = _clock()
 
     # Detect changes to ball.pos.x, which are not caught by the C++ code that
     # drives primitives/trail_update (changes to ball.x are caught)
@@ -989,12 +1039,13 @@ def _Interact():
                 if event.click:
                     d._dispatch_event("click", event)
 
+
 #from .rate_function import RateKeeper as _rk
 #rate = _rk(interactFunc=_Interact)
 
 def sleep(dt):
     tend = _clock() + dt
-    _Interact() # make sure we call _Interact at least once
+    _Interact()  # make sure we call _Interact at least once
     while _clock() < tend:
         rate(30)
 
@@ -1012,48 +1063,48 @@ if _plat == 'Macintosh':
     _dwidth = 0
     _dheight = 22
     _menuheight = 0
-elif _plat == 'Unix' or _plat == 'Linux': # e.g., Linux
+elif _plat == 'Unix' or _plat == 'Linux':  # e.g., Linux
     # Xubuntu: title bar 49 high, menubar 27 high, mouse offset 52
     # Ubuntu 12.04: title bar 27, menubar ?, mouse offset ?
     _dwidth = 0
     _dheight = 27
     _menuheight = 27
-else: # Windows
-    _dwidth = 2*(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_X))
-    _dheight = 2*(_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y)) + \
-            _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
+else:  # Windows
+    _dwidth = 2 * (_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_X))
+    _dheight = 2 * (_App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y)) + \
+               _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
     _menuheight = _App.SystemSettings.GetMetric(_App.SYS_FRAMESIZE_Y) + \
-            _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
+                  _App.SystemSettings.GetMetric(_App.SYS_CAPTION_Y)
 
 
 # Tables for converting US keyboard inputs to characters
-_unshifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab', # 0-9
-   '', '', '', '\n', '', '', 'shift', 'ctrl', 'alt', '', # 10-19
-   'caps lock', '', '', '', '', '', '', 'esc', '', '', #20-29
-   '', '', ' ', '', '', '', '', '', '', "'", # 30-39
-   '', '', '', '', ',', '-', '.', '/', '0', '1', # 40-49
-   '2', '3', '4', '5', '6', '7', '8', '9', '', ';', # 50-59
-   '', '=', '', '', '', 'a', 'b', 'c', 'd', 'e', # 60-69
-   'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', # 70-79
-   'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', # 80-89
-   'z', '[', '\\', ']', '', '', '`', '', '', '', # 90-99
-   '', '', '', '', '', '', '', '', '', '', # 100-109
-   '', '', '', '', '', '', '', '', '', '', # 110-119
-   '', '', '', '', '', '', '', 'delete'] #120-127
+_unshifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab',  # 0-9
+              '', '', '', '\n', '', '', 'shift', 'ctrl', 'alt', '',  # 10-19
+              'caps lock', '', '', '', '', '', '', 'esc', '', '',  #20-29
+              '', '', ' ', '', '', '', '', '', '', "'",  # 30-39
+              '', '', '', '', ',', '-', '.', '/', '0', '1',  # 40-49
+              '2', '3', '4', '5', '6', '7', '8', '9', '', ';',  # 50-59
+              '', '=', '', '', '', 'a', 'b', 'c', 'd', 'e',  # 60-69
+              'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',  # 70-79
+              'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y',  # 80-89
+              'z', '[', '\\', ']', '', '', '`', '', '', '',  # 90-99
+              '', '', '', '', '', '', '', '', '', '',  # 100-109
+              '', '', '', '', '', '', '', '', '', '',  # 110-119
+              '', '', '', '', '', '', '', 'delete']  #120-127
 
-_shifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab', # 0-9
-   '', '', '', '\n', '', '', 'shift', 'ctrl', 'alt', 'break', # 10-19
-   'caps lock', '', '', '', '', '', '', 'esc', '', '', #20-29
-   '', '', '', '!', '"', '#', '$', '%', '&', '"', # 30-39
-   '(', ')', '*', '+', '<', '_', '>', '?', ')', '!', # 40-49
-   '@', '#', '$', '%', '^', '&', '*', '(', ':', ':', # 50-59
-   '<', '+', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', # 60-69
-   'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', # 70-79
-   'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', # 80-89
-   'Z', '{', '|', '}', '^', '_', '~', '', '', '', # 90-99
-   '', '', '', '', '', '', '*', '+', '', '', # 100-109
-   '', '', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', # 110-119
-   'f9', 'f10', '', '{', '|', '}', '~', 'delete'] #120-127
+_shifted = ['', '', '', '', '', '', '', '', 'backspace', 'tab',  # 0-9
+            '', '', '', '\n', '', '', 'shift', 'ctrl', 'alt', 'break',  # 10-19
+            'caps lock', '', '', '', '', '', '', 'esc', '', '',  #20-29
+            '', '', '', '!', '"', '#', '$', '%', '&', '"',  # 30-39
+            '(', ')', '*', '+', '<', '_', '>', '?', ')', '!',  # 40-49
+            '@', '#', '$', '%', '^', '&', '*', '(', ':', ':',  # 50-59
+            '<', '+', '>', '?', '@', 'A', 'B', 'C', 'D', 'E',  # 60-69
+            'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',  # 70-79
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',  # 80-89
+            'Z', '{', '|', '}', '^', '_', '~', '', '', '',  # 90-99
+            '', '', '', '', '', '', '*', '+', '', '',  # 100-109
+            '', '', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8',  # 110-119
+            'f9', 'f10', '', '{', '|', '}', '~', 'delete']  #120-127
 
 
 

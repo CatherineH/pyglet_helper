@@ -8,17 +8,23 @@ from pyglet.graphics.vertexbuffer import create_buffer
 
 from numpy import zeros, asarray
 
-from pygletHelper.objects.axial import axial
-from pygletHelper.util.rgba import rgb
-from pygletHelper.util.vector import vector
-from pygletHelper.util.tmatrix import rotation, gl_matrix_stackguard
+from pygletHelper.objects.axial import Axial
+from pygletHelper.util.rgba import Rgb
+from pygletHelper.util.vector import Vector
+from pygletHelper.util.tmatrix import Rotation
 from pygletHelper.util.gl_enable import gl_enable_client
 
 from math import pi, sin, cos, sqrt
 
 
-class model(object):
+class Model(object):
     def __init__(self):
+        self._vertex_pos = None
+        self._vector_normal = None
+        self._indices = None
+        self.vertices_gl = None
+        self.normals_gl = None
+        self.indices_gl = None
         self.indices = zeros(0)
         self.vertex_pos = zeros(0)
         self.vector_normal = zeros(0)
@@ -26,47 +32,24 @@ class model(object):
     @property
     def vertex_pos(self):
         return self._vertex_pos
+
     @vertex_pos.setter
     def vertex_pos(self, n_vertex_pos):
-        '''
-        # if the input is not a numpy array, parse it as an array
-        if type(n_vertex_pos).__module__ is not type(zeros(3)).__module__:
-            n_vertex_pos = asarray(n_vertex_pos)
-        self._vertex_pos = n_vertex_pos
-        if not hasattr(self, 'vertex_pos_vbo'):
-            self.vertex_pos_vbo = create_buffer(self.vertex_pos.nbytes)
-            self.vertex_pos_vbo.bind()
-        self.vertex_pos_vbo.set_data(self._vertex_pos.ctypes.data)
-        #print "vertex_pos "+str(self._vertex_pos.ctypes.data)
-        '''
         self._vertex_pos = []
-        for i in range(0,len(n_vertex_pos)):
+        for i in range(0, len(n_vertex_pos)):
             self._vertex_pos.append(n_vertex_pos[i].x)
             self._vertex_pos.append(n_vertex_pos[i].y)
             self._vertex_pos.append(n_vertex_pos[i].z)
         self.vertices_gl = (GLfloat * len(self._vertex_pos))(*self._vertex_pos)
 
-
     @property
     def vector_normal(self):
         return self._vector_normal
+
     @vector_normal.setter
     def vector_normal(self, n_vector_normal):
-        # if the input is not a numpy array, parse it as an array
-        '''
-        if type(n_vector_normal).__module__ is not type(zeros(3)).__module__:
-            n_vector_normal = asarray(n_vector_normal)
-        self._vector_normal = n_vector_normal
-        if not hasattr(self, 'vector_normal_vbo'):
-            self.vector_normal_vbo = create_buffer(self.vector_normal.nbytes)
-            self.vector_normal_vbo.bind()
-        print "vector_normal "+str(self._vector_normal)
-        self.vector_normal_vbo.set_data(self._vector_normal.ctypes.data)
-        print self.vector_normal
-        self.normals_gl = (GLfloat * len(self._vector_normal))(*self._vector_normal)
-        '''
         self._vector_normal = []
-        for i in range(0,len(n_vector_normal)):
+        for i in range(0, len(n_vector_normal)):
             self._vector_normal.append(n_vector_normal[i].x)
             self._vector_normal.append(n_vector_normal[i].y)
             self._vector_normal.append(n_vector_normal[i].z)
@@ -75,16 +58,19 @@ class model(object):
     @property
     def indices(self):
         return self._indices
+
     @indices.setter
     def indices(self, n_indices):
         self._indices = [int(i) for i in n_indices]
         self.indices_gl = (GLuint * len(self._indices))(*self._indices)
 
 
-class ring(axial):
-    def __init__(self, thickness=0.0, model_rings=-1, radius=1.0, color=rgb(), pos=vector(0, 0, 0),
-                 axis=vector(1, 0, 0)):
-        super(ring, self).__init__(radius=radius, color=color, pos=pos, axis=axis)
+class Ring(Axial):
+    def __init__(self, thickness=0.0, model_rings=-1, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0),
+                 axis=Vector(1, 0, 0)):
+        super(Ring, self).__init__(radius=radius, color=color, pos=pos, axis=axis)
+        self._thickness = None
+        self.list = None
         self.axis = axis
         # The radius of the ring's body.  If not specified, it is set to 1/10 of
         # the radius of the body.
@@ -182,7 +168,7 @@ class ring(axial):
             for j in range(inner_slices - 1):
                 p = i * inner_slices + j
                 indices.extend([p, p + inner_slices, p + inner_slices + 1])
-                indices.extend([p,  p + inner_slices + 1, p + 1])
+                indices.extend([p, p + inner_slices + 1, p + 1])
         indices = (GLuint * len(indices))(*indices)
 
         # Compile a display list
@@ -203,7 +189,6 @@ class ring(axial):
         glEndList()
         glCallList(self.list)
 
-
     def grow_extent(self, world):
         if self.degenerate:
             return
@@ -221,7 +206,7 @@ class ring(axial):
 
     def create_model(self, rings, bands):
         scaled_thickness = 0.2
-        #if self.thickness != 0.0:
+        # if self.thickness != 0.0:
         #    scaled_thickness = 2*self.thickness / self.radius
         m = model()
         m.vertices = []
@@ -262,9 +247,10 @@ class ring(axial):
             for j in range(bands - 1):
                 p = i * bands + j
                 m.indices.extend([p, p + bands, p + bands + 1])
-                m.indices.extend([p,  p + bands + 1, p + 1])
+                m.indices.extend([p, p + bands + 1, p + 1])
         m.indices_gl = (GLuint * len(m.indices))(*m.indices)
         return m
+
 
 def clamp(lower, value, upper):
     if lower > value:
