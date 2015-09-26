@@ -43,17 +43,16 @@ class Rgba(object):
         return rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
     def gl_set(self):
-        '''
+        """
          Make this the active OpenGL color using glColor().
-        '''
+        """"
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, self.opacity])
-
         glColor4fv(color)
 
 
-class rgb:
+class Rgb:
     def __init__(self, red=1.0, green=1.0, blue=1.0, c=None):
-        if not c is None:
+        if c is not None:
             if len(c) == 3:
                 self.red = c[0]
                 self.green = c[1]
@@ -93,49 +92,48 @@ class rgb:
         # h = [0,360], s = [0,1], v = [0,1]
         # if s == 0, then arbitrarily set h = 0
 
-        cmin = c.red
-        if (c.green < cmin):
-            cmin = c.green
-        if (c.blue < cmin):
-            cmin = c.blue
+        cmin = self.red
+        if self.green < cmin:
+            cmin = self.green
+        if self.blue < cmin:
+            cmin = self.blue
 
-        cmax = c.red
-        if (c.green > cmax):
-            cmax = c.green
-        if (c.blue > cmax):
-            cmax = c.blue
+        cmax = self.red
+        if self.green > cmax:
+            cmax = self.green
+        if self.blue > cmax:
+            cmax = self.blue
         v = cmax  # v
-
         delta = cmax - cmin
 
-        if (cmin == cmax):  # completely unsaturated color is some gray
+        if cmin == cmax:  # completely unsaturated color is some gray
             # if r = g = b = 0, s = 0, v in principle undefined but set to 0
             s = 0.0
             h = 0.0
         else:
             s = delta / cmax  # s
-            if (c.red == cmax):
-                h = ( c.green - c.blue ) / delta  # between yellow & magenta
-            elif (c.green == cmax):
-                h = 2.0 + ( c.blue - c.red ) / delta  # between cyan & yellow
+            if self.red == cmax:
+                h = (self.green - self.blue) / delta  # between yellow & magenta
+            elif self.green == cmax:
+                h = 2.0 + (self.blue - self.red) / delta  # between cyan & yellow
             else:
-                h = 4.0 + ( c.red - c.green ) / delta  # between magenta & cyan
+                h = 4.0 + (self.red - self.green) / delta  # between magenta & cyan
 
-            if (h < 0.0):
+            if h < 0.0:
                 h += 6.0  # make it 0 <= h < 6
 
         # unsaturate somewhat to make sure both eyes have something to see
         s *= saturation
-
-        if (s == 0.0):
+        ret = Rgb()
+        if s == 0.0:
             # achromatic (grey)
             ret.red = ret.green = ret.blue = v
         else:
             i = int(h)  # h represents sector 0 to 5
             f = h - i  # fractional part of h
-            p = v * ( 1.0 - s )
-            q = v * ( 1.0 - s * f )
-            t = v * ( 1.0 - s * ( 1.0 - f ) )
+            p = v * (1.0 - s)
+            q = v * (1.0 - s * f)
+            t = v * (1.0 - s * (1.0 - f))
 
             if i == 0:
                 ret.red = v
@@ -166,9 +164,9 @@ class rgb:
     def grayscale(self):
         # The constants 0.299, 0.587, and 0.114 are intended to account for the
         # relative intensity of each color to the human eye.
-        GAMMA = 2.5
-        black = pow(0.299 * pow(self.red, GAMMA) + 0.587 * pow(self.green, GAMMA) \
-                    + 0.114 * pow(self.blue, GAMMA), 1.0 / GAMMA)
+        gamma = 2.5
+        black = pow(0.299 * pow(self.red, gamma) + 0.587 * pow(self.green, gamma)
+                    + 0.114 * pow(self.blue, gamma), 1.0 / gamma)
         return rgb(red=black, green=black, blue=black)
 
     def gl_set(self, opacity):

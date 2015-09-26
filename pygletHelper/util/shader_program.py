@@ -3,11 +3,11 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
-from traceback import print_stack
 
 
-class shader_program(object):
+class ShaderProgram(object):
     def __init__(self, source=None):
+        self._source = None
         self.source = source
         self.program = 0
         self.uniforms = ['', 0]
@@ -23,10 +23,10 @@ class shader_program(object):
     @property
     def uniform_location(self, v, name):
         # TODO: change interface to cache the uniforms we actually want and avoid string comparisons
-        if (self.program <= 0 or not v.glext.ARB_shader_objects):
+        if self.program <= 0 or not v.glext.ARB_shader_objects:
             return -1
         cache = self.uniforms[name]
-        if (cache == 0):
+        if cache == 0:
             cache = 2 + self.v.glext.glGetUniformLocationARB(self.program, name)
         return cache - 2
 
@@ -37,19 +37,17 @@ class shader_program(object):
             matrix[i] = in_p[i]
         v.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
 
-
     def realize(self, v):
-        if (self.program != -1):
+        if self.program != -1:
             return
 
-        if ( not v.enable_shaders ):
+        if not v.enable_shaders:
             return
 
-        if ( not v.glext.ARB_shader_objects ):
+        if not v.glext.ARB_shader_objects:
             return
 
         self.program = v.glext.glCreateProgramObjectARB()
-        check_gl_error()
 
         self.compile(v, GL_VERTEX_SHADER_ARB, self.getSection("varying") + self.getSection("vertex"))
         self.compile(v, GL_FRAGMENT_SHADER_ARB, self.getSection("varying") + self.getSection("fragment"))
@@ -59,18 +57,18 @@ class shader_program(object):
         # Check if linking succeeded
         link_ok = v.glext.glGetObjectParameterivARB(self.program, GL_OBJECT_LINK_STATUS_ARB)
 
-        if ( not link_ok ):
+        if not link_ok:
             # Some drivers (incorrectly?) set the GL error in glLinkProgramARB() in this situation
             print("!linkok\n")
             clear_gl_error()
-            infoLog = []
+            info_log = []
             length = v.glext.glGetObjectParameterivARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB)
-            temp = ['a'] * (length + 2 )
+            temp = ['a'] * (length + 2)
             length, temp[0] = v.glext.glGetInfoLogARB(self.program, length + 1)
             temp[0] = infoLog.append(length)
 
             # TODO: A way to report infoLog to the program?
-            print( "VPython WARNING: errors in shader program:\n" + infoLog + "\n")
+            print( "VPython WARNING: errors in shader program:\n" + info_log + "\n")
 
             # Get rid of the program, since it can't be used without generating GL errors.  We set
             # program to 0 instead of -1 so that binding it will revert to the fixed function pipeline,
@@ -78,34 +76,31 @@ class shader_program(object):
             v.glext.glDeleteObjectARB(self.program)
             self.program = 0
             return
-        check_gl_error()
 
-    def compile(self, v, type, source):
-        shader = v.glext.glCreateShaderObjectARB(type)
-        str = self.source.c_str()
-        len = self.source.size()
-        str, len = v.glext.glShaderSourceARB(shader, 1)
+    def compile(self, v, shader_type):
+        shader = v.glext.glCreateShaderObjectARB(shader_type)
+        v.glext.glShaderSourceARB(shader, 1)
         v.glext.glCompileShaderARB(shader)
         v.glext.glAttachObjectARB(self.program, shader)
         v.glext.glDeleteObjectARB(shader)
 
-    def getSection(self, name):
-        '''
+    def get_section(self, name):
+        """
         Extract section beginning with \n[name]\n and ending with \n[
         e.g.
         [vertex]
         void main() {}
         [fragment]
         void main() {}
-        '''
+        """
         header = "\n[" + name + "]\n"
         _source = "\n" + self.source
 
         p = _source.find(header, p)
-        while ( p != _source.npos ):
+        while p != _source.npos:
             p += header.size()
             end = source.find("\n[", p)
-            if (end == source.npos):
+            if end == source.npos:
                 end = source.size()
 
             section += source.substr(p, end - p)
@@ -118,7 +113,7 @@ class shader_program(object):
         glDeleteObjectARB(program)
 
 
-class use_shader_program(object):
+class UseShaderProgram(object):
     def __init__(self, v, program=-1):
         # use_shader_program(NULL) does nothing, rather than enabling the fixed function
         # pipeline explicitly.  This is convenient, but maybe we need a way to do the other thing?
@@ -127,7 +122,7 @@ class use_shader_program(object):
         self.init()
 
     def __exit__(self):
-        if (self.oldProgram < 0 or not self.v.glext.ARB_shader_objects):
+        if self.oldProgram < 0 or not self.v.glext.ARB_shader_objects:
             return
         self.v.glext.glUseProgramObjectARB(self.oldProgram)
 
@@ -137,7 +132,7 @@ class use_shader_program(object):
 
     def init(self, program):
         self.m_ok = False
-        if (not self.program or not self.v.glext.ARB_shader_objects or not self.v.enable_shaders):
+        if not self.program or not self.v.glext.ARB_shader_objects or not self.v.enable_shaders:
             self.oldProgram = -1
             return
 
