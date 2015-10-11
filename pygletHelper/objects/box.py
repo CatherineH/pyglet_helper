@@ -10,8 +10,8 @@ from pygletHelper.util.vector import Vector
 
 
 class Box(Rectangular):
-    def __init__(self, width=1.0, height=1.0, length=1.0, color=rgb(), pos=vector(0, 0, 0)):
-        super(box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
+    def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
+        super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
     # True if the box should not be rendered.
     # bool degenerate();
@@ -60,7 +60,6 @@ class Box(Rectangular):
         if not scene.box_model.compiled():
             self.init_model(scene, False)
         self.color.gl_set(self.opacity)
-        guard = gl_matrix_stackguard()
         self.apply_transform(scene)
         scene.box_model.gl_render()
 

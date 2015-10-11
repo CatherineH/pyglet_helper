@@ -14,9 +14,9 @@ from pyglet.canvas.base import Display
 from pyglet.window import Window
 import platform
 
-from pygletHelper.objects.display_kernel import display_kernel
+from pygletHelper.objects.display_kernel import DisplayKernel
 from pygletHelper.objects.material import diffuse
-from pygletHelper.objects.light import distant_light
+from pygletHelper.objects.light import DistantLight
 
 
 def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
@@ -265,13 +265,13 @@ class cursor(object):  # used for both display.cursor.visible and window.cursor.
     visible = property(_get_visible, _set_visible)
 
 
-class display(display_kernel):
+class Display(DisplayKernel):
     # wrap_display_kernel.cpp makes available to Python, in addition to
     # render_scene, report_mouse_state, and report_mouse_state,
     # the methods report_window_resize, report_view_resize, and pick.
 
     def __init__(self, **keywords):
-        super(display, self).__init__(**keywords)
+        super(Display, self).__init__(**keywords)
         display_kernel.__init__(self)
         self._window_initialized = False
         self.window = None
@@ -912,7 +912,7 @@ class display(display_kernel):
 
 from vis.site_settings import enable_shaders
 
-display.enable_shaders = enable_shaders
+Display.enable_shaders = enable_shaders
 
 # This is an atexit handler so that programs remain 'running' after they've finished
 # executing the code in the program body. For visual this is important so that the

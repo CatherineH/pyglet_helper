@@ -8,9 +8,9 @@ from math import pi
 
 from enum import Enum
 
-from pygletHelper.objects.mouseobject import mousebase
-from pygletHelper.objects.mouse_manager import mouse_button
-from pygletHelper.util import Color
+from pygletHelper.objects.mouseobject import MouseBase
+from pygletHelper.objects.mouse_manager import MouseButton
+from pygletHelper.util import color
 from pygletHelper.util.vector import Vector
 
 
@@ -59,7 +59,7 @@ class DisplayKernel(object):
                  gcf_changed=False, ambient=[0.2, 0.2, 0.2], show_toolbar=False, last_time=0,
                  background=[0, 0, 0], spin_allowed=True, zoom_allowed=True, mouse_mode=MouseModeT.ZOOM_ROTATE,
                  stereo_mode=StereoModeT.NO_STEREO, stereo_depth=0.0, lod_adjust=0, realized=False,
-                 mouse=mousebase(), range_auto=0.0, range=[0, 0, 0], world_extent=0.0, foreground=color.white):
+                 mouse=MouseBase(), range_auto=0.0, range=[0, 0, 0], world_extent=0.0, foreground=color.white):
         self._show_toolbar = None
         self.extensions = ''
         self.renderer = ''
@@ -489,7 +489,7 @@ class DisplayKernel(object):
         else:
             # TODO: Instead of changing gcf so much, we could change it only when it is 2x
             # off, to aid primitives whose caching may depend on gcf (but are there any?)
-            if self.gcf is Not scale:
+            if self.gcf is not scale:
                 self.gcf = scale
                 self.gcf_changed = True
             self.gcfvec = vector(self.gcf, self.gcf, self.gcf)

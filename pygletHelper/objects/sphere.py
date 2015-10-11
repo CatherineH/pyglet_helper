@@ -9,20 +9,19 @@ from pygletHelper.util.tmatrix import Tmatrix
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.quadric import Quadric
-from pygletHelper.util.gl_enable import gl_enable
 
 '''
 A simple monochrome sphere.
 '''
 
 
-class Sphere(axial):
-    def __init__(self, other=None, color=rgb(), pos=vector(0, 0, 0), radius=1.0):
-        super(sphere, self).__init__(color=color, pos=pos, radius=radius)
+class Sphere(Axial):
+    def __init__(self, other=None, color=Rgb(), pos=Vector(0, 0, 0), radius=1.0):
+        super(Sphere, self).__init__(color=color, pos=pos, radius=radius)
         # Construct a unit sphere at the origin.
         if other is not None:
             self.axial = other
-        self.PRIMITIVE_TYPEINFO_IMPL = sphere
+        self.PRIMITIVE_TYPEINFO_IMPL = Sphere
         self.compiled = False
         print("radius: " + str(self.radius))
 
@@ -32,10 +31,10 @@ class Sphere(axial):
          Exposed for the benefit of the ellipsoid object, which overrides it.
          The default is to use <radius, radius, radius> for the scale.
         """
-        return vector(self.radius, self.radius, self.radius)
+        return Vector(self.radius, self.radius, self.radius)
 
     @property
-    def material_matrix(self, out=tmatrix()):
+    def material_matrix(self, out=Tmatrix()):
         out.translate(vector(.5, .5, .5))
         scale = self.scale()
         out.scale(scale * (.5 / max(scale.x, max(scale.y, scale.z))))
@@ -55,7 +54,7 @@ class Sphere(axial):
 
     # True until the first sphere is rendered, then false.
     def init_model(self, scene):
-        sph = quadric()
+        sph = Quadric()
 
         scene.sphere_model[0].gl_compile_begin()
         sph.render_sphere(1.0, 13, 7)

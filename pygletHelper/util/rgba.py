@@ -45,7 +45,7 @@ class Rgba(object):
     def gl_set(self):
         """
          Make this the active OpenGL color using glColor().
-        """"
+        """
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, self.opacity])
         glColor4fv(color)
 

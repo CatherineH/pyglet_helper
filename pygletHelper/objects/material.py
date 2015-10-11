@@ -35,7 +35,7 @@ class Material(object):
     @shader.setter
     def shader(self, source):
         if source is not None:
-            self._shader = shader_program(source)
+            self._shader = ShaderProgram(source)
         else:
             self._shader = None
 
@@ -48,14 +48,14 @@ class Material(object):
         self._translucent = t
 
     def get_shader_program(self):
-        if type(self.shader) == shader_program:
+        if type(self.shader) == ShaderProgram:
             return self.shader.get()
         else:
             return None
 
 
 class ApplyMaterial(object):
-    def __init__(self, v, m, material_matrix, sp=None, shader_program=shader_program()):
+    def __init__(self, v, m, material_matrix, sp=None, shader_program=ShaderProgram()):
         self.v = v
         self.m = m
         self.material_matrix = material_matrix

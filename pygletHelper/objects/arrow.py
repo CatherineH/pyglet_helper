@@ -16,7 +16,7 @@ from pygletHelper.util.tmatrix import Tmatrix
 class Arrow(Primitive):
     # Default arrow.  Pointing along +x, unit length,
     # Where does axis come from????
-    def __init__(self, fixed_width=False, head_width=0, head_length=0, shaft_width=0, color=rgb(), pos=vector(0, 0, 0),
+    def __init__(self, fixed_width=False, head_width=0, head_length=0, shaft_width=0, color=Rgb(), pos=Vector(0, 0, 0),
                  axis=(1, 0, 0)):
         super(Arrow, self).__init__(color=color, pos=pos, axis=axis)
         # True if the width of the point and shaft should not vary with the length
@@ -76,7 +76,7 @@ class Arrow(Primitive):
 
     @property
     def fixed_width(self):
-        return self._fixedwidth
+        return self._fixed_width
 
     @fixed_width.setter
     def fixed_width(self, fixed):
@@ -159,10 +159,10 @@ class Arrow(Primitive):
 
     def init_model(self, scene):
         if not scene.box_model.compiled():
-            self.box = box()
+            self.box = Box()
             self.box.init_model(scene)
         if not scene.pyramid_model.compiled():
-            self.pyramid = pyramid()
+            self.pyramid = Pyramid()
             self.pyramid.init_model(scene)
 
     '''
@@ -204,7 +204,7 @@ class Arrow(Primitive):
             eff_head_length = eff_shaft_width * def_hl
 
         if self.fixed_width:
-            if eff_head_length > max_headlength * eff_length:
+            if eff_head_length > max_head_length * eff_length:
                 eff_head_length = max_head_length * eff_length
         else:
             if eff_shaft_width < eff_length * min_sw:

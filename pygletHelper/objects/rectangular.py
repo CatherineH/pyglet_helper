@@ -10,8 +10,8 @@ from pygletHelper.util.vector import Vector
 
 
 class Rectangular(Primitive):
-    def __init__(self, other=None, pos=vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=rgb()):
-        super(rectangular, self).__init__(color=color, pos=pos)
+    def __init__(self, other=None, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
+        super(Rectangular, self).__init__(color=color, pos=pos)
         self._height = None
         self._width = None
         if other is None:
@@ -54,7 +54,7 @@ class Rectangular(Primitive):
 
     @property
     def size(self):
-        return vector(self.axis.mag(), self.height, self.width)
+        return Vector(self.axis.mag(), self.height, self.width)
 
     @size.setter
     def size(self, s):
@@ -72,5 +72,5 @@ class Rectangular(Primitive):
         # OpenGL needs to invert the modelview matrix to generate the normal matrix,
         # so try not to make it singular:
         min_scale = max(self.axis.mag(), max(self.height, self.width)) * 1e-6
-        self.size = vector(max(min_scale, self.axis.mag()), max(min_scale, self.height), max(min_scale, self.width))
+        self.size = Vector(max(min_scale, self.axis.mag()), max(min_scale, self.height), max(min_scale, self.width))
         self.model_world_transform(scene.gcf, self.size).gl_mult()

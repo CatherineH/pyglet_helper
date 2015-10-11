@@ -11,8 +11,7 @@ from numpy import zeros, asarray
 from pygletHelper.objects.axial import Axial
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.vector import Vector
-from pygletHelper.util.tmatrix import Rotation
-from pygletHelper.util.gl_enable import gl_enable_client
+from pygletHelper.util.tmatrix import rotation
 
 from math import pi, sin, cos, sqrt
 
@@ -75,8 +74,8 @@ class Ring(Axial):
         # The radius of the ring's body.  If not specified, it is set to 1/10 of
         # the radius of the body.
         self.thickness = thickness
-        self.PRIMITIVE_TYPEINFO_DECL = ring
-        self.model = model()
+        self.PRIMITIVE_TYPEINFO_DECL = Ring
+        self.model = Model()
         self.model_rings = model_rings
         self.model_bands = 0
         self.model_radius = 0
@@ -179,7 +178,7 @@ class Ring(Axial):
         glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_NORMAL_ARRAY)
-        self.model_world_transform(scene.gcf, vector(self.radius, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(self.radius, self.radius, self.radius)).gl_mult()
 
         glVertexPointer(3, GL_FLOAT, 0, vertices)
         glNormalPointer(GL_FLOAT, 0, normals)
@@ -208,7 +207,7 @@ class Ring(Axial):
         scaled_thickness = 0.2
         # if self.thickness != 0.0:
         #    scaled_thickness = 2*self.thickness / self.radius
-        m = model()
+        m = Model()
         m.vertices = []
         m.normals = []
 

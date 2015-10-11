@@ -18,7 +18,7 @@ Virtual base class for all renderable objects and composites.
 
 
 class Renderable(object):
-    def __init__(self, color=rgb(), mat=Material(), opacity=1.0, visible=False):
+    def __init__(self, color=Rgb(), mat=Material(), opacity=1.0, visible=False):
         # The base color of this body.  Ignored by the variable-color composites
         # (curve, faces, frame).
         self.color = color
@@ -74,13 +74,13 @@ class View(object):
                  forward_changed=False, gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True):
         # The position of the camera in world space.
-        self.camera = vector()
+        self.camera = Vector()
         # The direction the camera is pointing - a unit vector.
-        self.forward = vector()
+        self.forward = Vector()
         # The center of the scene in world space.
-        self.center = vector()
+        self.center = Vector()
         # The true up direction of the scene in world space.
-        self.up = vector()
+        self.up = Vector()
         # The width of the viewport in pixels.
         self.view_width = view_width
         # The height of the viewport in pixels.
@@ -90,7 +90,7 @@ class View(object):
         # The Global Scaling Factor
         self.gcf = n_gcf
         # The vector version of the Global Scaling Factor, for scene.uniform=0
-        self.gcfvec = vector()
+        self.gcfvec = Vector()
         # True if gcf changed since the last render cycle.
         self.gcf_changed = gcf_changed
         # The user adjustment to the level-of-detail.
@@ -102,16 +102,16 @@ class View(object):
         self.tan_hfov_x = tan_hfov_x  # < The tangent of half the horzontal field of view.
         self.tan_hfov_y = tan_hfov_y  # < The tangent of half the vertical field of view.
 
-        self.box_model = displaylist()
-        self.sphere_model = [displaylist()] * 6
-        self.cylinder_model = [displaylist()] * 6
-        self.cone_model = [displaylist()] * 6
-        self.pyramid_model = displaylist()
+        self.box_model = DisplayList()
+        self.sphere_model = [DisplayList()] * 6
+        self.cylinder_model = [DisplayList()] * 6
+        self.cone_model = [DisplayList()] * 6
+        self.pyramid_model = DisplayList()
 
-        self.camera_world = tmatrix()
+        self.camera_world = Tmatrix()
         self.light_count = [0] * N_LIGHT_TYPES
-        self.light_pos = vector()
-        self.light_color = vector()  # in eye coordinates!
+        self.light_pos = Vector()
+        self.light_color = Vector()  # in eye coordinates!
 
         self.enable_shaders = enable_shaders
         self.screen_objects = []
@@ -141,7 +141,7 @@ class View(object):
         # camera.  This is the distance to the viewing plane that the coverage
         # circle lies in.
 
-        pos = vector(pos)
+        pos = Vector(pos)
         dist = (pos - self.camera).dot(self.forward)
         # Half of the width of the viewing plane at this distance.
         apparent_hwidth = self.tan_hfov_x * dist

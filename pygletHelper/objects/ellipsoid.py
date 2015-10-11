@@ -10,9 +10,8 @@ from pygletHelper.util.vector import Vector
 
 
 class Ellipsoid(Sphere):
-    def __init__(self, height=1.0, width=1.0, length=1.0, color=rgb(), pos=vector(0, 0, 0)):
+    def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
         super(Ellipsoid, self).__init__(color=color, pos=pos)
-        self.axis = None
         self._height = None
         self._width = None
         self.height = height
@@ -67,7 +66,7 @@ class Ellipsoid(Sphere):
 
     @property
     def scale(self):
-        return vector(self.axis.mag(), self.height, self.width) * 0.5
+        return Vector(self.axis.mag(), self.height, self.width) * 0.5
 
     def degenerate(self):
         return not self.visible or self.height == 0.0 or self.width == 0.0 or self.axis.mag() == 0.0

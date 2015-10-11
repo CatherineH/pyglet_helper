@@ -12,8 +12,8 @@ from pygletHelper.util.displaylist import DisplayList
 
 
 class Pyramid(Rectangular):
-    def __init__(self, pos=vector(0, 0, 0), size=(1, 1, 1), color=rgb()):
-        super(pyramid, self).__init__(pos=pos, color=color, width=size[0], height=size[1], length=size[2])
+    def __init__(self, pos=Vector(0, 0, 0), size=(1, 1, 1), color=Rgb()):
+        super(Pyramid, self).__init__(pos=pos, color=color, width=size[0], height=size[1], length=size[2])
         self.compiled = False
 
     def init_model(self, scene):

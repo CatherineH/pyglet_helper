@@ -5,10 +5,9 @@
 # Ported to pyglet in 2015 by Catherine Holloway
 from math import sqrt, acos, asin, pi
 from pyglet.gl import *
-from traceback import print_stack
 
 
-class vector(object):
+class Vector(object):
     def __init__(self, a=0.0, b=0.0, c=0.0, v=None):
         self._x = None
         self._y = None
@@ -35,25 +34,25 @@ class vector(object):
                 self.z = c
 
     def __add__(self, other):
-        return vector(self.x + other.x, self.y + other.y, self.z + other.z)
+        return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
 
     def __sub__(self, v):
-        return vector(self.x - v.x, self.y - v.y, self.z - v.z)
+        return Vector(self.x - v.x, self.y - v.y, self.z - v.z)
 
     def __mul__(self, v):
         if type(v) == type(self):
-            return vector(self.x * v.x, self.y * v.y, self.z * v.z)
+            return Vector(self.x * v.x, self.y * v.y, self.z * v.z)
         else:
-            return vector(self.x * v, self.y * v, self.z * v)
+            return Vector(self.x * v, self.y * v, self.z * v)
 
     def __rmul__(self, v):
         if type(v) == type(self):
-            return vector(v.x * self.x, v.y * self.y, v.z * self.z)
+            return Vector(v.x * self.x, v.y * self.y, v.z * self.z)
         else:
-            return vector(v * self.x, v * self.y, v * self.z)
+            return Vector(v * self.x, v * self.y, v * self.z)
 
     def __div__(self, s):
-        return vector(self.x / s, self.y / s, self.z / s)
+        return Vector(self.x / s, self.y / s, self.z / s)
 
     def stl_cmp(self, v):
         if self.x != v.x:
@@ -73,7 +72,7 @@ class vector(object):
         return self.x or self.y or self.z
 
     def __invert__(self):
-        return vector(-self.x, -self.y, -self.z)
+        return Vector(-self.x, -self.y, -self.z)
 
     # return the magnitude of this vector
     def mag(self):
@@ -117,7 +116,7 @@ class vector(object):
             # This step ensures that vector(0,0,0).norm() returns vector(0,0,0)
             # instead of NaN
             magnitude = 1.0 / magnitude
-        return vector(self.x * magnitude, self.y * magnitude, self.z * magnitude)
+        return Vector(self.x * magnitude, self.y * magnitude, self.z * magnitude)
 
     def set_mag(self, m):
         self = self.norm() * m
@@ -129,7 +128,7 @@ class vector(object):
     # object.__repr__() should return a string that, were it executed as python
     # code, should regenerate the object.
     def __repr__(self):
-        return "vector(" + str(self.x) + "," + str(self.y) + "," + str(self.z) + ")"
+        return "Vector(" + str(self.x) + "," + str(self.y) + "," + str(self.z) + ")"
 
     # return the dot product of this vector and another
     def dot(self, v):
@@ -137,15 +136,15 @@ class vector(object):
 
     # Return the cross product of this vector and another.
     def cross(self, v):
-        if type(v) is not vector:
-            v = vector(v)
-        ret = vector(self.y * v.z - self.z * v.y, self.z * v.x - self.x * v.z, self.x * v.y - self.y * v.x)
+        if type(v) is not Vector:
+            v = Vector(v)
+        ret = Vector(self.y * v.z - self.z * v.y, self.z * v.x - self.x * v.z, self.x * v.y - self.y * v.x)
         return ret
 
     # Return the scalar triple product
     def dot_b_cross_c(self, b, c):
-        assert isinstance(c, vector)
-        assert isinstance(b, vector)
+        assert isinstance(c, Vector)
+        assert isinstance(b, Vector)
         return self.x * (b.y * c.z - b.z * c.y) - self.y * (b.x * c.z - b.z * c.x) + self.z * (b.x * c.y - b.y * c.x)
 
     # Return the vector triple product
@@ -166,27 +165,27 @@ class vector(object):
         vn2 = v.norm()
         d = vn1.dot(vn2)
         if d > 0.999:
-            d = vector(vn2.x - vn1.x, vn2.y - vn1.y, vn2.z - vn1.z).mag()
+            d = Vector(vn2.x - vn1.x, vn2.y - vn1.y, vn2.z - vn1.z).mag()
             return 2.0 * asin(d / 2.0)
         elif d < -0.999:
-            d = vector(vn2.x + vn1.x, vn2.y + vn1.y, vn2.z + vn1.z).mag()
+            d = Vector(vn2.x + vn1.x, vn2.y + vn1.y, vn2.z + vn1.z).mag()
             return pi - 2.0 * asin(d / 2.0)
 
         return acos(d)
 
     # Scale this vector to another, by elementwise multiplication
     def scale(self, v):
-        return vector(self.x * v.x, self.y * v.y, self.z * v.z)
+        return Vector(self.x * v.x, self.y * v.y, self.z * v.z)
         # Inversely scale this vector to another, by elementwise division
 
     def scale_inv(self, v):
-        return vector(self.x / v.x, self.y / v.y, self.z / v.z)
+        return Vector(self.x / v.x, self.y / v.y, self.z / v.z)
 
     def rotate(self, angle, axis=None):
         if axis is not None:
             r = rotation(angle, axis.norm())
         else:
-            axis = vector(0, 0, 1)
+            axis = Vector(0, 0, 1)
             r = rotation(angle, axis.norm())
         return r * self
 
@@ -298,5 +297,5 @@ def diff_angle(v1, v2):
     return v1.diff_angle(v2)
 
 
-def rotate(v, angle, axis=vector(0, 0, 1)):
+def rotate(v, angle, axis=Vector(0, 0, 1)):
     return v.rotate(angle, axis)

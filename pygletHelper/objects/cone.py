@@ -8,13 +8,12 @@ from pygletHelper.objects.axial import Axial
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.quadric import Quadric
-from pygletHelper.util.gl_enable import gl_enable
 
 
 class Cone(Axial):
-    def __init__(self, radius=1.0, color=rgb(), pos=vector(0, 0, 0), axis=vector(1, 0, 0)):
-        super(cone, self).__init__(radius=radius, color=color, pos=vector(pos))
-        self.axis = vector(axis)
+    def __init__(self, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
+        super(Cone, self).__init__(radius=radius, color=color, pos=Vector(pos))
+        self.axis = Vector(axis)
 
     def init_model(self, scene):
         # The number of faces corrisponding to each level of detail.
@@ -34,7 +33,7 @@ class Cone(Axial):
         self.axis = self.axis.norm() * l
 
     def render_cone_model(self, n_sides, n_stacks):
-        q = quadric()
+        q = Quadric()
         q.render_cylinder(1.0, 1.0, n_sides, n_stacks, top_radius=0.0)
         q.render_disk(1.0, n_sides, n_stacks * 2, -1)
 
@@ -81,7 +80,7 @@ class Cone(Axial):
 
         length = self.axis.mag()
         glPushMatrix()
-        self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
 
         self.color.gl_set(self.opacity)
         if self.translucent:

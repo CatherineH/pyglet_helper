@@ -7,7 +7,7 @@ from pyglet.gl import *
 from pygletHelper.objects.renderable import Renderable
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.tmatrix import Tmatrix, Rotation
+from pygletHelper.util.tmatrix import Tmatrix, rotation
 from math import sqrt
 
 
@@ -29,9 +29,9 @@ def trail_update(obj):
 class Primitive(Renderable):
     # Generate a displayobject at the origin, with up pointing along +y and
     # an axis = vector(1, 0, 0).
-    def __init__(self, axis=vector(1, 0, 0), up=vector(0, 1, 0), pos=vector(0, 0, 0), make_trail=False,
-                 trail_initialized=False, obj_initialized=False, other=None, color=rgb()):
-        super(primitive, self).__init__(color=color)
+    def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), make_trail=False,
+                 trail_initialized=False, obj_initialized=False, other=None, color=Rgb()):
+        super(Primitive, self).__init__(color=color)
         self._axis = None
         self._pos = None
         self._up = None
@@ -48,9 +48,9 @@ class Primitive(Renderable):
         # The position and orientation of the body in World space.
         if other is None:
             # position must be defined first, before the axis
-            self.up = vector(up)
-            self.pos = vector(pos)
-            self.axis = vector(axis)
+            self.up = Vector(up)
+            self.pos = Vector(pos)
+            self.axis = Vector(axis)
 
         else:
             self.up = other.up
@@ -59,16 +59,16 @@ class Primitive(Renderable):
 
     # Returns a tmatrix that performs reorientation of the object from model
     # orientation to world (and view) orientation.
-    def model_world_transform(self, world_scale=0.0, object_scale=vector(1, 1, 1)):
+    def model_world_transform(self, world_scale=0.0, object_scale=Vector(1, 1, 1)):
         """
          Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
          ret = world_scale o translation o rotation o scale
          Note that with the default parameters, only the rotation transformation is returned!  Typical
            usage should be model_world_transform( scene.gcf, my_size );
         """
-        ret = tmatrix()
+        ret = Tmatrix()
         # A unit vector along the z_axis.
-        z_axis = vector(0, 0, 1)
+        z_axis = Vector(0, 0, 1)
         if abs(self.axis.dot(self.up) / sqrt(self.up.mag2() * self.axis.mag2())) > 0.98:
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
@@ -119,7 +119,7 @@ class Primitive(Renderable):
 
     @pos.setter
     def pos(self, n_pos):
-        self._pos = vector(n_pos)
+        self._pos = Vector(n_pos)
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
@@ -168,9 +168,9 @@ class Primitive(Renderable):
     @axis.setter
     def axis(self, n_axis):
         if self.axis is None:
-            self._axis = vector(1, 0, 0)
-        if type(n_axis) is not vector:
-            n_axis = vector(n_axis)
+            self._axis = Vector(1, 0, 0)
+        if type(n_axis) is not Vector:
+            n_axis = Vector(n_axis)
         a = self.axis.cross(n_axis)
         if a.mag() == 0.0:
             self._axis = n_axis

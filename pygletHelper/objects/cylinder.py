@@ -8,11 +8,10 @@ from pygletHelper.objects.axial import Axial
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.quadric import Quadric
-from pygletHelper.util.gl_enable import gl_enable
 
 
 class Cylinder(Axial):
-    def __init__(self, pos=vector(0, 0, 0), axis=(1, 0, 0), radius=1.0, color=rgb(0, 0, 0)):
+    def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0, color=Rgb(0, 0, 0)):
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color)
         self.axis = Vector(axis)
 
@@ -38,7 +37,7 @@ class Cylinder(Axial):
         self.axis = self.axis.norm() * l
 
     def render_cylinder_model(self, n_sides, n_stacks=1):
-        q = quadric()
+        q = Quadric()
         q.render_cylinder(1.0, 1.0, n_sides, n_stacks)
         glTranslatef(1.0, 0.0, 0.0)
         q.render_disk(1.0, n_sides, 1, 1)  # left end of cylinder
@@ -88,7 +87,7 @@ class Cylinder(Axial):
 
         length = self.axis.mag()
         glPushMatrix()
-        self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
 
         if self.translucent:
             gl_enable(GL_CULL_FACE)
