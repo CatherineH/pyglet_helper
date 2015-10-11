@@ -3,9 +3,6 @@
 import sys
 import os
 
-filename = os.path.dirname(os.path.realpath(__file__))
-filename = filename.replace("doc/examples", "src")
-sys.path.append(filename)
 
 
 global scene
