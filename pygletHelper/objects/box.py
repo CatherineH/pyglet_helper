@@ -60,8 +60,10 @@ class Box(Rectangular):
         if not scene.box_model.compiled():
             self.init_model(scene, False)
         self.color.gl_set(self.opacity)
+        glPushMatrix()
         self.apply_transform(scene)
         scene.box_model.gl_render()
+        glPopMatrix()
 
     def grow_extent(self, e):
         tm = self.model_world_transform(1.0, vector(self.axis.mag(), self.height, self.width) * 0.5)

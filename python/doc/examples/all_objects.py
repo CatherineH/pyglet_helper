@@ -73,37 +73,35 @@ def on_draw():
     global screennum
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
-    # ellipsoid fucks things up
-    _ellipsoid.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _ellipsoid.axis = _ellipsoid.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ellipsoid.gl_render(scene)
-    # ball fucks things up
-    # pyramid fucks things up
-    #_pyramid.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
-    #_pyramid.gl_render(scene)
-    # box fucks things up
-    #_box.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
-    #_box.gl_render(scene)
 
 
-    _cylinder.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _ball.gl_render(scene)
+
+    _pyramid.axis = _pyramid.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _pyramid.gl_render(scene)
+
+    _box.axis = _box.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _box.gl_render(scene)
+
+    _cylinder.axis = _cylinder.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _cylinder.gl_render(scene)
 
 
-    _arrow.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _arrow.axis = _arrow.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _arrow.gl_render(scene)
 
-    _cone.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
-    _cone.gl_render(scene)
 
+    _cone.axis = _cone.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
+    _cone.gl_render(scene)
 
     _ring.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ring.gl_render(scene)
-    '''
     if screennum < 99:
         filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
         pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
-    '''
 
 screennum = 0
 
@@ -129,8 +127,8 @@ def setup():
     def vec(*args):
         return (GLfloat * len(args))(*args)
 
-    glLightfv(GL_LIGHT0, GL_POSITION, vec(.5, .5, 1, 0))
-    glLightfv(GL_LIGHT0, GL_SPECULAR, vec(.5, .5, 1, 1))
+    glLightfv(GL_LIGHT0, GL_POSITION, vec(1, 0.5, 1, 0))
+    glLightfv(GL_LIGHT0, GL_SPECULAR, vec(.5, .5, 1, 0.5))
     glLightfv(GL_LIGHT0, GL_DIFFUSE, vec(1, 1, 1, 1))
     glLightfv(GL_LIGHT1, GL_POSITION, vec(1, 0, .5, 0))
     glLightfv(GL_LIGHT1, GL_DIFFUSE, vec(.5, .5, .5, 1))
@@ -141,7 +139,7 @@ def setup():
 
 _ball = Sphere(pos=(1, 1, 0), radius=0.5, color=color.red)
 
-_box = Box(pos=(1, 0, 0), length=0.4, height=0.5, width=1, color=color.blue)
+_box = Box(pos=(-1, 0, 0), length=0.4, height=0.5, width=1, color=color.blue)
 
 _pyramid = Pyramid(pos=(1, -1, 0), size=(1, 1, 1), color=color.cyan)
 _arrow = Arrow(pos=(0, 1, 0), axis=(1, 0, 0), fixed_width=False, head_width=0.4, head_length=0.50, shaft_width=0.20,
@@ -150,11 +148,12 @@ _arrow = Arrow(pos=(0, 1, 0), axis=(1, 0, 0), fixed_width=False, head_width=0.4,
 _cone = Cone(pos=(0, 0, 0), axis=(1, 0, 0), radius=0.5, color=color.gray)
 _ring = Ring(pos=(0, -1, 0), axis=(0, 1, 0), radius=0.5, thickness=0.1, color=color.magenta)
 _ellipsoid = Ellipsoid(pos=(-1, -1, 0), length=0.75, height=0.5, width=0.75, color=color.green)
-_cylinder = Cylinder(pos=(-1, 0, 0), axis=(1.3, 0, 0), radius=0.24, color=color.orange)
+_cylinder = Cylinder(pos=(1, 0, 0), axis=(0.3, 0, 0), radius=0.4, color=color.orange)
 
 setup()
 rx = ry = rz = 0
 ry = 0
-rx = 1.57
+rx = 0.4
+#rx = 1.57
 
 pyglet.app.run()

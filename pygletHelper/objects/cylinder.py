@@ -14,6 +14,7 @@ class Cylinder(Axial):
     def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0, color=Rgb(0, 0, 0)):
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color)
         self.axis = Vector(axis)
+        print self.axis
 
     def init_model(self, scene):
         # The number of faces corrisponding to each level of detail.
@@ -50,9 +51,6 @@ class Cylinder(Axial):
         self.init_model(scene)
 
         lod = 2
-
-        length = self.axis.mag()
-
         self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
 
         scene.cylinder_model[lod].gl_render()
@@ -85,9 +83,8 @@ class Cylinder(Axial):
         elif lod > 5:
             lod = 5
 
-        length = self.axis.mag()
         glPushMatrix()
-        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(self.length, self.radius, self.radius)).gl_mult()
 
         if self.translucent:
             gl_enable(GL_CULL_FACE)

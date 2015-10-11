@@ -118,6 +118,8 @@ class Sphere(Axial):
             lod = 5
         elif lod < 0:
             lod = 0
+        glPushMatrix()
+
         self.model_world_transform(geometry.gcf, self.scale).gl_mult()
         self.color.gl_set(self.opacity)
 
@@ -135,3 +137,4 @@ class Sphere(Axial):
         else:
             # Render a simple sphere.
             geometry.sphere_model[lod].gl_render()
+        glPopMatrix()

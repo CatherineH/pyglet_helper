@@ -76,10 +76,10 @@ class Pyramid(Rectangular):
             self.init_model(scene)
 
         self.color.gl_set(self.opacity)
-
+        glPushMatrix()
         self.apply_transform(scene)
-
         scene.pyramid_model.gl_render()
+        glPopMatrix()
 
     def grow_extent(self, world_extent):
         orient = model_world_transform()
