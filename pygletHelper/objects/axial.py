@@ -10,12 +10,13 @@ from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.tmatrix import Tmatrix
 
+from pygletHelper.objects.material import Material
 
 # A subbase class used to only export 'radius' as a property once to Python.
 class Axial(Primitive):
     # The radius of whatever body inherits from this class.
-    def __init__(self, other=None, axis=Vector(1, 0, 0), radius=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
-        super(Axial, self).__init__(color=color, pos=pos, axis=axis)
+    def __init__(self, other=None, axis=Vector(1, 0, 0), radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), material=Material()):
+        super(Axial, self).__init__(color=color, pos=pos, axis=axis, material=material)
         self._radius = None
         if other is not None:
             self.radius = other.radius

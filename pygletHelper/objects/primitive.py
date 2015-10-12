@@ -8,13 +8,16 @@ from pygletHelper.objects.renderable import Renderable
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.tmatrix import Tmatrix, rotation
+from pygletHelper.objects.material import Material
+
 from math import sqrt
 
 
 def trail_update(obj):
     # trail_update does not detect changes such as ball.pos.x += 1
     # which are detected in create_display/_Interact which looks at trail_list
-    if obj.interval == 0: return
+    if obj.interval == 0:
+        return
     obj.updated = True
     obj.interval_count += 1
     if len(obj.trail_object.pos) == 0:
@@ -30,8 +33,8 @@ class Primitive(Renderable):
     # Generate a displayobject at the origin, with up pointing along +y and
     # an axis = vector(1, 0, 0).
     def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), make_trail=False,
-                 trail_initialized=False, obj_initialized=False, other=None, color=Rgb()):
-        super(Primitive, self).__init__(color=color)
+                 trail_initialized=False, obj_initialized=False, other=None, color=Rgb(), material=Material()):
+        super(Primitive, self).__init__(color=color, mat=material)
         self._axis = None
         self._pos = None
         self._up = None

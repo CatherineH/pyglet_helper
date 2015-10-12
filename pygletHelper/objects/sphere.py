@@ -9,6 +9,8 @@ from pygletHelper.util.tmatrix import Tmatrix
 from pygletHelper.util.rgba import Rgb
 from pygletHelper.util.vector import Vector
 from pygletHelper.util.quadric import Quadric
+from pygletHelper.objects.material import Material
+
 
 '''
 A simple monochrome sphere.
@@ -16,8 +18,8 @@ A simple monochrome sphere.
 
 
 class Sphere(Axial):
-    def __init__(self, other=None, color=Rgb(), pos=Vector(0, 0, 0), radius=1.0):
-        super(Sphere, self).__init__(color=color, pos=pos, radius=radius)
+    def __init__(self, other=None, color=Rgb(), pos=Vector(0, 0, 0), radius=1.0, material=Material()):
+        super(Sphere, self).__init__(color=color, pos=pos, radius=radius, material=material)
         # Construct a unit sphere at the origin.
         if other is not None:
             self.axial = other
@@ -35,7 +37,7 @@ class Sphere(Axial):
 
     @property
     def material_matrix(self, out=Tmatrix()):
-        out.translate(vector(.5, .5, .5))
+        out.translate(Vector(.5, .5, .5))
         scale = self.scale()
         out.scale(scale * (.5 / max(scale.x, max(scale.y, scale.z))))
         return out

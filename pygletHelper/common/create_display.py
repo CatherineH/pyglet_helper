@@ -12,6 +12,7 @@ from inspect import getargspec
 import pyglet
 from pyglet.window import Display
 from pyglet.window import Window
+from traceback import print_stack
 
 import platform
 
@@ -36,9 +37,9 @@ print("done creating app")
 _plat = platform.system()
 
 #it is unnecessary to implement the window class, as it already exists in pyglet.
-_screen = Display().get_default_screen()
-_screenwidth = _screen.width
-_screenheight = _screen.height
+_screen = Display()
+_screenwidth = _screen.get_default_screen().width
+_screenheight = _screen.get_default_screen().height
 
 def exit():
     pyglet.exit()
@@ -506,27 +507,10 @@ class Display(DisplayKernel):
             self.w = self._width
             self.h = self._height
         # For backward compatibility, maintain self._canvas as well as self.canvas
+        #self._context = _App.glcanvas.GLContext(c)
 
-        attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 24,
-                      _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
-                      0]
-        if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-            c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h),
-                                                                    attribList=attribList)
-        else:
-            attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 16,
-                          _App.glcanvas.WX_GL_DOUBLEBUFFER, 1,
-                          0]
-            if _App.glcanvas.GLCanvas_IsDisplaySupported(attribList):
-                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h),
-                                                                        attribList=attribList)
-            else:
-                c = self.canvas = self._canvas = _App.glcanvas.GLCanvas(parent, -1, pos=(x, y), size=(w, h))
-
-        self._context = _App.glcanvas.GLContext(c)
-
-        if self.fills_window: c.SetFocus()
-
+        #if self.fills_window: c.SetFocus()
+        '''
         c.Bind(_App.EVT_LEFT_DOWN, self._OnLeftMouseDown)
         c.Bind(_App.EVT_LEFT_UP, self._OnLeftMouseUp)
         c.Bind(_App.EVT_MIDDLE_DOWN, self._OnMiddleMouseDown)
@@ -544,6 +528,7 @@ class Display(DisplayKernel):
         #c.Bind(_App.EVT_CHAR, self._OnCharEvent)
         c.Bind(_App.EVT_KEY_DOWN, self._OnKeyDown)
         c.Bind(_App.EVT_KEY_UP, self._OnKeyUp)
+        '''
 
     def _report_resize(self):
         self.report_window_resize(int(self._x), int(self._y), int(self._width), int(self._height))
@@ -565,7 +550,7 @@ class Display(DisplayKernel):
         self._activated = a
         if a:
             global _do_loop
-            _do_loop = True  # if a display has been activated, execute wait loop at exit
+            #_do_loop = True  # if a display has been activated, execute wait loop at exit
             _displays.add(self)
             if not self._window_initialized:
                 self._create()
@@ -583,19 +568,18 @@ class Display(DisplayKernel):
             #self.window = Window(menus=self.menus, _make_panel=False, x=self._x, y=self._y,
             #                     width=self._width, height=self._height, title=self.title,
             #                     visible=self._visible, fullscreen=self._fullscreen)
-            self.window = Window(x=self._x, y=self._y,
-                                 width=self._width, height=self._height, title=self.title,
-                                 visible=self.visible, fullscreen=self._fullscreen)
+            self.window = Window(width=self._width, height=self._height, caption=self.title,
+                                 visible=self.visible, fullscreen=self._fullscreen, display=_screen)
+            self.window.set_location(self._x, self._y)
 
-            self.window._add_display(self)
-            self._make_canvas(self.window.win)
+            #self.window._add_display(self)
+            self._make_canvas(self.window)
         else:
             self._make_canvas(self.window.panel)
-        self.cursor = cursor(win=self.canvas)
-        self.win = self.window.win
+        #self.cursor = cursor(win=self.canvas)
 
-        self.panel = self.window.panel
-        self.menubar = self.window.menubar
+        #self.panel = self.window.panel
+        #self.menubar = self.window.menubar
         self._report_resize()
         _Interact()
 
@@ -618,12 +602,9 @@ class Display(DisplayKernel):
         self.report_closed()
 
     def _paint(self):
-        print("checking if window is initalized")
         if not self._window_initialized:
-            print("window not initialized")
             return
-        self._canvas.SetCurrent(self._context)
-        print("about to call render")
+        #self._canvas.SetCurrent(self._context)
         self.render_scene()
         self._canvas.SwapBuffers()
 
@@ -853,7 +834,6 @@ class Display(DisplayKernel):
         if k != 'invalid key':
             self.kb.pushkey(k)
             self._dispatch_event('keydown', self.keyboard)
-        #print ("got keydown:", evt.GetKeyCode(), codeLookup.get(evt.GetKeyCode(),k))
         if evt.GetKeyCode() == VPY_MAC_CTRL and _plat == 'Macintosh':
             self._mt.macCtrlDown()
             #evt.Skip()
@@ -863,7 +843,6 @@ class Display(DisplayKernel):
         if k != 'invalid key':
             # old key up didn't count as an event
             self._dispatch_event('keyup', self.keyboard)
-        #print ("got keyup:",evt.GetKeyCode(), codeLookup.get(evt.GetKeyCode(),k))
         if evt.GetKeyCode() == VPY_MAC_CTRL and _plat == 'Macintosh':
             self._mt.macCtrlUp()
         evt.Skip()
@@ -936,9 +915,7 @@ class Display(DisplayKernel):
 
 from vis.site_settings import enable_shaders
 
-print("enabling shaders")
 Display.enable_shaders = enable_shaders
-print ("done enabling shaders")
 # This is an atexit handler so that programs remain 'running' after they've finished
 # executing the code in the program body. For visual this is important so that the
 # windows don't close before the user can interact with them.
@@ -950,6 +927,7 @@ _do_loop = False
 
 def _close_final():  # There is a window, or an activated display
     global _do_loop
+
     if _do_loop:
         _do_loop = False  # make sure we don't trigger this twice
         while True:  # at end of user program, wait for user to close the program
@@ -1025,20 +1003,23 @@ def _Interact():
 
     for d in _displays.displays:
         d._dispatch_event("redraw")
-
+    print("starting paint displays")
     _displays.paint_displays()
+    print("ending paint displays")
 
     for d in _displays.displays:
         d._dispatch_event("draw_complete")
 
-    while not _evtloop.has_exit: pass
+    #while not _evtloop.has_exit: pass
+
     #while not _evtloop.Pending() and _evtloop.ProcessIdle(): pass
-    if _App.GetApp(): _App.GetApp().ProcessPendingEvents()
-    if _isMac and not _evtloop.Dispatch(): return
+    #if _App.GetApp():
+    #    _App.GetApp().ProcessPendingEvents()
+    #if _isMac and not _evtloop.Dispatch(): return
     # Currently on wxOSX Pending always returns true, so the
     # ProcessIdle above is not ever called. Call it here instead.
-    if _isMac: _evtloop.ProcessIdle()
-
+    #if _isMac: _evtloop.ProcessIdle()
+    '''
     while True:
         checkAgain = False
         if _App.GetApp() and _App.GetApp().HasPendingEvents():
@@ -1049,7 +1030,7 @@ def _Interact():
             checkAgain = True
         if not checkAgain:
             break
-
+    '''
     for d in _displays.displays:
         events = set(d._bindings.keys())
         if _mouse_binding_names.intersection(events):

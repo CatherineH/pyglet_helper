@@ -29,7 +29,8 @@ another oolie: A transparent object that intersects a frame containing other
 
 class Frame(Renderable):
     def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), other=None):
-        super(Frame, self).__init___(pos=pos)
+        super(Frame, self).__init__()
+        self._axis = None
         # The position and orientation of the body in World space.
         if other is None:
             self.axis = axis
@@ -40,8 +41,8 @@ class Frame(Renderable):
             self.up = other.up
             self.pos = other.pos
         # children is an iterator? I guess I need to learn python iterators...
-        self.children = iterator()
-        self.trans_children = iterator()
+        self.children = []
+        self.trans_children = []
         self.child_iterator = []
         self.const_child_iterator = []
         self.trans_child_iterator = []
@@ -49,10 +50,10 @@ class Frame(Renderable):
 
     def world_zaxis(self):
         if fabs(self.axis.dot(self.up) / sqrt(self.up.mag2() * self.axis.mag2())) > 0.98:
-            if fabs(self.axis.norm().dot(vector(-1, 0, 0))) > 0.98:
-                z_axis = self.axis.cross(vector(0, 0, 1)).norm()
+            if fabs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
+                z_axis = self.axis.cross(Vector(0, 0, 1)).norm()
             else:
-                z_axis = self.axis.cross(vector(-1, 0, 0)).norm()
+                z_axis = self.axis.cross(Vector(-1, 0, 0)).norm()
         else:
             z_axis = self.axis.cross(self.up).norm()
         return z_axis
@@ -281,15 +282,16 @@ class Frame(Renderable):
 
     @property
     def pos(self):
-        return self.pos
+        return self._pos
 
     @pos.setter
     def pos(self, n_pos):
-        self.pos = n_pos
+        self._pos = n_pos
+        '''
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
-
+        '''
     @property
     def x(self):
         return self.pos.x
@@ -297,9 +299,11 @@ class Frame(Renderable):
     @x.setter
     def x(self, x):
         self.pos.x = x
+        '''
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
+        '''
 
     @property
     def y(self):
@@ -325,22 +329,25 @@ class Frame(Renderable):
 
     @property
     def axis(self):
-        return self.axis
+        return self._axis
 
     @axis.setter
     def axis(self, n_axis):
-        a = self.axis.cross(n_axis)
+        if type(self._axis) is None:
+            a = self._axis.cross(n_axis)
+        else:
+            a = Vector(0, 0, 0)
         if a.mag() == 0.0:
-            self.axis = n_axis
+            self._axis = n_axis
         else:
             angle = n_axis.diff_angle(self.axis)
-            self.axis = n_axis.mag() * self.axis.norm()
+            self._axis = n_axis.mag() * self.axis.norm()
             rotate(angle, a, pos)
 
     @property
     def up(self):
-        return self.up
+        return self._up
 
     @up.setter
     def up(self, n_up):
-        self.up = n_up
+        self._up = n_up

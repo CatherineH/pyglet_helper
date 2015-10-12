@@ -4,6 +4,7 @@
 from __future__ import division, print_function
 from sys import version_info
 
+
 def import_check(name):
     if name == "Polygon":
         # Check for the Polygon module needed by the text and extrusion objects:
@@ -23,7 +24,7 @@ def import_check(name):
         except ImportError:
             print("The ttfquery and/or FontTools modules are not installed,\n   so the text object is unavailable.")
         return imported
-    return False # only Polygon and ttfquery are meaningful
+    return False  # only Polygon and ttfquery are meaningful
 
 if import_check("Polygon"):
     from Polygon import Polygon
@@ -37,16 +38,12 @@ from numpy import array, asarray, zeros, arange, int32, float64, sin, cos, froms
 from . import crayola
 color = crayola
 from math import pi
+import platform
 
-import wx as _wx
-_App2 = _wx.App()
+_plat = platform.system()
+NCHORDS = 20.0  # number of chords in one coil of a helix
 
-_platInfo = _wx.PlatformInformation()
-_plat = _platInfo.GetOperatingSystemFamilyName() # 'Windows', 'Macintosh'
-
-NCHORDS = 20.0 # number of chords in one coil of a helix
-
-trail_list = [] # list of objects that have trails
+trail_list = []  # list of objects that have trails
 
 # Scenegraph management:
 #   Renderable objects which become visible need to be added
@@ -61,19 +58,26 @@ trail_list = [] # list of objects that have trails
 #   a fair amount of construction and attribute access common to
 #   all renderables.
 
+from pygletHelper.objects.display_kernel import DisplayKernel
+from pygletHelper.objects.light import Light
+
+
 class py_renderable(object):
     def __init__(self, **keywords):
+        print(keywords)
         _other = keywords.get("_other")
+        self.color = None
+        self.material = None
         if _other:
             del keywords["_other"]
-            super(py_renderable,self).__init__(_other)
+            super(py_renderable, self).__init__(_other)
             self.__dict__ = dict(_other.__dict__)
             self.__display = _other.display
             self.__frame = _other.frame
             self.__visible = _other.visible
         else:
             super(py_renderable, self).__init__()
-            self.__display = cvisual.display_kernel.get_selected()
+            self.__display = DisplayKernel.get_selected()
             self.__frame = None
             self.__visible = True
 
@@ -87,7 +91,8 @@ class py_renderable(object):
             self.__frame = keywords['frame']
             del keywords['frame']
 
-        if not _other: self.init_defaults(keywords)
+        if not _other:
+            self.init_defaults(keywords)
 
         self.process_init_args_from_keyword_dictionary( keywords )
  
@@ -103,16 +108,20 @@ class py_renderable(object):
             elif self.__display:
                 self.__display.add_renderable(self)
 
-    def __copy__( self, **keywords):
+    def __copy__(self, **keywords):
         return self.__class__(_other=self, **keywords)
 
     def check_init_invariants(self):
         pass
 
     def set_display(self, display):
-        "For internal use only. The setter for the display property."
+        """
+        For internal use only. The setter for the display property.
+        :param display:
+        :return:
+        """
         if display != self.__display:
-        # Check that we aren't screwing up a frame.
+            # Check that we aren't screwing up a frame.
             if self.__frame:
                 raise ValueError("""Cannot change displays when within a
                     frame.  Make frame None, first.""")
@@ -122,18 +131,24 @@ class py_renderable(object):
             self.__display.add_renderable(self)
 
     def get_display(self):
-        "For internal use only.  The getter for the display property."
+        """
+        For internal use only.  The getter for the display property.
+        """
         return self.__display
 
     display = property( get_display, set_display)
 
     def get_frame(self):
-        "For internal use only.  The getter for the frame property."
+        """
+        For internal use only.  The getter for the frame property.
+        """
         return self.__frame
 
-   # Overridden by the frame class below to add extra checks.
+    # Overridden by the frame class below to add extra checks.
     def set_frame(self, frame):
-        "For internal use only.  The setter for the frame property."
+        """
+        For internal use only.  The setter for the frame property.
+        """
         if frame != self.__frame:
             if frame and (frame.display != self.__display):
                 raise ValueError("Cannot set to a frame on a different display.")
@@ -153,14 +168,18 @@ class py_renderable(object):
                     self.__display.add_renderable(self)
             self.__frame = frame
             
-    frame = property( get_frame, set_frame)
+    frame = property(get_frame, set_frame)
 
     def get_visible(self):
-        "For internal use only.  The getter for the visible property."
+        """
+        For internal use only.  The getter for the visible property.
+        """
         return self.__visible
 
     def set_visible(self, visible):
-        "For internal use only.  The setter for the visible property."
+        """
+        For internal use only.  The setter for the visible property.
+        """
         if visible and not self.__visible:
             if self.__frame:
                 self.__frame.add_renderable(self)
@@ -177,12 +196,12 @@ class py_renderable(object):
 
     def init_defaults(self, keywords):
         self.color = self.display.foreground
-        if isinstance(self, cvisual.light):
-            self.color = (1,1,1)
+        if isinstance(self, Light):
+            self.color = (1, 1, 1)
         elif 'material' not in keywords:
             self.material = self.display.material
 
-    def process_init_args_from_keyword_dictionary( self, keywords ):
+    def process_init_args_from_keyword_dictionary(self, keywords):
         self.primitive_object = self
         if 'axis' in keywords: #< Should be set before 'length'
             self.axis = keywords['axis']
@@ -194,7 +213,7 @@ class py_renderable(object):
             self.trail_type = keywords['trail_type']
             del keywords['trail_type']
             if not (self.trail_type == 'curve' or self.trail_type == 'points'):
-                raise RuntimeError("trail_type must be 'curve' or 'points', not '"+trail_type+"'")
+                raise RuntimeError("trail_type must be 'curve' or 'points', not '"+self.trail_type+"'")
         else:
             self.trail_type = 'curve'
         self.interval = 1
@@ -269,45 +288,75 @@ class py_renderable_arrayobject (py_renderable):
 
 ################################################################################
 # Complete each type.
-'''
-class distant_light (py_renderable, DistantLight):
-    def set_pos(self, _): raise AttributeError("Attempt to set pos of a distant_light object.")
+from pygletHelper.objects.light import DistantLight, LocalLight
+from pygletHelper.objects.arrow import Arrow
+from pygletHelper.objects.cone import Cone
+from pygletHelper.objects.cylinder import Cylinder
+from pygletHelper.objects.sphere import Sphere
+from pygletHelper.objects.ring import Ring
+from pygletHelper.objects.box import Box
+from pygletHelper.objects.ellipsoid import Ellipsoid
+from pygletHelper.objects.pyramid import Pyramid
+from pygletHelper.objects.frame import Frame
+
+class distant_light(py_renderable, DistantLight):
+    def set_pos(self, _):
+        raise AttributeError("Attempt to set pos of a distant_light object.")
     pos = property(None,set_pos)
 
-class local_light (py_renderable, LocalLight):
-    def set_direction(self, _): raise AttributeError("Attempt to set direction of a local_light object.")
+
+class local_light(py_renderable, LocalLight):
+    def set_direction(self, _):
+        raise AttributeError("Attempt to set direction of a local_light object.")
     direction = property(None,set_direction)
 
-class arrow (py_renderable_uniform, Arrow):
+
+class arrow(Arrow):
+    def __init__(self, **keywords):
+        keywords['shaft_width'] = keywords['shaftwidth']
+        del keywords['shaftwidth']
+        del keywords['type']
+        super(arrow, self).__init__(keywords)
+
+
+class cone(py_renderable_uniform, Cone):
     pass
 
-class cone (py_renderable_uniform, Cone):
+
+class cylinder(py_renderable_uniform, Cylinder):
     pass
 
-class cylinder (py_renderable_uniform, Cylinder):
+
+class sphere(Sphere):
+    def __init__(self, **keywords):
+        del keywords['type']
+        super(sphere, self).__init__(keywords)
+
+
+class ring(Ring):
+    def __init__(self, **keywords):
+        del keywords['type']
+        super(ring, self).__init__(keywords)
+
+
+class box(py_renderable_uniform, Box):
     pass
 
-class sphere (py_renderable_uniform, Sphere):
+
+class ellipsoid(py_renderable_uniform, Ellipsoid):
     pass
 
-class ring (py_renderable_uniform, Ring):
+
+class pyramid(py_renderable_uniform, Pyramid):
     pass
 
-class box (py_renderable_uniform, Box):
-    pass
-            
-class ellipsoid (py_renderable_uniform, cvisual.ellipsoid):
-    pass
-
-class pyramid (py_renderable_uniform, cvisual.pyramid ):
-    pass
-'''
 ### Test routine for the text_to_bitmap function
 ### Not currently working due to changes to text_to_bitmap for label object
 ##bitmap = text_to_bitmap('VPython', height=36, color=color.red, background=color.green,
 ##                   font='sans', style='italic', weight='normal')
 ##T = materials.texture(data=bitmap, mipmap=False, mapping='sign')
 ##box(material=T, axis=(0,0,1))
+'''
 
 def text_to_bitmap(text, color=(1,1,1), background=(0,0,0), opacity=1,
                    height=13, font='sans',
@@ -415,7 +464,7 @@ def text_to_bitmap(text, color=(1,1,1), background=(0,0,0), opacity=1,
         data = fromstring(img.GetData(), dtype=uint8) # classic
     return maxwidth, totalheight, back, data
 
-'''
+
 def get_bitmap(obj):
     w, h, back, data = text_to_bitmap(obj.text, obj.color, obj.background, obj.opacity,
                         obj.height, obj.font, "normal", "normal")
@@ -431,8 +480,9 @@ class label (py_renderable, cvisual.label):
         if 'font' not in keywords:
             self.font = 'sans'
         super(label, self).init_defaults( keywords )
+'''
 
-class frame (py_renderable_uniform, cvisual.frame):
+class frame (py_renderable_uniform, Frame):
     def set_frame(self, frame):
         #Check to ensure that we are not establishing a cycle of reference frames.
         frame_iterator = frame
@@ -441,7 +491,7 @@ class frame (py_renderable_uniform, cvisual.frame):
                 raise ValueError("Attempted to create a cycle of reference frames.")
             frame_iterator = frame_iterator.frame
         py_renderable_uniform.set_frame( self, frame)
-
+'''
 class faces( py_renderable_arrayobject, cvisual.faces ):
 
     def set_pos(self, positions):
