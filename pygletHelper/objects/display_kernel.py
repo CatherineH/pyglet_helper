@@ -12,7 +12,7 @@ from pygletHelper.objects.mouseobject import MouseBase
 from pygletHelper.objects.mouse_manager import MouseButton
 from pygletHelper.util import color
 from pygletHelper.util.vector import Vector
-
+from pyglet.window import Window
 
 class MouseModeT(Enum):
     ZOOM_ROTATE = 1
@@ -20,6 +20,11 @@ class MouseModeT(Enum):
     PAN = 3
     FIXED = 4
 
+class MouseButton(Enum):
+    NONE = 1
+    LEFT = 2
+    RIGHT = 3
+    MIDDLE = 4
 
 class StereoModeT(Enum):
     NO_STEREO = 1
@@ -30,6 +35,7 @@ class StereoModeT(Enum):
     RED_CYAN_STEREO = 6
     YELLOW_BLUE_STEREO = 7
     GREEN_MAGENTA_STEREO = 8
+
 
 
 displays_visible = 0
@@ -55,11 +61,11 @@ class DisplayKernel(object):
                  window_height=450, view_width=-1, view_height=-1, center=[0, 0, 0],
                  forward=[0, 0, -1], internal_forward=[0, 0, -1], up=[0, 1, 0], forward_changed=True,
                  fov=60 * pi / 180.0, auto_scale=True, auto_center=False, uniform=True,
-                 camera=[0, 0, 0], user_scale=1.0, gcf=1.0, gcfvec=[1.0, 1.0, 1.0],
+                 camera=[0, 0, 0], user_scale=1.0, gcf=1.0, gcf_vec=[1.0, 1.0, 1.0],
                  gcf_changed=False, ambient=[0.2, 0.2, 0.2], show_toolbar=False, last_time=0,
                  background=[0, 0, 0], spin_allowed=True, zoom_allowed=True, mouse_mode=MouseModeT.ZOOM_ROTATE,
-                 stereo_mode=StereoModeT.NO_STEREO, stereo_depth=0.0, lod_adjust=0, realized=False,
-                 mouse=MouseBase(), range_auto=0.0, range=[0, 0, 0], world_extent=0.0, foreground=color.white):
+                 stereo_mode='NO_STEREO', stereo_depth=0.0, lod_adjust=0, realized=False,
+                 mouse=MouseBase(), range_auto=0.0, range=[1, 1, 1], world_extent=0.0, foreground=color.white):
         self._show_toolbar = None
         self.extensions = ''
         self.renderer = ''
@@ -69,12 +75,19 @@ class DisplayKernel(object):
         self.render_time = 0
         self.realized = realized
         self.selected = ''
-
+        self._up = None
+        self._auto_scale = False
+        self._window_x = None
+        self._window_y = None
+        self._window_width = None
+        self._window_height = None
+        self._title = ''
         self.center = center  # The observed center of the display, in world space.
         self.forward = forward  # The direction of the camera, in world space.
-        self.up = up  # The vertical orientation of the scene, in world space.
+        self.up = Vector(up)  # The vertical orientation of the scene, in world space.
         self.internal_forward = internal_forward  # /< Do not permit internal_forward to be +up or -up
-        self.range = range  # /< Explicitly specified scene.range, or (0,0,0)
+
+        self.range = Vector(range)  # /< Explicitly specified scene.range, or (0,0,0)
         self.camera = camera  # < World coordinates of camera location
         self.range_auto = range_auto  # < Automatically determined camera z from autoscale
 
@@ -158,7 +171,7 @@ class DisplayKernel(object):
 
         # self.glext = gl_extensions()
         self.mouse_mode_t = MouseModeT
-        self.mouse_button = mouse_button
+        self.mouse_button_t = MouseButton
         self.stereo_mode_t = StereoModeT
 
     def enable_lights(self, scene):
@@ -1013,32 +1026,38 @@ class DisplayKernel(object):
     # Python properties
     @property
     def up(self):
-        return self.up
+        if self._up is None:
+            self._up = Vector(1, 0, 0)
+        return self._up
 
     @up.setter
     def up(self, n_up):
-        if n_up == vector():
+        n_up = Vector(n_up)
+        if n_up == Vector():
             raise ValueError("Up cannot be zero.")
         v = n_up.norm()
+        if self._up is None:
+            self._up = Vector()
         # if internal_forward parallel to new up, move it away from new up
-        if v.cross(self.internal_forward) == vector():
+        if v.cross(self.internal_forward) == Vector():
             # old internal_forward was not parallel to old up
-            if v.cross(self.forward) == vector():
-                self.internal_forward = (self.forward - 0.0001 * self.up).norm()
+            if v.cross(self.forward) == Vector():
+                self.internal_forward = (self.forward - 0.0001 * self._up).norm()
             else:
                 self.internal_forward = self.forward
-        self.up = v
+        self._up = v
 
     @property
     def forward(self):
-        return self.forward
+        return self._forward
 
     @forward.setter
     def forward(self, n_forward):
-        if n_forward == vector():
+        n_forward = Vector(n_forward)
+        if n_forward == Vector():
             raise ValueError("Forward cannot be zero.")
         v = n_forward.norm()
-        if v.cross(self.up) == vector():
+        if v.cross(self.up) == Vector():
             # if new forward parallel to up, move internal_forward away from up
             # old internal_forward was not parallel to up
             self.internal_forward = (v.dot(self.up) * self.up +
@@ -1046,33 +1065,33 @@ class DisplayKernel(object):
         else:
             # since new forward not parallel to up, new forward is okay
             self.internal_forward = v
-            self.forward = v
+            self._forward = v
         self.forward_changed = True
 
     @property
     def scale(self):
-        if self.autoscale or not self.range.nonzero():
+        if self.auto_scale or not self.range.nonzero():
             raise Exception("Reading .scale and .range is not supported when autoscale is enabled.")
-        return vector(1.0 / self.range.x, 1.0 / self.range.y, 1.0 / self.range.z)
+        return Vector(1.0 / self.range.x, 1.0 / self.range.y, 1.0 / self.range.z)
 
     @scale.setter
     def scale(self, n_scale):
         if n_scale.x == 0.0 or n_scale.y == 0.0 or n_scale.z == 0.0:
             raise ValueError("The scale of each axis must be non-zero.")
-        n_range = vector(1.0 / n_scale.x, 1.0 / n_scale.y, 1.0 / n_scale.z)
+        n_range = Vector(1.0 / n_scale.x, 1.0 / n_scale.y, 1.0 / n_scale.z)
         self.range(n_range)
 
     @property
     def center(self):
-        return self.center
+        return self._center
 
     @center.setter
     def center(self, n_center):
-        self.center = n_center
+        self._center = n_center
 
     @property
     def fov(self):
-        return self.fov
+        return self._fov
 
     @fov.setter
     def fov(self, n_fov):
@@ -1080,94 +1099,95 @@ class DisplayKernel(object):
             raise ValueError("Orthogonal projection is not supported.")
         elif n_fov < 0.0 or n_fov >= pi:
             raise ValueError("attribute visual.display.fov must be between 0.0 and math.pi (exclusive)")
-        self.fov = n_fov
+        self._fov = n_fov
 
     @property
     def lod_adjust(self):
-        return self.lod_adjust
+        return self._lod_adjust
 
     @lod_adjust.setter
     def lod_adjust(self, n_lod):
         if n_lod > 0 or n_lod < -6:
             raise ValueError("attribute visual.display.lod must be between -6 and 0")
-        self.lod_adjust = n_lod
+        self._lod_adjust = n_lod
 
     @property
     def uniform(self):
-        return self.uniform
+        return self._uniform
 
     @uniform.setter
     def uniform(self, n_uniform):
-        self.uniform = n_uniform
+        self._uniform = n_uniform
 
     @property
     def background(self):
-        return self.background
+        return self._background
 
     @background.setter
     def background(self, n_background):
-        self.background = n_background
+        self._background = n_background
 
     @property
     def foreground(self):
-        return self.foreground
+        return self._foreground
 
     @foreground.setter
     def foreground(self, n_foreground):
-        self.foreground = n_foreground
+        self._foreground = n_foreground
 
     @property
     def auto_scale(self):
-        return self.autoscale
+        return self._auto_scale
 
     @auto_scale.setter
     def auto_scale(self, n_auto_scale):
-        if not n_autoscale and self.autoscale:
+        if not n_auto_scale and self._auto_scale:
             # Autoscale is disabled, but range_auto remains
             # set to the current autoscaled scene, until and unless
             #   range is set explicitly.
             self.recalc_extent()
-            self.range = vector(0, 0, 0)
-        self.auto_scale = n_autoscale
+            self.range = Vector(0, 0, 0)
+        self._auto_scale = n_auto_scale
 
     @property
     def range(self):
-        if self.auto_scale or not range.nonzero():
+        if self.auto_scale or not self._range.nonzero():
             raise Exception("Reading .scale and .range is not supported when autoscale is enabled.")
-        return self.range
+        return self._range
 
     @range.setter
     def range(self, n_range):
-        if not type(n_range) == 'double':
+
+        if type(n_range) == 'Vector':
             if n_range.x == 0.0 or n_range.y == 0.0 or n_range.z == 0.0:
                 raise ValueError("attribute visual.display.range may not be zero.")
             self.auto_scale = False
-            self.range = n_range
+            self._range = n_range
             self.range_auto = 0.0
         else:
-            self.range = vector(n_range, n_range, n_range)
+            self._range = Vector(n_range, n_range, n_range)
 
     @property
     def ambient(self):
-        return self.ambient
+        return self._ambient
 
     @ambient.setter
     def ambient(self, n_ambient):
         if type(n_ambient) == 'float':
-            self.ambient = Rgb(n_ambient, n_ambient, n_ambient)
+            self._ambient = Rgb(n_ambient, n_ambient, n_ambient)
         else:
-            self.ambient = n_ambient
+            self._ambient = n_ambient
 
     @property
     def stereo_depth(self):
-        return self.stereo_depth
+        return self._stereo_depth
 
     @stereo_depth.setter
     def stereo_depth(self, n_stereo_depth):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.stereo_depth = n_stereo_depth
+            self._stereo_depth = n_stereo_depth
 
     @property
     def stereo_mode(self):
@@ -1175,29 +1195,24 @@ class DisplayKernel(object):
         # which will result in a gl_error exception when rendered.  The completing
         # display class will have to perform some filtering on this parameter.  This
         # properties setter will not change the mode if the new one is invalid.
-        stereo_values = {'NO_STEREO': 'no_stereo', 'ACTIVE_STEREO': 'active',
-                         'PASSIVE_STEREO': 'passive', 'CROSS_EYED_STEREO': 'cross_eyed',
-                         'RED_BLUE_STEREO': 'red_blue', 'RED_CYAN_STEREO': 'red_cyan',
-                         'YELLOW_BLUE_STEREO': 'yellow_blue', 'GREEN_MAGENTA_STEREO': 'green_magenta'}
-        if not hasattr(stereo_values, self.stereo_mode):
+
+        if not hasattr(stereo_values, self._stereo_mode):
             # Not strictly required, this just silences a warning about control
             # reaching the end of a non-void funciton.
             return "no_stereo"
         else:
-            return stereo_values[self.stereo_mode]
+            return stereo_values[self._stereo_mode.name]
 
     @stereo_mode.setter
     def stereo_mode(self, mode):
-        stereo_values = {'NO_STEREO': 'no_stereo', 'ACTIVE_STEREO': 'active',
-                         'PASSIVE_STEREO': 'passive', 'CROSS_EYED_STEREO': 'cross_eyed',
-                         'RED_BLUE_STEREO': 'red_blue', 'RED_CYAN_STEREO': 'red_cyan',
-                         'YELLOW_BLUE_STEREO': 'yellow_blue', 'GREEN_MAGENTA_STEREO': 'green_magenta'}
-
-        for key, value in stereo_values.iteritems():
-            if mode == value:
-                self.stereo_mode = key
-                return
-            raise ValueError("Unimplemented or invalid stereo mode")
+        try:
+            if type(mode) == 'str':
+                self._stereo_mode = StereoModeT[mode]
+            elif type(mode) == 'int':
+                self._stereo_mode = StereoModeT(mode)
+            return
+        except Exception as e:
+            raise ValueError("Unimplemented or invalid stereo mode: "+str(e))
 
     @property
     def objects(self):
@@ -1226,58 +1241,58 @@ class DisplayKernel(object):
 
     @property
     def window_x(self):
-        return self.window_x
+        return self._window_x
 
     @window_x.setter
     def window_x(self, n_x):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.window_x = n_x
+            self._window_x = n_x
 
     @property
     def window_y(self):
-        return self.window_y
+        return self._window_y
 
     @window_y.setter
     def window_y(self, n_y):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.window_y = n_y
+            self._window_y = n_y
 
     @property
     def window_z(self):
-        return self.window_z
+        return self._window_z
 
     @window_z.setter
     def window_z(self, n_z):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.window_z = n_z
+            self._window_z = n_z
 
     @property
     def window_width(self):
-        return self.window_width
+        return self._window_width
 
     @window_width.setter
     def window_width(self, n_width):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.window_width = n_width
+            self._window_width = n_width
 
     @property
     def window_height(self):
-        return self.window_height
+        return self._window_height
 
     @window_height.setter
     def window_height(self, n_height):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.window_height = n_height
+            self._window_height = n_height
 
     @property
     def visible(self):
@@ -1295,14 +1310,14 @@ class DisplayKernel(object):
 
     @property
     def title(self):
-        return self.title
+        return self._title
 
     @title.setter
     def title(self, n_title):
         if self.visible:
             raise RuntimeError("Cannot change parameters of an active window")
         else:
-            self.title = n_title
+            self._title = n_title
 
     @property
     def fullscreen(self):
@@ -1317,11 +1332,11 @@ class DisplayKernel(object):
 
     @property
     def exit(self):
-        return self.exit
+        return self._exit
 
     @exit.setter
     def exit(self, b):
-        self.exit = b
+        self._exit = b
 
     @property
     def show_toolbar(self):
@@ -1340,11 +1355,11 @@ class DisplayKernel(object):
 
     @property
     def selected(self):
-        return self.selected
+        return self._selected
 
     @selected.setter
     def selected(self, d):
-        self.selected = d
+        self._selected = d
 
     def has_extension(self, ext):
         return self.extensions.find(ext) != extensions.end()

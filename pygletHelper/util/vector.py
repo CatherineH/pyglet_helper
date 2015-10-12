@@ -28,10 +28,14 @@ class Vector(object):
                 self.x = a.x
                 self.y = a.y
                 self.z = a.z
-            else:
+            elif a is not None and b is not None and c is not None:
                 self.x = a
                 self.y = b
                 self.z = c
+            else:
+                self.x = 0
+                self.y = 0
+                self.z = 0
 
     def __add__(self, other):
         return Vector(self.x + other.x, self.y + other.y, self.z + other.z)
@@ -132,13 +136,19 @@ class Vector(object):
 
     # return the dot product of this vector and another
     def dot(self, v):
+        if type(v) is not Vector:
+            v = Vector(v)
         return v.x * self.x + v.y * self.y + v.z * self.z
 
     # Return the cross product of this vector and another.
     def cross(self, v):
         if type(v) is not Vector:
             v = Vector(v)
-        ret = Vector(self.y * v.z - self.z * v.y, self.z * v.x - self.x * v.z, self.x * v.y - self.y * v.x)
+
+        a = self.y * v.z - self.z * v.y
+        b = self.z * v.x - self.x * v.z
+        c = self.x * v.y - self.y * v.x
+        ret = Vector(a, b, c)
         return ret
 
     # Return the scalar triple product

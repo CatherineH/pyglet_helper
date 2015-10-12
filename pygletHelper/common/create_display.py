@@ -10,14 +10,15 @@ import numpy as _numpy
 import atexit as _atexit
 from inspect import getargspec
 import pyglet
-from pyglet.canvas.base import Display
+from pyglet.window import Display
 from pyglet.window import Window
+
 import platform
 
 from pygletHelper.objects.display_kernel import DisplayKernel
 from pygletHelper.objects.material import diffuse
 from pygletHelper.objects.light import DistantLight
-
+from pygletHelper.common.primitives import trail_list
 
 def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()
@@ -28,14 +29,16 @@ def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scen
     else:
         raise ValueError("Too many arguments for the wait() function.")
 
-# _App = pyglet.app
+print("creating app")
+_App = pyglet.app
+print("done creating app")
 
 _plat = platform.system()
 
 #it is unnecessary to implement the window class, as it already exists in pyglet.
-#_window = Window()
-#_screenwidth = _window.get_size()[0]
-#_screenheight = _window.get_size()[1]
+_screen = Display().get_default_screen()
+_screenwidth = _screen.width
+_screenheight = _screen.height
 
 def exit():
     pyglet.exit()
@@ -271,14 +274,15 @@ class Display(DisplayKernel):
     # the methods report_window_resize, report_view_resize, and pick.
 
     def __init__(self, **keywords):
-        super(Display, self).__init__(**keywords)
-        display_kernel.__init__(self)
-        self._window_initialized = False
+        self.fills_window = True  # assume canvas fills the window
         self.window = None
+
+        super(Display, self).__init__(**keywords)
+        #display_kernel.__init__(self)
+        self._window_initialized = False
         self.menus = False
         self.N = -1
         self._lastx = self._lasty = None  # previous mouse position
-        self.fillswindow = True  # assume canvas fills the window
         self._visible = True
         self._fullscreen = False
 
@@ -300,33 +304,34 @@ class Display(DisplayKernel):
         if 'ambient' not in keywords:
             self.ambient = (0.2, 0.2, 0.2)
         if self.window is not None:
-            self.fillswindow = False
+            self.fills_window = False
             self.win = self.window.win
             self.panel = self.window.panel
 
         if self.window is None:
-            w = _screenwidth
-            h = _screenheight
+            # need to get display values from somewhere
+            self.w = _screenwidth
+            self.h = _screenheight
         else:
-            w = self.window.width - self.window.dwidth
-            h = self.window.height - self.window.dheight
+            self.w = self.window.width - self.window.dwidth
+            self.h = self.window.height - self.window.dheight
 
-        if self.window_x > w - 100:
+        if self.window_x > self.w - 100:
             raise ValueError('display x too near the right edge of the screen')
         if self.window_x + self.window_width < 100:
             raise ValueError('display x too far to the left edge of the screen')
-        if self.window_y > h - 100:
+        if self.window_y > self.h - 100:
             raise ValueError('display y too close to the bottom of the screen')
         if self.window_y + self.window_height < 100:
             raise ValueError('display y too far to the top of the screen')
 
-        if self.window_x + self.window_width > w:
-            self.window_width = w - self.window_x
+        if self.window_x + self.window_width > self.w:
+            self.window_width = self.w - self.window_x
         if self.window_x < 0:
             self.window_width = self.window_x + self.window_width
             self.window_x = 0
-        if self.window_y + self.window_height > h:
-            self.window_height = h - self.y
+        if self.window_y + self.window_height > self.h:
+            self.window_height = self.h - self.y
         if self.window_y < 0:
             self.window_height = self.window_y + self.window_height
             self.window_y = 0
@@ -338,16 +343,24 @@ class Display(DisplayKernel):
         self.select()
 
         if 'lights' not in keywords:
-            distant_light(direction=(0.22, 0.44, 0.88), color=(0.8, 0.8, 0.8))
-            distant_light(direction=(-0.88, -0.22, -.44), color=(0.3, 0.3, 0.3))
+            DistantLight(direction=(0.22, 0.44, 0.88), color=(0.8, 0.8, 0.8))
+            DistantLight(direction=(-0.88, -0.22, -.44), color=(0.3, 0.3, 0.3))
 
         self._bindings = {}
         self._waiting = []
         self.keyboard = eventInfo()
         self.kb = kb()
 
+    @property
+    def width(self):
+        return self.w
+
+    @property
+    def height(self):
+        return self.h
+
     def select(self):
-        display_kernel.selected = self
+        self.selected = self
 
     def waitfor_event(self, evt):
         """
@@ -480,7 +493,7 @@ class Display(DisplayKernel):
         if _plat == 'Unix' or _plat == 'Linux':
             y = 0
             h = h
-        if self.fillswindow:  # the canvas fills a window created by us
+        if self.fills_window:  # the canvas fills a window created by us
             if self.window._fullscreen:
                 w, h = _App.GetDisplaySize()
                 self._width = w
@@ -488,10 +501,10 @@ class Display(DisplayKernel):
                 self._x = self._y = 0
                 self._report_resize()
         else:  # place canvas in window already created by user
-            x = self._x
-            y = self._y
-            w = self._width
-            h = self._height
+            self.x = self._x
+            self.y = self._y
+            self.w = self._width
+            self.h = self._height
         # For backward compatibility, maintain self._canvas as well as self.canvas
 
         attribList = [_App.glcanvas.WX_GL_DEPTH_SIZE, 24,
@@ -512,7 +525,7 @@ class Display(DisplayKernel):
 
         self._context = _App.glcanvas.GLContext(c)
 
-        if self.fillswindow: c.SetFocus()
+        if self.fills_window: c.SetFocus()
 
         c.Bind(_App.EVT_LEFT_DOWN, self._OnLeftMouseDown)
         c.Bind(_App.EVT_LEFT_UP, self._OnLeftMouseUp)
@@ -540,12 +553,15 @@ class Display(DisplayKernel):
         else:
             h = self._height - _dheight
         if self.menus: h -= _menuheight
-        if not self.fillswindow:  # canvas was placed in user-created window
+        if not self.fills_window:  # canvas was placed in user-created window
             w = self._width
             h = self._height
         self.report_view_resize(int(w), int(h))
 
-    def _activate(self, a):  # this is called from C++ code in display_kernel.cpp
+    def activate(self):
+        self._activate(True)
+
+    def _activate(self, a):
         self._activated = a
         if a:
             global _do_loop
@@ -558,14 +574,19 @@ class Display(DisplayKernel):
     def _create(self):
         _displays.display_num += 1
         self.N = _displays.display_num
-        self._x = self.x
-        self._y = self.y
+        self._x = self.window_x
+        self._y = self.window_y
         self._width = self.window_width
         self._height = self.window_height
-        if self.fillswindow:  # the display fills the window; no panel created
-            self.window = window(menus=self.menus, _make_panel=False, x=self._x, y=self._y,
+        if self.fills_window:  # the display fills the window; no panel created
+            # TODO: Make a method for adding menus to window
+            #self.window = Window(menus=self.menus, _make_panel=False, x=self._x, y=self._y,
+            #                     width=self._width, height=self._height, title=self.title,
+            #                     visible=self._visible, fullscreen=self._fullscreen)
+            self.window = Window(x=self._x, y=self._y,
                                  width=self._width, height=self._height, title=self.title,
-                                 visible=self._visible, fullscreen=self._fullscreen)
+                                 visible=self.visible, fullscreen=self._fullscreen)
+
             self.window._add_display(self)
             self._make_canvas(self.window.win)
         else:
@@ -579,7 +600,7 @@ class Display(DisplayKernel):
         _Interact()
 
     def delete(self):
-        if self.fillswindow:
+        if self.fills_window:
             self.window.delete()
         else:
             for obj in self.objects:
@@ -679,7 +700,7 @@ class Display(DisplayKernel):
         if lock and not self._captured:
             self.cursor_state = self.cursor.visible
             set_cursor(self.canvas, False)
-            if self.fillswindow:
+            if self.fills_window:
                 self._cursorx, self._cursory = (x, y)
             else:
                 # cursor is based on (0,0) of the window; our (x,y) is based on (0,0) of the 3D display
@@ -743,7 +764,7 @@ class Display(DisplayKernel):
         # Similar problems on Ubuntu 12.04, plus wx.CURSOR_BLANK not available on Linux.
         if (spinning or zooming) and (_plat != 'Macintosh'):  # reset mouse to original location
             self.win.WarpPointer(self._cursorx, self._cursory)
-            if self.fillswindow:
+            if self.fills_window:
                 self._lastx = self._cursorx
                 self._lasty = self._cursory
             else:
@@ -869,19 +890,22 @@ class Display(DisplayKernel):
                 lt.display = self
                 lt.visible = True
             else:
-                lum = vector(lt).mag
-                distant_light(direction=vector(lt).norm(),
+                lum = Vector(lt).mag
+                distant_light(direction=Vector(lt).norm(),
                               color=(lum, lum, lum),
                               display=self)
 
     def _get_visible(self):
-        if self.fillswindow:
+        if self.fills_window:
+            # if a window hasn't been created, it is invisible
+            if self.window is None:
+                return False
             return self.window.visible
         else:
             raise AttributeError('When a graphics -display- is only part of a window, get -visible- of the window.')
 
     def _set_visible(self, v):
-        if self.fillswindow:
+        if self.fills_window:
             if self.window:  # means that a window has been created for the display
                 self.window.visible = v
             else:
@@ -890,13 +914,13 @@ class Display(DisplayKernel):
             raise AttributeError('When a graphics -display- is only part of a window, set -visible- of the window.')
 
     def _get_fullscreen(self):
-        if self.fillswindow:
+        if self.fills_window:
             return self.window.fullscreen
         else:
             raise AttributeError('When a graphics -display- is only part of a window, get -fullscreen- of the window.')
 
     def _set_fullscreen(self, full):
-        if self.fillswindow:
+        if self.fills_window:
             if self.window:  # means that a window has been created for the display
                 self.window.fullscreen = full
             else:
@@ -912,8 +936,9 @@ class Display(DisplayKernel):
 
 from vis.site_settings import enable_shaders
 
+print("enabling shaders")
 Display.enable_shaders = enable_shaders
-
+print ("done enabling shaders")
 # This is an atexit handler so that programs remain 'running' after they've finished
 # executing the code in the program body. For visual this is important so that the
 # windows don't close before the user can interact with them.
@@ -929,7 +954,7 @@ def _close_final():  # There is a window, or an activated display
         _do_loop = False  # make sure we don't trigger this twice
         while True:  # at end of user program, wait for user to close the program
             rate(1)
-            #_App.EventLoop().exit()
+            _App.EventLoop().exit()
 
 
 _atexit.register(_close_final)
@@ -960,10 +985,13 @@ class _ManageDisplays():  # a singleton
         for d in self.displays:
             d._paint()
 
-
+print("connecting to display")
 _displays = _ManageDisplays()
-#_evtloop = _App.EventLoop()
+_evtloop = _App.EventLoop()
+print("going for run")
 #_evtloop.run()
+print("running")
+
 _isMac = False  #('wxOSX' in _App.PlatformInfo)
 '''
 if _plat == 'Windows':
@@ -1003,7 +1031,8 @@ def _Interact():
     for d in _displays.displays:
         d._dispatch_event("draw_complete")
 
-    while not _evtloop.Pending() and _evtloop.ProcessIdle(): pass
+    while not _evtloop.has_exit: pass
+    #while not _evtloop.Pending() and _evtloop.ProcessIdle(): pass
     if _App.GetApp(): _App.GetApp().ProcessPendingEvents()
     if _isMac and not _evtloop.Dispatch(): return
     # Currently on wxOSX Pending always returns true, so the
@@ -1040,8 +1069,8 @@ def _Interact():
                     d._dispatch_event("click", event)
 
 
-#from .rate_function import RateKeeper as _rk
-#rate = _rk(interactFunc=_Interact)
+from pygletHelper.common.rate_function import RateKeeper as _rk
+rate = _rk(interactFunc=_Interact)
 
 def sleep(dt):
     tend = _clock() + dt

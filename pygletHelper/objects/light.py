@@ -27,7 +27,7 @@ class Light(Renderable):
 
     @property
     def center(self):
-        return vector()
+        return Vector()
 
     @property
     def material(self):

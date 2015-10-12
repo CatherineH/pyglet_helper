@@ -43,7 +43,9 @@ def main():
         },
         requires=[
             'numpy',
-            'pyglet'
+            'pyglet',
+            'ttfquery',
+            'fontTools'
         ],
         # Package info
         packages=create_package_list('pygletHelper'),
