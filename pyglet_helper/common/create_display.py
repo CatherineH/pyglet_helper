@@ -16,10 +16,10 @@ from traceback import print_stack
 
 import platform
 
-from pygletHelper.objects.display_kernel import DisplayKernel
-from pygletHelper.objects.material import diffuse
-from pygletHelper.objects.light import DistantLight
-from pygletHelper.common.primitives import trail_list
+from pyglet_helper.objects.display_kernel import DisplayKernel
+from pyglet_helper.objects.material import diffuse
+from pyglet_helper.objects.light import DistantLight
+from pyglet_helper.common.primitives import trail_list
 
 def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scene.mouse.getclick()
     _Interact()
@@ -1050,7 +1050,7 @@ def _Interact():
                     d._dispatch_event("click", event)
 
 
-from pygletHelper.common.rate_function import RateKeeper as _rk
+from pyglet_helper.common.rate_function import RateKeeper as _rk
 rate = _rk(interactFunc=_Interact)
 
 def sleep(dt):

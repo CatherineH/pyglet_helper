@@ -14,18 +14,18 @@ from numpy import zeros
 
 from pyglet.gl import *
 #import pyglet
-from pygletHelper.objects.sphere import Sphere
+from pyglet_helper.objects.sphere import Sphere
 
-from pygletHelper.objects.pyramid import Pyramid
-from pygletHelper.objects.box import Box
-from pygletHelper.objects.arrow import Arrow
-from pygletHelper.objects.cone import Cone
-from pygletHelper.objects.cylinder import Cylinder
-from pygletHelper.objects.ring import Ring
-from pygletHelper.objects.ellipsoid import Ellipsoid
-from pygletHelper.objects.renderable import View
-from pygletHelper.util.vector import Vector
-from pygletHelper.util import color
+from pyglet_helper.objects.pyramid import Pyramid
+from pyglet_helper.objects.box import Box
+from pyglet_helper.objects.arrow import Arrow
+from pyglet_helper.objects.cone import Cone
+from pyglet_helper.objects.cylinder import Cylinder
+from pyglet_helper.objects.ring import Ring
+from pyglet_helper.objects.ellipsoid import Ellipsoid
+from pyglet_helper.objects.renderable import View
+from pyglet_helper.util.vector import Vector
+from pyglet_helper.util import color
 from math import sin, cos, pi
 
 window = pyglet.window.Window()

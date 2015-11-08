@@ -4,8 +4,8 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.util.shader_program import ShaderProgram
-from pygletHelper.util.texture import Texture
+from pyglet_helper.util.shader_program import ShaderProgram
+from pyglet_helper.util.texture import Texture
 
 
 class Material(object):

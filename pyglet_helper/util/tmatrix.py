@@ -3,7 +3,7 @@
 # See the file vpython_license.txt for vpython license terms.
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
-from pygletHelper.util.vector import Vector
+from pyglet_helper.util.vector import Vector
 from pyglet.gl import *
 from numpy import matrix, identity, array, nditer
 from numpy.linalg import inv

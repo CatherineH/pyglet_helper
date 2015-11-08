@@ -4,12 +4,12 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.primitive import Primitive
-from pygletHelper.objects.box import Box
-from pygletHelper.objects.pyramid import Pyramid
-from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.vector import Vector
-from pygletHelper.util.tmatrix import Tmatrix
+from pyglet_helper.objects.primitive import Primitive
+from pyglet_helper.objects.box import Box
+from pyglet_helper.objects.pyramid import Pyramid
+from pyglet_helper.util.rgba import Rgb
+from pyglet_helper.util.vector import Vector
+from pyglet_helper.util.tmatrix import Tmatrix
 
 
 # A 3D 4-sided arrow, with adjustable head and shaft.

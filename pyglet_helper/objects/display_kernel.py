@@ -8,11 +8,11 @@ from math import pi
 
 from enum import Enum
 
-from pygletHelper.objects.mouseobject import MouseBase
-from pygletHelper.objects.renderable import View
-from pygletHelper.objects.mouse_manager import MouseButton
-from pygletHelper.util import color
-from pygletHelper.util.vector import Vector
+from pyglet_helper.objects.mouse_object import MouseBase
+from pyglet_helper.objects.renderable import View
+from pyglet_helper.objects.mouse_manager import MouseButton
+from pyglet_helper.util import color
+from pyglet_helper.util.vector import Vector
 from pyglet.window import Window
 
 from math import tan

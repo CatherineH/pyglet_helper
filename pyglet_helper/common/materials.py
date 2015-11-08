@@ -55,8 +55,8 @@ import os.path
 import math
 import warnings
 
-from pygletHelper.util.texture import Texture
-from pygletHelper.objects.material import Material
+from pyglet_helper.util.texture import Texture
+from pyglet_helper.objects.material import Material
 
 
 class raw_texture(Texture):

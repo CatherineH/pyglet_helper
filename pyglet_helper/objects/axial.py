@@ -4,13 +4,13 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.primitive import Primitive
+from pyglet_helper.objects.primitive import Primitive
 from math import pi
-from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.vector import Vector
-from pygletHelper.util.tmatrix import Tmatrix
+from pyglet_helper.util.rgba import Rgb
+from pyglet_helper.util.vector import Vector
+from pyglet_helper.util.tmatrix import Tmatrix
 
-from pygletHelper.objects.material import Material
+from pyglet_helper.objects.material import Material
 
 # A subbase class used to only export 'radius' as a property once to Python.
 class Axial(Primitive):

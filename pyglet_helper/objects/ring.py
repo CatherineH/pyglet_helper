@@ -8,10 +8,10 @@ from pyglet.graphics.vertexbuffer import create_buffer
 
 from numpy import zeros, asarray
 
-from pygletHelper.objects.axial import Axial
-from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.vector import Vector
-from pygletHelper.util.tmatrix import rotation
+from pyglet_helper.objects.axial import Axial
+from pyglet_helper.util.rgba import Rgb
+from pyglet_helper.util.vector import Vector
+from pyglet_helper.util.tmatrix import rotation
 
 from math import pi, sin, cos, sqrt
 

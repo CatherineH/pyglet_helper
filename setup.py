@@ -48,7 +48,7 @@ def main():
             'fontTools'
         ],
         # Package info
-        packages=create_package_list('pygletHelper'),
+        packages=create_package_list('pyglet_helper'),
         #py_modules=['util', 'objects'],
         zip_safe=False)
 

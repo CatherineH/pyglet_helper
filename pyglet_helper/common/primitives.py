@@ -33,7 +33,7 @@ if import_check("Polygon"):
 if import_check("ttfquery"):
     from ttfquery import describe, glyphquery, glyph
 
-from pygletHelper.util.vector import Vector
+from pyglet_helper.util.vector import Vector
 from numpy import array, asarray, zeros, arange, int32, float64, sin, cos, fromstring, uint8
 from . import crayola
 color = crayola
@@ -58,8 +58,8 @@ trail_list = []  # list of objects that have trails
 #   a fair amount of construction and attribute access common to
 #   all renderables.
 
-from pygletHelper.objects.display_kernel import DisplayKernel
-from pygletHelper.objects.light import Light
+from pyglet_helper.objects.display_kernel import DisplayKernel
+from pyglet_helper.objects.light import Light
 
 
 class py_renderable(object):
@@ -288,16 +288,16 @@ class py_renderable_arrayobject (py_renderable):
 
 ################################################################################
 # Complete each type.
-from pygletHelper.objects.light import DistantLight, LocalLight
-from pygletHelper.objects.arrow import Arrow
-from pygletHelper.objects.cone import Cone
-from pygletHelper.objects.cylinder import Cylinder
-from pygletHelper.objects.sphere import Sphere
-from pygletHelper.objects.ring import Ring
-from pygletHelper.objects.box import Box
-from pygletHelper.objects.ellipsoid import Ellipsoid
-from pygletHelper.objects.pyramid import Pyramid
-from pygletHelper.objects.frame import Frame
+from pyglet_helper.objects.light import DistantLight, LocalLight
+from pyglet_helper.objects.arrow import Arrow
+from pyglet_helper.objects.cone import Cone
+from pyglet_helper.objects.cylinder import Cylinder
+from pyglet_helper.objects.sphere import Sphere
+from pyglet_helper.objects.ring import Ring
+from pyglet_helper.objects.box import Box
+from pyglet_helper.objects.ellipsoid import Ellipsoid
+from pyglet_helper.objects.pyramid import Pyramid
+from pyglet_helper.objects.frame import Frame
 
 class distant_light(py_renderable, DistantLight):
     def set_pos(self, _):

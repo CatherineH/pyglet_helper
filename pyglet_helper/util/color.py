@@ -1,4 +1,4 @@
-from pygletHelper.util.rgba import Rgb
+from pyglet_helper.util.rgba import Rgb
 
 blue = Rgb(red=0.0, green=0.0, blue=1.0)
 red = Rgb(red=1.0, green=0.0, blue=0.0)

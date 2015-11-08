@@ -4,12 +4,12 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.axial import Axial
-from pygletHelper.util.tmatrix import Tmatrix
-from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.vector import Vector
-from pygletHelper.util.quadric import Quadric
-from pygletHelper.objects.material import Material
+from pyglet_helper.objects.axial import Axial
+from pyglet_helper.util.tmatrix import Tmatrix
+from pyglet_helper.util.rgba import Rgb
+from pyglet_helper.util.vector import Vector
+from pyglet_helper.util.quadric import Quadric
+from pyglet_helper.objects.material import Material
 
 
 '''

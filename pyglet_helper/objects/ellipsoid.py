@@ -4,9 +4,9 @@
 # See the file vpython_authors.txt for a list of vpython contributors.
 # Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pygletHelper.objects.sphere import Sphere
-from pygletHelper.util.rgba import Rgb
-from pygletHelper.util.vector import Vector
+from pyglet_helper.objects.sphere import Sphere
+from pyglet_helper.util.rgba import Rgb
+from pyglet_helper.util.vector import Vector
 
 
 class Ellipsoid(Sphere):
