@@ -1,21 +1,5 @@
-# temporary, until I get the setup working.
-
-import sys
-import os
-
-
-
-global scene
-# scene = display()
-
-#print (scene)
-
-from numpy import zeros
-
 from pyglet.gl import *
-#import pyglet
 from pyglet_helper.objects.sphere import Sphere
-
 from pyglet_helper.objects.pyramid import Pyramid
 from pyglet_helper.objects.box import Box
 from pyglet_helper.objects.arrow import Arrow
@@ -27,6 +11,7 @@ from pyglet_helper.objects.renderable import View
 from pyglet_helper.util.vector import Vector
 from pyglet_helper.util import color
 from math import sin, cos, pi
+
 
 window = pyglet.window.Window()
 scene = View()
@@ -47,7 +32,6 @@ pyglet.clock.schedule(update)
 
 @window.event
 def on_resize(width, height):
-    print('resized!')
     glViewport(0, 0, width, height)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -61,19 +45,16 @@ def on_resize(width, height):
     glMatrixMode(GL_MODELVIEW)
     return pyglet.event.EVENT_HANDLED
 
-
-global screennum
-
-
 @window.event
 def on_draw():
     global screennum
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glLoadIdentity()
+
     _ellipsoid.axis = _ellipsoid.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ellipsoid.gl_render(scene)
 
-
+    # The sphere will look the same from all angles, so rotating it doesn't make sense
     _ball.gl_render(scene)
 
     _pyramid.axis = _pyramid.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
@@ -85,10 +66,8 @@ def on_draw():
     _cylinder.axis = _cylinder.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _cylinder.gl_render(scene)
 
-
     _arrow.axis = _arrow.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _arrow.gl_render(scene)
-
 
     _cone.axis = _cone.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _cone.gl_render(scene)
@@ -96,12 +75,12 @@ def on_draw():
     _ring.axis = Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ring.gl_render(scene)
     if screennum < 99:
-        filename = '/home/cholloway/screenshot%02d.png' % (screennum, )
+        path = os.path.dirname(__file__)
+        filename = os.path.join(path, 'screenshot%02d.png' % (screennum, ))
         pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
 
 screennum = 0
-
 
 def setup():
     # One-time GL setup
@@ -133,15 +112,11 @@ def setup():
 
 
 # put all objects in a scene together
-
 _ball = Sphere(pos=(1, 1, 0), radius=0.5, color=color.red)
-
 _box = Box(pos=(-1, 0, 0), length=0.4, height=0.5, width=1, color=color.blue)
-
 _pyramid = Pyramid(pos=(1, -1, 0), size=(1, 1, 1), color=color.cyan)
 _arrow = Arrow(pos=(0, 1, 0), axis=(1, 0, 0), fixed_width=False, head_width=0.4, head_length=0.50, shaft_width=0.20,
                color=color.yellow)
-
 _cone = Cone(pos=(0, 0, 0), axis=(1, 0, 0), radius=0.5, color=color.gray)
 _ring = Ring(pos=(0, -1, 0), axis=(0, 1, 0), radius=0.5, thickness=0.1, color=color.magenta)
 _ellipsoid = Ellipsoid(pos=(-1, -1, 0), length=0.75, height=0.5, width=0.75, color=color.green)
@@ -151,6 +126,5 @@ setup()
 rx = ry = rz = 0
 ry = 0
 rx = 0.4
-#rx = 1.57
 
 pyglet.app.run()

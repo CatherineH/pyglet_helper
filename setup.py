@@ -35,36 +35,25 @@ def main():
         description=DESCRIPTION,
         author='Catherine Holloway',
         author_email='milankie@gmail.com',
+        url='https://github.com/CatherineH/pyglet_helper',
         platforms=['POSIX', 'MacOS', 'Windows'],
         license='other',
         # packages=['vis'],
         package_dir={
             'vis': os.path.join(SITE_PACKAGES, 'vis'),
         },
-        requires=[
+        install_requires=[
             'numpy',
             'pyglet',
             'ttfquery',
             'fontTools'
         ],
+        package_data={'pyglet_helper.common': ['BlueMarble.tga', 'brickbump.tga', 'earth.tga', 'random.tga',
+                                               'turbulence3.tga', 'wood.tga']},
         # Package info
         packages=create_package_list('pyglet_helper'),
-        #py_modules=['util', 'objects'],
         zip_safe=False)
 
-
-'''
-# fetch values from package.xml
-setup(
-    author='Catherine Holloway',
-    author_email='cholloway@clearpathrobotics.com',
-    url='https://bitbucket.org/clearpathrobotics/testing_scripts',
-    package_dir={'': 'src'},
-    py_modules=['BagHelper', 'BagPlayer', 'DataFrameHelper', 'evaluate_rpe', 'GraphingHelper', 'OdomProcessor',
-                'RosHelpers'],
-    requires=['std_msgs', 'rospy', 'message_filters', 'gps_common', 'sensor_msgs']
-)
-'''
 
 if __name__ == '__main__':
     main()

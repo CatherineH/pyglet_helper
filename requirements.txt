@@ -1,3 +1,4 @@
 ttfquery
 pyglet
 enum
+numpy
