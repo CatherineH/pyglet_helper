@@ -45,11 +45,11 @@ class Cone(Axial):
 
         lod = 2
         length = self.axis.mag()
-        self.model_world_transform(scene.gcf, vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
 
         scene.cone_model[lod].gl_render()
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if self.radius == 0:
             return
 
@@ -84,7 +84,7 @@ class Cone(Axial):
 
         self.color.gl_set(self.opacity)
         if self.translucent:
-            gl_enable(GL_CULL_FACE)
+            glEnable(GL_CULL_FACE)
 
             # Render the back half.
             glCullFace(GL_FRONT)

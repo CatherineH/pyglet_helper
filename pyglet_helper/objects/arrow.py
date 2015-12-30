@@ -97,10 +97,10 @@ class Arrow(Primitive):
         # TODO: material related stuff in this file really needs cleaning up!
         m = material()
         m.swap(self.mat)
-        self.gl_render(scene)
+        self.render(scene)
         m.swap(self.mat)
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if self.degenerate:
             return
         self.init_model(scene)
@@ -121,10 +121,10 @@ class Arrow(Primitive):
                 glScaled(len - hl, sw, sw)
                 glTranslated(0.5, 0, 0)
                 if model_material_loc >= 0:
-                    model_mat = tmatrix()
+                    model_mat = Tmatrix()
                     s = 1.0 / max(len, hw)
-                    model_mat.translate(vector((len - hl) * s * 0.5, 0.5, 0.5))
-                    model_mat.scale(vector((len - hl), sw, sw) * s)
+                    model_mat.translate(Vector((len - hl) * s * 0.5, 0.5, 0.5))
+                    model_mat.scale(Vector((len - hl), sw, sw) * s)
                     mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
                 scene.box_model.gl_render()
                 glTranslated(-0.5, 0, 0)
@@ -133,10 +133,10 @@ class Arrow(Primitive):
                 glTranslated(len - hl, 0, 0)
                 glScaled(hl, hw, hw)
                 if model_material_loc >= 0:
-                    model_mat = tmatrix()
+                    model_mat = Tmatrix()
                     s = 1.0 / max(len, hw)
-                    model_mat.translate(vector((len - hl) * s, 0.5, 0.5))
-                    model_mat.scale(vector(hl, hw, hw) * s)
+                    model_mat.translate(Vector((len - hl) * s, 0.5, 0.5))
+                    model_mat.scale(Vector(hl, hw, hw) * s)
                     mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
                 scene.pyramid_model.gl_render()
                 glScaled(1 / hl, 1 / hw, 1 / hw)
@@ -146,8 +146,8 @@ class Arrow(Primitive):
     def grow_extent(self, world):
         if self.degenerate:
             return
-        hw, sw, len, hl = effective_geometry(1.0)
-        x = self.axis.cross(up).norm() * 0.5
+        hw, sw, len, hl = self.effective_geometry(1.0)
+        x = self.axis.cross(self.up).norm() * 0.5
         y = self.axis.cross(x).norm() * 0.5
         base = self.pos + self.axis.norm() * (len - hl)
         for i in range(-1, 2, 2):
@@ -216,5 +216,5 @@ class Arrow(Primitive):
                 scale = eff_length * max_head_length / eff_head_length
                 eff_head_length = eff_length * max_head_length
                 eff_head_width *= scale
-                eff_shaf_twidth *= scale
+                eff_shaft_width *= scale
         return [eff_head_width, eff_shaft_width, eff_length, eff_head_length]

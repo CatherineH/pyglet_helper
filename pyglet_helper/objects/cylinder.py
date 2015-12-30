@@ -14,7 +14,6 @@ class Cylinder(Axial):
     def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0, color=Rgb(0, 0, 0)):
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color)
         self.axis = Vector(axis)
-        print self.axis
 
     def init_model(self, scene):
         # The number of faces corrisponding to each level of detail.
@@ -51,16 +50,16 @@ class Cylinder(Axial):
         self.init_model(scene)
 
         lod = 2
-        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(self.length, self.radius, self.radius)).gl_mult()
 
         scene.cylinder_model[lod].gl_render()
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if self.radius == 0.0:
             return
         self.init_model(scene)
 
-        # See sphere.gl_render() for a description of the level of detail calc.
+        # See sphere.render() for a description of the level of detail calc.
         coverage = scene.pixel_coverage(self.pos, self.radius)
         lod = 0
         if coverage < 0:
@@ -87,7 +86,7 @@ class Cylinder(Axial):
         self.model_world_transform(scene.gcf, Vector(self.length, self.radius, self.radius)).gl_mult()
 
         if self.translucent:
-            gl_enable(GL_CULL_FACE)
+            glEnable(GL_CULL_FACE)
             self.color.gl_set(self.opacity)
 
             # Render the back half.

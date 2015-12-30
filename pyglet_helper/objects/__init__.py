@@ -1,18 +1,19 @@
-import pyglet_helper.objects.arrow
-import pyglet_helper.objects.axial
-import pyglet_helper.objects.box
-import pyglet_helper.objects.cone
-import pyglet_helper.objects.cylinder
-import pyglet_helper.objects.display_kernel
-import pyglet_helper.objects.ellipsoid
-import pyglet_helper.objects.frame
-import pyglet_helper.objects.light
-import pyglet_helper.objects.material
-import pyglet_helper.objects.mouse_manager
-import pyglet_helper.objects.mouse_object
-import pyglet_helper.objects.primitive
-import pyglet_helper.objects.pyramid
-import pyglet_helper.objects.rectangular
-import pyglet_helper.objects.renderable
-import pyglet_helper.objects.ring
-import pyglet_helper.objects.sphere
+from pyglet_helper.objects import *
+from pyglet_helper.objects.arrow import *
+from pyglet_helper.objects.axial import *
+from pyglet_helper.objects.box import *
+from pyglet_helper.objects.cone import *
+from pyglet_helper.objects.cylinder import *
+from pyglet_helper.objects.display_kernel import *
+from pyglet_helper.objects.ellipsoid import *
+from pyglet_helper.objects.frame import *
+from pyglet_helper.objects.renderable import *
+from pyglet_helper.objects.light import *
+from pyglet_helper.objects.material import *
+from pyglet_helper.objects.mouse_manager import *
+from pyglet_helper.objects.mouse_object import *
+from pyglet_helper.objects.primitive import *
+from pyglet_helper.objects.pyramid import *
+from pyglet_helper.objects.rectangular import *
+from pyglet_helper.objects.ring import *
+from pyglet_helper.objects.sphere import *

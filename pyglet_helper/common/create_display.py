@@ -6,13 +6,11 @@ from __future__ import print_function
 import os as _os
 import sys as _sys
 import time as _time
-import numpy as _numpy
 import atexit as _atexit
 from inspect import getargspec
 import pyglet
 from pyglet.window import Display
 from pyglet.window import Window
-from traceback import print_stack
 
 import platform
 
@@ -30,10 +28,7 @@ def wait(*args):  # called by mouseobject.cpp/pop_click, which is called by scen
     else:
         raise ValueError("Too many arguments for the wait() function.")
 
-print("creating app")
 _App = pyglet.app
-print("done creating app")
-
 _plat = platform.system()
 
 #it is unnecessary to implement the window class, as it already exists in pyglet.
@@ -650,9 +645,6 @@ class Display(DisplayKernel):
         self._mt.midUp()
         self._report_mouse_state(evt)
 
-    ##    def OnMouseWheel(self, evt): # not supported by VPython 5.x
-    ##        print(evt.GetWheelRotation(), evt.GetWheelDelta())
-
     def _OnMouseMotion(self, evt):
         x, y = evt.GetPosition()
         if x != self._lastx or y != self._lasty:
@@ -715,25 +707,6 @@ class Display(DisplayKernel):
             # So... we don't know if it's *really* down or not. ;-(
             #
             ctrl = False
-
-        #         labels = [s.strip() for s in "x, y, left, middle, right, shift, ctrl, alt, cmd, spin, zoom, lock, cap".split(',')]
-        #         vals = (x, y, left, middle, right, shift, ctrl, alt, cmd, spinning, zooming, lock, self._captured)
-        #         fmts = ["%9s"]*len(vals)
-        #         for l,f in zip(labels,fmts):
-        #             print(f % l, end='')
-        #         print()
-        #         for v,f in zip(vals,fmts):
-        #             print(f % `v`, end='')
-        #         print()
-        ##        if trigger == 'leftdown' and not self._rightdown:
-        ##            if ctrl:
-        ##                right = 1
-        ##                left = 0
-        ##            elif alt:
-        ##                middle = 1
-        ##                left = 0
-
-        #        if (spinning or zooming) and (x == self._lastx) and (y == self._lasty): return
 
         self.report_mouse_state([left, right, middle],
                                 self._lastx, self._lasty, x, y,
@@ -963,22 +936,11 @@ class _ManageDisplays():  # a singleton
         for d in self.displays:
             d._paint()
 
-print("connecting to display")
 _displays = _ManageDisplays()
 _evtloop = _App.EventLoop()
-print("going for run")
 #_evtloop.run()
-print("running")
 
 _isMac = False  #('wxOSX' in _App.PlatformInfo)
-'''
-if _plat == 'Windows':
-    # On Windows, the best timer is supposedly time.clock()
-    _clock = _time.clock
-else:
-    # On most other platforms, the best timer is supposedly time.time()
-    _clock = _time.time
-'''
 _mouse_binding_names = set(
     ['mousedown', 'mouseup', 'click'])  # these are the events that we need to grab using display.mouse.getevents()
 

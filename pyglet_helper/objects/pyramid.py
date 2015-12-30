@@ -63,15 +63,15 @@ class Pyramid(Rectangular):
 
     @property
     def material_matrix(self):
-        out.translate(vector(0, .5, .5))
-        scale = vector(self.axis.mag(), self.height, self.width)
+        out.translate(Vector(0, .5, .5))
+        scale = Vector(self.axis.mag(), self.height, self.width)
         out.scale(self.scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
         return out
 
     def gl_pick_render(self, scene):
-        gl_render(scene)
+        self.render(scene)
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if not scene.pyramid_model.compiled():
             self.init_model(scene)
 
@@ -83,8 +83,8 @@ class Pyramid(Rectangular):
 
     def grow_extent(self, world_extent):
         orient = model_world_transform()
-        v_width = orient * vector(0, 0, self.width * 0.5)
-        v_height = orient * vector(0, self.height * 0.5, 0)
+        v_width = orient * Vector(0, 0, self.width * 0.5)
+        v_height = orient * Vector(0, self.height * 0.5, 0)
         world_extent.add_point(self.pos + self.axis)
         world_extent.add_point(self.pos + v_width + v_height)
         world_extent.add_point(self.pos - v_width + v_height)

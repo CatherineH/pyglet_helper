@@ -33,9 +33,9 @@ class Axial(Primitive):
 
     @property
     def material_matrix(self):
-        out = tmatrix()
-        out.translate(vector(.0005, .5, .5))
+        out = Tmatrix()
+        out.translate(Vector(.0005, .5, .5))
         scale = self.scale(self.axis.mag(), self.radius, self.radius)
         out.scale(self.scale * (.999 / max(self.scale.x, self.scale.y * 2)))
         # Undo the rotation inside quadric::render_cylinder() and ::render_disk():
-        out = out * self.rotation(+.5 * pi, vector(0, 1, 0))  # xxx performance
+        out = out * self.rotation(+.5 * pi, Vector(0, 1, 0))  # xxx performance

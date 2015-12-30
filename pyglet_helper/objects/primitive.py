@@ -75,10 +75,10 @@ class Primitive(Renderable):
         if abs(self.axis.dot(self.up) / sqrt(self.up.mag2() * self.axis.mag2())) > 0.98:
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
-            if abs(self.axis.norm().dot(vector(-1, 0, 0))) > 0.98:
-                z_axis = self.axis.cross(vector(0, 0, 1)).norm()
+            if abs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
+                z_axis = self.axis.cross(Vector(0, 0, 1)).norm()
             else:
-                z_axis = self.axis.cross(vector(-1, 0, 0)).norm()
+                z_axis = self.axis.cross(Vector(-1, 0, 0)).norm()
         else:
             z_axis = self.axis.cross(self.up).norm()
 
@@ -104,9 +104,9 @@ class Primitive(Renderable):
         R = rotation(angle, _axis, origin)
         fake_up = self.up
         if not self.axis.cross(fake_up):
-            fake_up = vector(1, 0, 0)
+            fake_up = Vector(1, 0, 0)
             if not self.axis.cross(fake_up):
-                fake_up = vector(0, 1, 0)
+                fake_up = Vector(0, 1, 0)
         self.pos = R * self._pos
         self.up = R.times_v(fake_up)
         self._axis = R.times_v(self._axis)

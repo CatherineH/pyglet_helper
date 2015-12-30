@@ -14,9 +14,6 @@ class Box(Rectangular):
         super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
     # True if the box should not be rendered.
-    # bool degenerate();
-    # static displaylist model;
-    # static void init_model(displaylist& model, bool skip_right_face);
     def init_model(self, scene, skip_right_face=False):
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
@@ -54,9 +51,9 @@ class Box(Rectangular):
         scene.box_model.gl_compile_end()
 
     def gl_pick_render(self, scene):
-        self.gl_render(scene)
+        self.render(scene)
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if not scene.box_model.compiled():
             self.init_model(scene, False)
         self.color.gl_set(self.opacity)
@@ -66,13 +63,13 @@ class Box(Rectangular):
         glPopMatrix()
 
     def grow_extent(self, e):
-        tm = self.model_world_transform(1.0, vector(self.axis.mag(), self.height, self.width) * 0.5)
-        e.add_box(tm, vector(-1, -1, -1), vector(1, 1, 1))
+        tm = self.model_world_transform(1.0, Vector(self.axis.mag(), self.height, self.width) * 0.5)
+        e.add_box(tm, Vector(-1, -1, -1), Vector(1, 1, 1))
         e.add_body()
         return e
 
     def get_material_matrix(self, out):
-        out.translate(vector(.5, .5, .5))
-        scale = vector(self.axis.mag(), self.height, self.width)
+        out.translate(Vector(.5, .5, .5))
+        scale = Vector(self.axis.mag(), self.height, self.width)
         out.scale(scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
         return out

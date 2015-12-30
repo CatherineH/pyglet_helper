@@ -68,11 +68,12 @@ class Renderable(object):
     render_surface.
 '''
 
+gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
 
 class View(object):
     def __init__(self, n_gcf=1.0, view_width=800, view_height=600, anaglyph=False, coloranaglyph=False,
                  forward_changed=False, gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
-                 enable_shaders=True):
+                 enable_shaders=True, background_color = Rgb()):
         # The position of the camera in world space.
         self.camera = Vector()
         # The direction the camera is pointing - a unit vector.
@@ -109,12 +110,33 @@ class View(object):
         self.pyramid_model = DisplayList()
 
         self.camera_world = Tmatrix()
-        self.light_count = [0] * N_LIGHT_TYPES
-        self.light_pos = Vector()
-        self.light_color = Vector()  # in eye coordinates!
+
+        self.background_color = background_color
+        self.lights = []
 
         self.enable_shaders = enable_shaders
         self.screen_objects = []
+        self.setup()
+
+    def setup(self):
+        glEnable(GL_LIGHTING)
+        # One-time GL setup
+        glClearColor(1, 1, 1, 1)
+        glColor3f(1, 0, 0)
+        glEnable(GL_DEPTH_TEST)
+        glEnable(GL_CULL_FACE)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+
+    def draw_lights(self):
+        max_lights = min(len(self.lights), 8)
+        # add all of the lights to the scene
+        for i in range(0, max_lights):
+            # enable all of the lights
+            glEnable(gl_defined_lights[i])
+            glLightfv(gl_defined_lights[i], GL_POSITION, self.lights[i].position)
+            glLightfv(gl_defined_lights[i], GL_SPECULAR, self.lights[i].specular)
+            glLightfv(gl_defined_lights[i], GL_DIFFUSE, self.lights[i].diffuse)
 
     '''
      Called on a copy of a parent view to make this a view in a child

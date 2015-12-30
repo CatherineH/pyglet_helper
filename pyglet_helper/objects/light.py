@@ -12,10 +12,13 @@ import abc
 
 
 class Light(Renderable):
-    def __init__(self, color=Rgb()):
+    def __init__(self, color=Rgb(), specular=(.5, .5, 1, 0.5), diffuse=(1, 1, 1, 1), position=(1, 0.5, 1, 0)):
         super(Light, self).__init__(color=color)
         self.color = None
         self.rgb = color
+        self.specular = (GLfloat * 4)(*specular)
+        self.diffuse = (GLfloat * 4)(*diffuse)
+        self.position = (GLfloat * 4)(*position)
 
     @property
     def rgb(self):
@@ -40,14 +43,9 @@ class Light(Renderable):
     def is_light(self):
         return True
 
-    def render_lights(self, v):
-        v.light_count[0] += 1
-        p = self.get_vertex(v.gcf)
-        for d in range(0, 4):
-            v.light_pos.push_back(p[d])
-        for d in range(0, 3):
-            v.light_color.push_back(color[d])
-        v.light_color.push_back(1.0)
+    def render(self, v):
+        v.lights.append(self)
+        v.draw_lights()
 
     @abc.abstractmethod
     def get_vertex(self, gcf):

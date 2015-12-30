@@ -6,16 +6,7 @@ from sys import version_info
 
 
 def import_check(name):
-    if name == "Polygon":
-        # Check for the Polygon module needed by the text and extrusion objects:
-        imported = False
-        try:
-            from Polygon import Polygon
-            imported = True
-        except ImportError:
-            print("The Polygon module is not installed,\n   so the text and extrusion objects are unavailable.")
-        return imported
-    elif name == "ttfquery":
+    if name == "ttfquery":
         # Check for the font-handling modules needed by the text object:
         imported = False
         try:
@@ -24,11 +15,7 @@ def import_check(name):
         except ImportError:
             print("The ttfquery and/or FontTools modules are not installed,\n   so the text object is unavailable.")
         return imported
-    return False  # only Polygon and ttfquery are meaningful
-
-if import_check("Polygon"):
-    from Polygon import Polygon
-    from . import shapes
+    return False
 
 if import_check("ttfquery"):
     from ttfquery import describe, glyphquery, glyph
@@ -64,7 +51,6 @@ from pyglet_helper.objects.light import Light
 
 class py_renderable(object):
     def __init__(self, **keywords):
-        print(keywords)
         _other = keywords.get("_other")
         self.color = None
         self.material = None

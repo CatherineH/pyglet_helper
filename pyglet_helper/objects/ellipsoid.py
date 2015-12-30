@@ -50,7 +50,7 @@ class Ellipsoid(Sphere):
 
     @property
     def size(self):
-        return vector(self.axis.mag(), self.height, self.width)
+        return Vector(self.axis.mag(), self.height, self.width)
 
     @size.setter
     def size(self, s):
@@ -75,6 +75,6 @@ class Ellipsoid(Sphere):
         if self.degenerate():
             return
         # TODO: not accurate (overestimates extent)
-        s = vector(self.axis.mag(), self.height, self.width) * 0.5
+        s = Vector(self.axis.mag(), self.height, self.width) * 0.5
         world.add_box(self.model_world_transform(1.0), -s, s)
         world.add_body()

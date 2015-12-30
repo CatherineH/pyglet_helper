@@ -92,8 +92,8 @@ class Ring(Axial):
 
     @property
     def material_matrix(self, out):
-        out.translate(vector(.5, .5, .5))
-        out.scale(vector(self.radius, self.radius, self.radius) * (.5 / (self.radius + self.thickness)))
+        out.translate(Vector(.5, .5, .5))
+        out.scale(Vector(self.radius, self.radius, self.radius) * (.5 / (self.radius + self.thickness)))
         return out
 
     @property
@@ -101,9 +101,9 @@ class Ring(Axial):
         return self.radius == 0.0
 
     def gl_pick_render(self, scene):
-        self.gl_render(scene)
+        self.render(scene)
 
-    def gl_render(self, scene):
+    def render(self, scene):
         if self.degenerate:
             return
         # Level of detail estimation.  See sphere::gl_render().

@@ -25,7 +25,6 @@ class Sphere(Axial):
             self.axial = other
         self.PRIMITIVE_TYPEINFO_IMPL = Sphere
         self.compiled = False
-        print("radius: " + str(self.radius))
 
     @property
     def scale(self):
@@ -92,7 +91,7 @@ class Sphere(Axial):
 
         geometry.sphere_model[0].gl_render()
 
-    def gl_render(self, geometry):
+    def render(self, geometry):
         # Renders a simple sphere with the #2 level of detail.
         if self.radius == 0.0:
             return
@@ -127,7 +126,7 @@ class Sphere(Axial):
 
         if self.translucent:
             # Spheres are convex, so we don't need to sort
-            gl_enable(GL_CULL_FACE)
+            glEnable(GL_CULL_FACE)
 
             # Render the back half (inside)
             glCullFace(GL_FRONT)
