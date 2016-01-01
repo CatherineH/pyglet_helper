@@ -1,11 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pyglet_helper.objects.renderable import Renderable
-from pyglet_helper.util.vector import Vector
+from pyglet_helper.objects import Renderable
+from pyglet_helper.util import Vector
 
 '''
 Operations on frame objects include:
@@ -49,8 +44,8 @@ class Frame(Renderable):
         self.const_trans_child_iterator = []
 
     def world_zaxis(self):
-        if fabs(self.axis.dot(self.up) / sqrt(self.up.mag2() * self.axis.mag2())) > 0.98:
-            if fabs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
+        if self.fabs(self.axis.dot(self.up) / self.up.mag()**2.0) > 0.98:
+            if self.fabs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
                 z_axis = self.axis.cross(Vector(0, 0, 1)).norm()
             else:
                 z_axis = self.axis.cross(Vector(-1, 0, 0)).norm()
@@ -70,7 +65,7 @@ class Frame(Renderable):
         y_axis = z_axis.cross(self.axis).norm()
         x_axis = self.axis.norm()
         v = p - self.pos
-        inframe = vector(v.dot(x_axis), v.dot(y_axis), v.dot(z_axis))
+        inframe = Vector(v.dot(x_axis), v.dot(y_axis), v.dot(z_axis))
         return inframe
 
     def frame_world_transform(self, gcf):

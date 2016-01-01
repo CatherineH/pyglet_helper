@@ -1,9 +1,4 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
-
+from pyglet.gl import *
 
 class ShaderProgram(object):
     def __init__(self, source=None):
@@ -27,7 +22,7 @@ class ShaderProgram(object):
             return -1
         cache = self.uniforms[name]
         if cache == 0:
-            cache = 2 + self.v.glext.glGetUniformLocationARB(self.program, name)
+            cache = 2 + v.glext.glGetUniformLocationARB(self.program, name)
         return cache - 2
 
     def uniform_matrix(self, v, loc, _in):
@@ -59,10 +54,8 @@ class ShaderProgram(object):
 
         if not link_ok:
             # Some drivers (incorrectly?) set the GL error in glLinkProgramARB() in this situation
-            print("!linkok\n")
-            clear_gl_error()
             info_log = []
-            length = v.glext.glGetObjectParameterivARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB)
+            length = v.glext.glGetObjectParameterivARB(self.program, GL_OBJECT_INFO_LOG_LENGTH_ARB)
             temp = ['a'] * (length + 2)
             length, temp[0] = v.glext.glGetInfoLogARB(self.program, length + 1)
             temp[0] = infoLog.append(length)
@@ -99,11 +92,11 @@ class ShaderProgram(object):
         p = _source.find(header, p)
         while p != _source.npos:
             p += header.size()
-            end = source.find("\n[", p)
-            if end == source.npos:
-                end = source.size()
+            end = self.source.find("\n[", p)
+            if end == self.source.npos:
+                end = self.source.size()
 
-            section += source.substr(p, end - p)
+            section += self.source.substr(p, end - p)
             p = end
             p = _source.find(header, p)
 
@@ -136,13 +129,11 @@ class UseShaderProgram(object):
             self.oldProgram = -1
             return
 
-        self.program.realize(v)
+        self.program.realize(self.v)
 
         # For now, nested shader invocations aren't supported.
         # oldProgram = v.glext.glGetHandleARB( GL_PROGRAM_OBJECT_ARB )
         self.oldProgram = 0
 
         self.v.glext.glUseProgramObjectARB(self.program.program)
-        check_gl_error()
-
         self.m_ok = (self.program.program != 0)

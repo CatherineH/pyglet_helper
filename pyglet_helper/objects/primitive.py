@@ -1,15 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pyglet_helper.objects.renderable import Renderable
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.util.rgba import Rgb
-from pyglet_helper.util.tmatrix import Tmatrix, rotation
-from pyglet_helper.objects.material import Material
-
+from pyglet_helper.objects import Material, Renderable
+from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 from math import sqrt
 
 
@@ -72,7 +63,7 @@ class Primitive(Renderable):
         ret = Tmatrix()
         # A unit vector along the z_axis.
         z_axis = Vector(0, 0, 1)
-        if abs(self.axis.dot(self.up) / sqrt(self.up.mag2() * self.axis.mag2())) > 0.98:
+        if abs(self.axis.dot(self.up) / sqrt(self.up.mag()**2.0 * self.axis.mag()**2.0)) > 0.98:
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
             if abs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:

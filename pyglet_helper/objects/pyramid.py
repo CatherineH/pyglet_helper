@@ -1,14 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pyglet_helper.objects.rectangular import Rectangular
-
-from pyglet_helper.util.rgba import Rgb
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.util.display_list import DisplayList
+from pyglet_helper.objects import Rectangular
+from pyglet_helper.util import Rgb, Vector
 
 
 class Pyramid(Rectangular):
@@ -72,7 +64,7 @@ class Pyramid(Rectangular):
         self.render(scene)
 
     def render(self, scene):
-        if not scene.pyramid_model.compiled():
+        if not scene.pyramid_model.compiled:
             self.init_model(scene)
 
         self.color.gl_set(self.opacity)

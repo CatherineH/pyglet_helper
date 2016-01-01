@@ -20,7 +20,7 @@ def import_check(name):
 if import_check("ttfquery"):
     from ttfquery import describe, glyphquery, glyph
 
-from pyglet_helper.util.vector import Vector
+from pyglet_helper.util import Vector
 from numpy import array, asarray, zeros, arange, int32, float64, sin, cos, fromstring, uint8
 from . import crayola
 color = crayola

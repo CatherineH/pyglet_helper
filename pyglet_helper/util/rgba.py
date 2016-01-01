@@ -1,18 +1,25 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-
-''' A helper class to manage OpenGL color attributes.  The data is layout
-	compatable with OpenGL's needs for the various vector forms of commands,
-	like glColor4fv(), and glColorPointer().
-'''
 
 
 class Rgba(object):
+    """
+    Define a color to be used by OpenGl, including RGB and opacity
+    """
     def __init__(self, red=1.0, green=1.0, blue=1.0, opacity=1.0, c=None):
+        """
+        Initiator
+        :param red: The red value of the color, value between 0 and 1
+        :type red: float
+        :param green: The green value of the color, value between 0 and 1
+        :type green: float
+        :param blue: The blue value of the color, value between 0 and 1
+        :type blue: float
+        :param opacity: The opacity value of the color, value between 0 and 1
+        :type opacity: float
+        :param c: A list of values to copy into a new color
+        :type c: list
+        :return:
+        """
         if c is not None:
             if len(c) == 4:
                 self.red = c[0]
@@ -28,30 +35,48 @@ class Rgba(object):
             self.opacity = opacity
 
     def desaturate(self):
-        """ Convert to HSVA, lower saturation by 50%, convert back to RGBA.
-            @return The desaturated color.
         """
-        ret = rgb(red=self.red, green=self.green, blue=self.blue).desaturate()
-        return rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
+        Return a desaturated version of the color
+        :rtype: Rgba()
+        """
+        ret = Rgb(red=self.red, green=self.green, blue=self.blue).desaturate()
+        return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
     def grayscale(self):
-        """ Convert to greyscale, accounting for differences in perception.  This
-            function makes 4 calls to pow(), and is very slow.
-            @return The scaled color.
         """
-        ret = rgb(red=self.red, green=self.green, blue=self.blue).grayscale()
-        return rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
+        Return a version of the color projected onto a grayscale space
+        :rtype: Rgba()
+        """
+        ret = Rgb(red=self.red, green=self.green, blue=self.blue).grayscale()
+        return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
     def gl_set(self):
         """
-         Make this the active OpenGL color using glColor().
+        Set this color to the current material in OpenGL.
         """
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, self.opacity])
-        glColor4fv(color)
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
 
 class Rgb:
+    """
+    Define an RGB color to be used by OpenGl
+    """
     def __init__(self, red=1.0, green=1.0, blue=1.0, c=None):
+        """
+        Initiator
+        :param red: The red value of the color, value between 0 and 1
+        :type red: float
+        :param green: The green value of the color, value between 0 and 1
+        :type green: float
+        :param blue: The blue value of the color, value between 0 and 1
+        :type blue: float
+        :param c: A list of values to copy into a new color
+        :type c: list
+        :return:
+        """
         if c is not None:
             if len(c) == 3:
                 self.red = c[0]
@@ -83,9 +108,14 @@ class Rgb:
 
     @rgb.setter
     def rgb(self, bw):
-        self = rgb(red=bw, green=bw, blue=bw)
+        self = Rgb(red=bw, green=bw, blue=bw)
 
     def desaturate(self):
+        """
+        Convert the color to HSV space, reduce the saturation by a factor of 0.5, then convert back to RGB space
+        :rtype: Rgb()
+        :return: Desaturated color
+        """
         saturation = 0.5  # cut the saturation by this factor
 
         # r,g,b values are from 0 to 1
@@ -162,17 +192,25 @@ class Rgb:
         return ret
 
     def grayscale(self):
+        """
+        Convert the color to grayscale
+        :return: the converted color
+        :rtype: Rgb()
+        """
         # The constants 0.299, 0.587, and 0.114 are intended to account for the
         # relative intensity of each color to the human eye.
         gamma = 2.5
         black = pow(0.299 * pow(self.red, gamma) + 0.587 * pow(self.green, gamma)
                     + 0.114 * pow(self.blue, gamma), 1.0 / gamma)
-        return rgb(red=black, green=black, blue=black)
+        return Rgb(red=black, green=black, blue=black)
 
-    def gl_set(self, opacity):
-
-        # glColor4f(self.red, self.green, self.blue, opacity)
-
+    def gl_set(self, opacity=1.0):
+        """
+        Set the current material to this color
+        :param opacity: the opacity value of the color
+        :type opacity: float
+        :return:
+        """
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)

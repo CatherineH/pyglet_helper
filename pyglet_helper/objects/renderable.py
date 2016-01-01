@@ -1,14 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pyglet_helper.util.rgba import Rgb
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.util.display_list import DisplayList
-from pyglet_helper.util.tmatrix import Tmatrix
-from pyglet_helper.objects.material import Material
+from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
+from pyglet_helper.objects import Material
 
 N_LIGHT_TYPES = 1
 
@@ -154,7 +146,8 @@ class View(object):
 
     '''
      Compute the apparent diameter, in pixels, of a circle that is parallel
-     to the screen, with a center at pos, and some radius.  If pos is behind
+     to the screen,
+     with a center at pos, and some radius.  If pos is behind
      the camera, it will return negative.
     '''
 

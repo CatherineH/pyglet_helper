@@ -1,18 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-import sys
-import os
-
-filename = os.path.dirname(os.path.realpath(__file__))
-filename = filename.replace("objects", "")
-sys.path.append(filename)
-
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.objects.renderable import Renderable
+from pyglet_helper.util import Vector
+from pyglet_helper.objects import Renderable
 from enum import Enum
 
 

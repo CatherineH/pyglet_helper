@@ -1,15 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
-from pyglet.gl import *
-from pyglet_helper.objects.primitive import Primitive
+from pyglet_helper.objects import Primitive
 from math import pi
-from pyglet_helper.util.rgba import Rgb
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.util.tmatrix import Tmatrix
-
+from pyglet_helper.util import Rgb, Tmatrix, Vector
 from pyglet_helper.objects.material import Material
 
 # A subbase class used to only export 'radius' as a property once to Python.

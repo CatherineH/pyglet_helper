@@ -1,15 +1,6 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
-from pyglet_helper.objects.primitive import Primitive
-from pyglet_helper.objects.box import Box
-from pyglet_helper.objects.pyramid import Pyramid
-from pyglet_helper.util.rgba import Rgb
-from pyglet_helper.util.vector import Vector
-from pyglet_helper.util.tmatrix import Tmatrix
+from pyglet_helper.objects import Box, Material, Primitive, Pyramid
+from pyglet_helper.util import Rgb, Tmatrix, Vector
 
 
 # A 3D 4-sided arrow, with adjustable head and shaft.
@@ -95,12 +86,13 @@ class Arrow(Primitive):
 
     def gl_pick_render(self, scene):
         # TODO: material related stuff in this file really needs cleaning up!
-        m = material()
+        m = Material()
         m.swap(self.mat)
         self.render(scene)
         m.swap(self.mat)
 
     def render(self, scene):
+        mat = Material()
         if self.degenerate:
             return
         self.init_model(scene)
@@ -158,10 +150,10 @@ class Arrow(Primitive):
         world.add_body()
 
     def init_model(self, scene):
-        if not scene.box_model.compiled():
+        if not scene.box_model.compiled:
             self.box = Box()
             self.box.init_model(scene)
-        if not scene.pyramid_model.compiled():
+        if not scene.pyramid_model.compiled:
             self.pyramid = Pyramid()
             self.pyramid.init_model(scene)
 

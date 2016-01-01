@@ -1,18 +1,10 @@
-# Copyright (c) 2000, 2001, 2002, 2003 by David Scherer and others.
-# Copyright (c) 2004 by Jonathan Brandmeyer and others.
-# See the file vpython_license.txt for vpython license terms.
-# See the file vpython_authors.txt for a list of vpython contributors.
-# Ported to pyglet in 2015 by Catherine Holloway
 from pyglet.gl import *
 from math import pi
 
 from enum import Enum
 
-from pyglet_helper.objects.mouse_object import MouseBase
-from pyglet_helper.objects.renderable import View
-from pyglet_helper.objects.mouse_manager import MouseButton
-from pyglet_helper.util import color
-from pyglet_helper.util.vector import Vector
+from pyglet_helper.objects import MouseBase, MouseButton, View
+from pyglet_helper.util import color, Vector
 from pyglet.window import Window
 
 from math import tan
@@ -494,7 +486,7 @@ class DisplayKernel(object):
 
             if self.autocenter:
                 c = world_extent.get_center() + self.center
-                if (self.center - c).mag2() > (self.center.mag2() + c.mag2()) * 1e-6:
+                if (self.center - c).mag()**2.0 > (self.center.mag()**2.0 + c.mag()**2.0) * 1e-6:
                     # Change center and recalculate extent (since camera_z depends on center)
                     self.center = c
                     continue
@@ -510,7 +502,7 @@ class DisplayKernel(object):
         # Rough scale calculation for gcf.  Doesn't need to be exact.
         # TODO: If extent and range are very different in scale, we are using extent to drive
         # gcf.  Both options have pros and cons.
-        mr = world_extent.get_range(vector(0, 0, 0)).mag()
+        mr = world_extent.get_range(Vector(0, 0, 0)).mag()
         if mr is not None or mr != 0.0:
             scale = 1.0 / mr
         else:
