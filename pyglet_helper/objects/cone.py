@@ -4,17 +4,40 @@ from pyglet_helper.util import Quadric, Rgb, Vector
 
 
 class Cone(Axial):
+    """
+    A Cone object
+    """
     def __init__(self, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
+        """
+        Initiator
+        :param radius: The cone's bottom radius.
+        :type radius: float
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :param axis: The cone points from the base to the point along the axis.
+        :type axis: pyglet_helper.util.Vector
+        :return:
+        """
         super(Cone, self).__init__(radius=radius, color=color, pos=Vector(pos))
         self.axis = Vector(axis)
 
     def init_model(self, scene):
-        # The number of faces corrisponding to each level of detail.
+        """
+        Add the cone quadrics to the view.
+        :param scene: The view to render the model to.
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
+        # The number of faces corresponding to each level of detail.
         n_sides = [8, 16, 32, 46, 68, 90]
         n_stacks = [1, 2, 4, 7, 10, 14]
         for i in range(0, 6):
             scene.cone_model[i].gl_compile_begin()
-            self.render_cone_model(n_sides[i], n_stacks[i])
+            q = Quadric()
+            q.render_cylinder(1.0, 1.0, n_sides[i], n_stacks[i], top_radius=0.0)
+            q.render_disk(1.0, n_sides[i], n_stacks[i] * 2, -1)
             scene.cone_model[i].gl_compile_end()
 
     @property
@@ -25,24 +48,13 @@ class Cone(Axial):
     def length(self, l):
         self.axis = self.axis.norm() * l
 
-    def render_cone_model(self, n_sides, n_stacks):
-        q = Quadric()
-        q.render_cylinder(1.0, 1.0, n_sides, n_stacks, top_radius=0.0)
-        q.render_disk(1.0, n_sides, n_stacks * 2, -1)
-
-    def gl_pick_render(self, scene):
-        if self.degenerate():
-            print "cone is degenerate"
-            return
-        self.init_model(scene)
-
-        lod = 2
-        length = self.axis.mag()
-        self.model_world_transform(scene.gcf, Vector(length, self.radius, self.radius)).gl_mult()
-
-        scene.cone_model[lod].gl_render()
-
     def render(self, scene):
+        """
+        Add a cone to the scene.
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         if self.radius == 0:
             return
 
@@ -90,14 +102,11 @@ class Cone(Axial):
             scene.cone_model[lod].gl_render()
         glPopMatrix()
 
-    def grow_extent(self, e):
-        if self.degenerate:
-            return
-        e.add_circle(self.pos, self.axis.norm(), self.radius)
-        e.add_point(self.pos + self.axis)
-        e.add_body()
-
     def get_center(self):
+        """
+        Get the center of the object.
+        :return:
+        """
         return self.pos + self.axis / 2.0
 
     @property

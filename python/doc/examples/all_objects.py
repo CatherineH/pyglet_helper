@@ -17,7 +17,6 @@ def update(dt):
     ry %= 2.0 * pi
     rz %= 2.0 * pi
 
-
 pyglet.clock.schedule(update)
 
 
@@ -41,7 +40,6 @@ def on_resize(width, height):
 def on_draw():
     global screennum
     scene.setup()
-
     _ellipsoid.axis = _ellipsoid.length*Vector(sin(rx) * cos(ry), sin(rx) * sin(ry), cos(rx))
     _ellipsoid.render(scene)
 
@@ -77,7 +75,7 @@ screennum = 0
 # put all objects in a scene together
 _ball = Sphere(pos=(1, 1, 0), radius=0.5, color=color.red)
 _box = Box(pos=(-1, 0, 0), length=0.4, height=0.5, width=1, color=color.blue)
-_pyramid = Pyramid(pos=(1, -1, 0), size=(1, 1, 1), color=color.cyan)
+_pyramid = Pyramid(pos=(1, -1, 0), length=1.0, height=1.0, width=1.0, color=color.cyan)
 _arrow = Arrow(pos=(0, 1, 0), axis=(1, 0, 0), fixed_width=False, head_width=0.4, head_length=0.50, shaft_width=0.20,
                color=color.yellow)
 _cone = Cone(pos=(0, 0, 0), axis=(1, 0, 0), radius=0.5, color=color.gray)

@@ -1,10 +1,26 @@
-from pyglet.gl import *
 from pyglet_helper.objects import Sphere
 from pyglet_helper.util import Rgb, Vector
 
 
 class Ellipsoid(Sphere):
+    """
+    An Ellipsoid object
+    """
     def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
+        """
+        Initiator
+        :param width: The ellipsoid's width.
+        :type width: float
+        :param height: The ellipsoid's height.
+        :type height: float
+        :param length: The ellipsoid's length.
+        :type length: float
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :return:
+        """
         super(Ellipsoid, self).__init__(color=color, pos=pos)
         self._height = None
         self._width = None
@@ -64,11 +80,3 @@ class Ellipsoid(Sphere):
 
     def degenerate(self):
         return not self.visible or self.height == 0.0 or self.width == 0.0 or self.axis.mag() == 0.0
-
-    def grow_extent(self, world):
-        if self.degenerate():
-            return
-        # TODO: not accurate (overestimates extent)
-        s = Vector(self.axis.mag(), self.height, self.width) * 0.5
-        world.add_box(self.model_world_transform(1.0), -s, s)
-        world.add_body()

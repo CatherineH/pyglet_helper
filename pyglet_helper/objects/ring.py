@@ -1,61 +1,28 @@
 from pyglet.gl import *
-from numpy import zeros
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Rgb, Vector
 from math import pi, sin, cos, sqrt
 
 
-class Model(object):
-    def __init__(self):
-        self._vertex_pos = None
-        self._vector_normal = None
-        self._indices = None
-        self.vertices_gl = None
-        self.normals_gl = None
-        self.indices_gl = None
-        self.indices = zeros(0)
-        self.vertex_pos = zeros(0)
-        self.vector_normal = zeros(0)
-
-    @property
-    def vertex_pos(self):
-        return self._vertex_pos
-
-    @vertex_pos.setter
-    def vertex_pos(self, n_vertex_pos):
-        self._vertex_pos = []
-        for i in range(0, len(n_vertex_pos)):
-            self._vertex_pos.append(n_vertex_pos[i].x)
-            self._vertex_pos.append(n_vertex_pos[i].y)
-            self._vertex_pos.append(n_vertex_pos[i].z)
-        self.vertices_gl = (GLfloat * len(self._vertex_pos))(*self._vertex_pos)
-
-    @property
-    def vector_normal(self):
-        return self._vector_normal
-
-    @vector_normal.setter
-    def vector_normal(self, n_vector_normal):
-        self._vector_normal = []
-        for i in range(0, len(n_vector_normal)):
-            self._vector_normal.append(n_vector_normal[i].x)
-            self._vector_normal.append(n_vector_normal[i].y)
-            self._vector_normal.append(n_vector_normal[i].z)
-        self.normals_gl = (GLfloat * len(self._vector_normal))(*self._vector_normal)
-
-    @property
-    def indices(self):
-        return self._indices
-
-    @indices.setter
-    def indices(self, n_indices):
-        self._indices = [int(i) for i in n_indices]
-        self.indices_gl = (GLuint * len(self._indices))(*self._indices)
-
-
 class Ring(Axial):
-    def __init__(self, thickness=0.0, model_rings=-1, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0),
-                 axis=Vector(1, 0, 0)):
+    """
+    A Ring object
+    """
+    def __init__(self, thickness=0.0, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
+        """
+        Initiator
+        :param thickness: The ring's thickness.
+        :type thickness: float
+        :param radius: The ring's radius.
+        :type radius: float
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :param axis: The cone points from the base to the point along the axis.
+        :type axis: pyglet_helper.util.Vector
+        :return:
+        """
         super(Ring, self).__init__(radius=radius, color=color, pos=pos, axis=axis)
         self._thickness = None
         self.list = None
@@ -63,13 +30,6 @@ class Ring(Axial):
         # The radius of the ring's body.  If not specified, it is set to 1/10 of
         # the radius of the body.
         self.thickness = thickness
-        self.PRIMITIVE_TYPEINFO_DECL = Ring
-        self.model = Model()
-        self.model_rings = model_rings
-        self.model_bands = 0
-        self.model_radius = 0
-        self.model_thickness = 0
-        self.pos = pos
 
     @property
     def thickness(self):
@@ -89,14 +49,15 @@ class Ring(Axial):
     def degenerate(self):
         return self.radius == 0.0
 
-    def gl_pick_render(self, scene):
-        self.render(scene)
-
     def render(self, scene):
+        """
+        Add a ring to the view.
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         if self.degenerate:
             return
-        # Level of detail estimation.  See sphere::gl_render().
-
         # The number of subdivisions around the hoop's radial direction.
         if self.thickness:
             band_coverage = scene.pixel_coverage(self.pos, self.thickness)
@@ -106,7 +67,7 @@ class Ring(Axial):
             band_coverage = 1000
         bands = sqrt(band_coverage * 4.0)
         bands = clamp(4, bands, 40)
-        # The number of subdivions around the hoop's tangential direction.
+        # The number of subdivisions around the hoop's tangential direction.
         ring_coverage = scene.pixel_coverage(self.pos, self.radius)
         if ring_coverage < 0:
             ring_coverage = 1000
@@ -177,70 +138,20 @@ class Ring(Axial):
         glEndList()
         glCallList(self.list)
 
-    def grow_extent(self, world):
-        if self.degenerate:
-            return
-        # TODO: Not perfectly accurate (a couple more circles would help)
-        a = self.axis.norm()
-        if self.thickness:
-            t = self.thickness
-        else:
-            t = self.radius * .1
-        world.add_circle(self.pos, a, self.radius + t)
-        world.add_circle(self.pos + a * t, a, self.radius)
-        world.add_circle(self.pos - a * t, a, self.radius)
-        world.add_body()
-        return world
-
-    def create_model(self, rings, bands):
-        scaled_thickness = 0.2
-        # if self.thickness != 0.0:
-        #    scaled_thickness = 2*self.thickness / self.radius
-        m = Model()
-        m.vertices = []
-        m.normals = []
-
-        u_step = 2 * pi / (rings - 1)
-        v_step = 2 * pi / (bands - 1)
-        u = 0.
-        for i in range(rings):
-            cos_u = cos(u)
-            sin_u = sin(u)
-            v = 0.
-            for j in range(bands):
-                cos_v = cos(v)
-                sin_v = sin(v)
-
-                d = (self.radius + self.thickness * cos_v)
-                x = d * cos_u
-                y = d * sin_u
-                z = self.thickness * sin_v
-
-                nx = cos_u * cos_v
-                ny = sin_u * cos_v
-                nz = sin_v
-
-                m.vertices.extend([x, y, z])
-                m.normals.extend([nx, ny, nz])
-                v += v_step
-            u += u_step
-
-        # Create ctypes arrays of the lists
-        m.vertices_gl = (GLfloat * len(m.vertices))(*m.vertices)
-        m.normals_gl = (GLfloat * len(m.normals))(*m.normals)
-
-        # Create a list of triangle indices.
-        m.indices = []
-        for i in range(rings - 1):
-            for j in range(bands - 1):
-                p = i * bands + j
-                m.indices.extend([p, p + bands, p + bands + 1])
-                m.indices.extend([p, p + bands + 1, p + 1])
-        m.indices_gl = (GLuint * len(m.indices))(*m.indices)
-        return m
-
 
 def clamp(lower, value, upper):
+    """
+    Restrict a value to be between a lower value and upper value. Used to restrict the number of polygons in the ring
+    object
+    :param lower: the lowest possible value of value
+    :type lower: float or int
+    :param value: the value to check
+    :param value: float or int
+    :param upper: the largest possible value of value
+    :type upper: float or int
+    :rtype: float or int
+    :return: the restricted value
+    """
     if lower > value:
         return lower
     if upper < value:

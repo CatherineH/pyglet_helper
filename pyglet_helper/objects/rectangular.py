@@ -1,10 +1,26 @@
-from pyglet.gl import *
 from pyglet_helper.objects import Primitive
 from pyglet_helper.util import Rgb, Vector
 
 
 class Rectangular(Primitive):
+    """
+    A base class for rectangular-like objects (such as the box or pyramid)
+    """
     def __init__(self, other=None, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
+        """
+        Initiator
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :param width: The object's width.
+        :type width: float
+        :param height: The object's height.
+        :type height: float
+        :param length: The object's length.
+        :type length: float
+        :return:
+        """
         super(Rectangular, self).__init__(color=color, pos=pos)
         self._height = None
         self._width = None
@@ -63,8 +79,12 @@ class Rectangular(Primitive):
         self.width = s.z
 
     def apply_transform(self, scene):
-        # OpenGL needs to invert the modelview matrix to generate the normal matrix,
-        # so try not to make it singular:
+        """
+        Scale the object to the correct height, width and length
+        :param scene: the object's current view
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         min_scale = max(self.axis.mag(), max(self.height, self.width)) * 1e-6
         self.size = Vector(max(min_scale, self.axis.mag()), max(min_scale, self.height), max(min_scale, self.width))
         self.model_world_transform(scene.gcf, self.size).gl_mult()

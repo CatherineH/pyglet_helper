@@ -1,10 +1,14 @@
-from pyglet.gl import *
 from pyglet_helper.objects import Material, Renderable
 from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
-from math import sqrt
 
 
 def trail_update(obj):
+    """
+    A function for keeping track of the change in a primitive object's position
+    :param obj: the primitive object to track
+    :type obj: pyglet_helper.objects.Primitive
+    :return:
+    """
     # trail_update does not detect changes such as ball.pos.x += 1
     # which are detected in create_display/_Interact which looks at trail_list
     if obj.interval == 0:
@@ -21,10 +25,34 @@ def trail_update(obj):
 
 
 class Primitive(Renderable):
-    # Generate a displayobject at the origin, with up pointing along +y and
-    # an axis = vector(1, 0, 0).
+    """
+     A base class for all geometric shapes
+    """
     def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), make_trail=False,
-                 trail_initialized=False, obj_initialized=False, other=None, color=Rgb(), material=Material()):
+                 trail_initialized=False, obj_initialized=False, color=Rgb(), material=Material(), other=None):
+        """
+        Initiator
+        :param axis: The orientation to use when drawing.
+        :type axis: pyglet_helper.util.Vector
+        :param up: A vector that points to the current up direction in the view.
+        :type up: pyglet_helper.util.Vector
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :param make_trail: If True, the position of the primitive object will be tracked over time.
+        :type make_trail: bool
+        :param trail_initialized: If True, the trail, meaning the list of tracked positions over time, has been
+        initialized
+        :type trail_initialized: bool
+        :param obj_initialized: If True, the object has been initialized
+        :type obj_initialized: bool
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param material: The object's material
+        :type material: pyglet_helper.util.Material
+        :param other: another object to copy properties from (optional)
+        :type other: pyglet_helper.objects.Primitive
+        :return:
+        """
         super(Primitive, self).__init__(color=color, mat=material)
         self._axis = None
         self._pos = None
@@ -36,10 +64,7 @@ class Primitive(Renderable):
         self.make_trail = make_trail
         self.trail_initialized = trail_initialized
         self.obj_initialized = obj_initialized
-        self.primitive_object = other
-        self.obj_initialized = False
 
-        # The position and orientation of the body in World space.
         if other is None:
             # position must be defined first, before the axis
             self.up = Vector(up)
@@ -51,14 +76,16 @@ class Primitive(Renderable):
             self.pos = other.pos
             self.axis = other.axis
 
-    # Returns a tmatrix that performs reorientation of the object from model
-    # orientation to world (and view) orientation.
     def model_world_transform(self, world_scale=0.0, object_scale=Vector(1, 1, 1)):
         """
          Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
-         ret = world_scale o translation o rotation o scale
-         Note that with the default parameters, only the rotation transformation is returned!  Typical
-           usage should be model_world_transform( scene.gcf, my_size );
+        :param world_scale: The global scaling factor.
+        :type world_scale: float
+        :param object_scale: The scaling to applied to this specific object
+        :type object_scale: pyglet_helper.util.Vector
+        :rtype: pyglet_helper.util.Tmatrix
+        :returns:  Returns a tmatrix that performs reorientation of the object from model orientation to world
+        (and view) orientation.
         """
         ret = Tmatrix()
         # A unit vector along the z_axis.
@@ -87,12 +114,20 @@ class Primitive(Renderable):
 
     @property
     def typeid(self):
-        # See above for PRIMITIVE_TYPEINFO_DECL/IMPL.
         return type(self)
 
-    # Manually overload this member since the default arguments are variables.
-    def rotate(self, angle, _axis, origin):
-        R = rotation(angle, _axis, origin)
+    def rotate(self, angle, axis, origin):
+        """
+        Rotate the primitive's axis by angle about a specified axis at a specified origin.
+        :param angle: the angle to rotate by, in radians
+        :type angle: float
+        :param axis: The axis to rotate around.
+        :type axis: pyglet_helper.util.Vector
+        :param origin: The center of the axis of rotation.
+        :type origin: pyglet_helper.util.Vector
+        :return:
+        """
+        R = rotation(angle, axis, origin)
         fake_up = self.up
         if not self.axis.cross(fake_up):
             fake_up = Vector(1, 0, 0)
@@ -227,3 +262,7 @@ class Primitive(Renderable):
     def primitive_object(self, x):
         self._primitive_object = x
         self.obj_initialized = True
+
+    @property
+    def is_light(self):
+        return False

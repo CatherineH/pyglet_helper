@@ -1,12 +1,26 @@
 from pyglet.gl import *
-
 from pyglet_helper.objects import Renderable
-from pyglet_helper.util import Rgb, Vector
+from pyglet_helper.util import Rgb, Vector, Vertex
 import abc
 
 
 class Light(Renderable):
+    """
+    A light object
+    """
     def __init__(self, color=Rgb(), specular=(.5, .5, 1, 0.5), diffuse=(1, 1, 1, 1), position=(1, 0.5, 1, 0)):
+        """
+        Initiator
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param specular: The color of the specular reflections on the objects in the scene.
+        :type specular: array_like
+        :param diffuse: The color of the diffuse reflections of the objects in the scene.
+        :type position: array_like
+        :param position: The object's position.
+        :type position: array_like
+        :return:
+        """
         super(Light, self).__init__(color=color)
         self.color = None
         self.rgb = color
@@ -34,52 +48,20 @@ class Light(Renderable):
     def material(self, mat):
         raise ValueError("light object does not have a material.")
 
+    @property
     def is_light(self):
         return True
 
     def render(self, v):
+        """
+        Add the light to the scene.
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         v.lights.append(self)
         v.draw_lights()
 
     @abc.abstractmethod
     def get_vertex(self, gcf):
         return 0
-
-
-class LocalLight(Light):
-    def __init__(self, position=Vector(), color=Rgb()):
-        super(LocalLight, self).__init__(color=color)
-        self.position = position
-
-    def get_vertex(self, gcf):
-        return vertex(self.position * gcf, 1.0)
-
-    @property
-    def position(self):
-        return self.position
-
-    @position.setter
-    def position(self, v):
-        self.position = v
-
-
-class DistantLight(Light):
-    def __init__(self, direction=Vector(), color=Rgb()):
-        super(DistantLight, self).__init__(color=color)
-        self.direction = direction
-
-    @property
-    def vertex(self):
-        return Vertex(self.direction, 0.0)
-
-    @property
-    def direction(self):
-        return self._direction
-
-    @direction.setter
-    def direction(self, v):
-        v = Vector(v)
-        self._direction = v.norm()
-
-    def get_vertex(self, gcf):
-        return Vertex(direction, 0.0)

@@ -11,9 +11,5 @@ from pyglet_helper.objects.cone import *
 from pyglet_helper.objects.cylinder import *
 from pyglet_helper.objects.sphere import *
 from pyglet_helper.objects.ellipsoid import *
-from pyglet_helper.objects.frame import *
 from pyglet_helper.objects.light import *
-from pyglet_helper.objects.mouse_manager import *
-from pyglet_helper.objects.mouse_object import *
-from pyglet_helper.objects.display_kernel import *
 from pyglet_helper.objects.ring import *

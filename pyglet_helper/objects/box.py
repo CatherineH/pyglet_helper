@@ -8,10 +8,31 @@ class Box(Rectangular):
      A box object.
     """
     def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
+        """
+        Initiator
+        :param width: The box's width.
+        :type width: float
+        :param height: The box's height.
+        :type height: float
+        :param length: The box's length.
+        :type length: float
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :return:
+        """
         super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
-    # True if the box should not be rendered.
     def init_model(self, scene, skip_right_face=False):
+        """
+        Add the Vertexes and Normals to the compile list
+        :param scene: The view to render the model to.
+        :type scene: pyglet_helper.objects.View
+        :param skip_right_face: If True, the right face will not be rendered.
+        :type skip_right_face: bool
+        :return:
+        """
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
         glEnable(GL_CULL_FACE)
@@ -47,10 +68,13 @@ class Box(Rectangular):
         glDisable(GL_CULL_FACE)
         scene.box_model.gl_compile_end()
 
-    def gl_pick_render(self, scene):
-        self.render(scene)
-
     def render(self, scene):
+        """
+        Render the box in the view
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         if not scene.box_model.compiled:
             self.init_model(scene, False)
         self.color.gl_set(self.opacity)
@@ -58,15 +82,3 @@ class Box(Rectangular):
         self.apply_transform(scene)
         scene.box_model.gl_render()
         glPopMatrix()
-
-    def grow_extent(self, e):
-        tm = self.model_world_transform(1.0, Vector(self.axis.mag(), self.height, self.width) * 0.5)
-        e.add_box(tm, Vector(-1, -1, -1), Vector(1, 1, 1))
-        e.add_body()
-        return e
-
-    def get_material_matrix(self, out):
-        out.translate(Vector(.5, .5, .5))
-        scale = Vector(self.axis.mag(), self.height, self.width)
-        out.scale(scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
-        return out

@@ -2,12 +2,36 @@ from pyglet.gl import *
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
+
 class Pyramid(Rectangular):
-    def __init__(self, pos=Vector(0, 0, 0), size=(1, 1, 1), color=Rgb()):
-        super(Pyramid, self).__init__(pos=pos, color=color, width=size[0], height=size[1], length=size[2])
+    """
+    A Pyramid Object
+    """
+    def __init__(self, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
+        """
+        Initiator
+        :param color: The object's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The object's position.
+        :type pos: pyglet_helper.util.Vector
+        :param width: The pyramid's width.
+        :type width: float
+        :param height: The pyramid's height.
+        :type height: float
+        :param length: The pyramid's length.
+        :type length: float
+        :return:
+        """
+        super(Pyramid, self).__init__(pos=pos, color=color, width=width, height=height, length=length)
         self.compiled = False
 
     def init_model(self, scene):
+        """
+        Add the pyramid normals and vertices to the View
+        :param scene: The view to render the model to.
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         # Note that this model is also used by arrow!
         scene.pyramid_model.gl_compile_begin()
 
@@ -60,10 +84,13 @@ class Pyramid(Rectangular):
         out.scale(self.scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
         return out
 
-    def gl_pick_render(self, scene):
-        self.render(scene)
-
     def render(self, scene):
+        """
+        Add a pyramid to the view.
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         if not scene.pyramid_model.compiled:
             self.init_model(scene)
 
@@ -72,15 +99,3 @@ class Pyramid(Rectangular):
         self.apply_transform(scene)
         scene.pyramid_model.gl_render()
         glPopMatrix()
-
-    def grow_extent(self, world_extent):
-        orient = self.model_world_transform()
-        v_width = orient * Vector(0, 0, self.width * 0.5)
-        v_height = orient * Vector(0, self.height * 0.5, 0)
-        world_extent.add_point(self.pos + self.axis)
-        world_extent.add_point(self.pos + v_width + v_height)
-        world_extent.add_point(self.pos - v_width + v_height)
-        world_extent.add_point(self.pos + v_width - v_height)
-        world_extent.add_point(self.pos - v_width - v_height)
-        world_extent.add_body()
-        return world_extent
