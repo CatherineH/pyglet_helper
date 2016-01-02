@@ -67,7 +67,7 @@ class ApplyMaterial(object):
                 self.v.glext.glActiveTexture(GL_TEXTURE0 + t)
             self.m.textures[t].gl_activate(self.v)
             if self.m.shader and self.v.glext.ARB_shader_objects:
-                texa[3] = '0' + t
+                self.texa[3] = '0' + t
                 self.v.glext.glUniform1iARB(self.m.shader.get_uniform_location(self.v, self.texa), t)
             if not self.v.glext.ARB_multitexture:
                 break

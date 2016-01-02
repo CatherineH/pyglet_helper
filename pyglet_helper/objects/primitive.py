@@ -63,7 +63,7 @@ class Primitive(Renderable):
         ret = Tmatrix()
         # A unit vector along the z_axis.
         z_axis = Vector(0, 0, 1)
-        if abs(self.axis.dot(self.up) / sqrt(self.up.mag()**2.0 * self.axis.mag()**2.0)) > 0.98:
+        if abs(self.axis.dot(self.up) / self.up.mag()**2.0) > 0.98:
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
             if abs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
@@ -98,7 +98,8 @@ class Primitive(Renderable):
             fake_up = Vector(1, 0, 0)
             if not self.axis.cross(fake_up):
                 fake_up = Vector(0, 1, 0)
-        self.pos = R * self._pos
+        # is this rotation needed at present? Is it already included in the transformation matrix?
+        #self.pos = R * self._pos
         self.up = R.times_v(fake_up)
         self._axis = R.times_v(self._axis)
 

@@ -3,12 +3,30 @@ from pyglet_helper.objects import Box, Material, Primitive, Pyramid
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
 
-# A 3D 4-sided arrow, with adjustable head and shaft.
 class Arrow(Primitive):
-    # Default arrow.  Pointing along +x, unit length,
-    # Where does axis come from????
-    def __init__(self, fixed_width=False, head_width=0, head_length=0, shaft_width=0, color=Rgb(), pos=Vector(0, 0, 0),
-                 axis=(1, 0, 0)):
+    """
+     A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing along +x, unit length,
+    """
+    def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0, shaft_width=0.0, color=Rgb(),
+                 pos=Vector(0, 0, 0), axis=(1, 0, 0)):
+        """
+        Initiator
+        :param fixed_width: if True, the arrow's head width and length will not be scaled in proportion to its length.
+        :type fixed_width: bool
+        :param head_width: The width of the arrow's head section.
+        :type head_width: float
+        :param head_length: The length of the arrow's length section
+        :type head_length: float
+        :param shaft_width: The length of the arrow's shaft section
+        :type shaft_width: float
+        :param color: The arrow's color.
+        :type color: pyglet_helper.util.Rgb
+        :param pos: The arrow's position
+        :type pos: pyglet_helper.util.pos
+        :param axis: The arrow's axis direction
+        :type axis: pyglet_helper.util.Vector
+        :return:
+        """
         super(Arrow, self).__init__(color=color, pos=pos, axis=axis)
         # True if the width of the point and shaft should not vary with the length
         # of the arrow.
@@ -82,16 +100,19 @@ class Arrow(Primitive):
         self.axis = self.axis.norm() * l
 
     def get_center(self):
+        """
+        Calculates the center of the arrow by subtracting the axis off of the position
+        :return:
+        """
         return (self.pos + self.axis) / 2.0
 
-    def gl_pick_render(self, scene):
-        # TODO: material related stuff in this file really needs cleaning up!
-        m = Material()
-        m.swap(self.mat)
-        self.render(scene)
-        m.swap(self.mat)
-
     def render(self, scene):
+        """
+        Render the arrow on the current view.
+        :param scene:
+        :type scene: pyglet_helper.objects.View
+        :return:
+        """
         mat = Material()
         if self.degenerate:
             return
@@ -157,14 +178,16 @@ class Arrow(Primitive):
             self.pyramid = Pyramid()
             self.pyramid.init_model(scene)
 
-    '''
-    Initializes these four variables with the effective geometry for the
-        arrow.  The resulting geometry is scaled to view space, but oriented
-        and positioned in model space.  The only requred transforms are
-        reorientation and translation.
-    '''
-
     def effective_geometry(self, gcf):
+        """
+        Initializes these four variables with the effective geometry for the
+        arrow.  The resulting geometry is scaled to view space, but oriented
+        and positioned in model space.  The only required transforms are
+        reorientation and translation.
+        :param gcf: The scaling factor
+        :type gcf: float
+        :return:
+        """
         """
         First calculate the actual geometry based on the specs for headwidth,
         shaftwidth, shaftlength, and fixedwidth.  This geometry is calculated

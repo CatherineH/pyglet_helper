@@ -1,7 +1,6 @@
 from pyglet.gl import *
 from pyglet_helper.objects import Rectangular
-from pyglet_helper.util import Rgb, Vector
-
+from pyglet_helper.util import Rgb, Tmatrix, Vector
 
 class Pyramid(Rectangular):
     def __init__(self, pos=Vector(0, 0, 0), size=(1, 1, 1), color=Rgb()):
@@ -55,6 +54,7 @@ class Pyramid(Rectangular):
 
     @property
     def material_matrix(self):
+        out = Tmatrix()
         out.translate(Vector(0, .5, .5))
         scale = Vector(self.axis.mag(), self.height, self.width)
         out.scale(self.scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
@@ -74,7 +74,7 @@ class Pyramid(Rectangular):
         glPopMatrix()
 
     def grow_extent(self, world_extent):
-        orient = model_world_transform()
+        orient = self.model_world_transform()
         v_width = orient * Vector(0, 0, self.width * 0.5)
         v_height = orient * Vector(0, self.height * 0.5, 0)
         world_extent.add_point(self.pos + self.axis)

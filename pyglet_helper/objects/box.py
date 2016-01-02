@@ -4,6 +4,9 @@ from pyglet_helper.util import Rgb, Vector
 
 
 class Box(Rectangular):
+    """
+     A box object.
+    """
     def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
         super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
