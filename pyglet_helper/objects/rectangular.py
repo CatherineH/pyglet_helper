@@ -8,7 +8,6 @@ class Rectangular(Primitive):
     """
     def __init__(self, other=None, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
         """
-        Initiator
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
         :param pos: The object's position.
@@ -19,7 +18,6 @@ class Rectangular(Primitive):
         :type height: float
         :param length: The object's length.
         :type length: float
-        :return:
         """
         super(Rectangular, self).__init__(color=color, pos=pos)
         self._height = None
@@ -79,11 +77,10 @@ class Rectangular(Primitive):
         self.width = s.z
 
     def apply_transform(self, scene):
-        """
-        Scale the object to the correct height, width and length
+        """ Scale the object to the correct height, width and length
+
         :param scene: the object's current view
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         min_scale = max(self.axis.mag(), max(self.height, self.width)) * 1e-6
         self.size = Vector(max(min_scale, self.axis.mag()), max(min_scale, self.height), max(min_scale, self.width))

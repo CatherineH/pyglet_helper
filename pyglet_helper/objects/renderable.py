@@ -6,11 +6,10 @@ gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_L
 
 class Renderable(object):
     """
-    A base class for all geometric shapes and lights
+    A base class for all geometric shapes and lights.
     """
     def __init__(self, color=Rgb(), mat=Material(), opacity=1.0, visible=False):
         """
-        Initiator
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
         :param material: The object's material
@@ -19,7 +18,6 @@ class Renderable(object):
         :type opacity: float
         :param visible: If True, the object will be rendered on the screen
         :type visible: bool
-        :return:
         """
         # The base color of this body.  Ignored by the variable-color composites
         # (curve, faces, frame).
@@ -51,7 +49,6 @@ class View(object):
                  forward_changed=False, gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True, background_color=Rgb()):
         """
-        Initiator
         :param gcf: The global scaling factor, a coefficient applied to all objects in the view
         :type gcf: float
         :param view_width: The width of the viewport in pixels.
@@ -76,7 +73,6 @@ class View(object):
         :type enable_shaders: bool
         :param background_color: The scene's background color
         :type background_color: pyglet_helper.util.Rgb
-        :return:
         """
         # The position of the camera in world space.
         self.camera = Vector()
@@ -115,9 +111,7 @@ class View(object):
         self.setup()
 
     def setup(self):
-        """
-        Do some one-time OpenGL setup
-        :return:
+        """ Does some one-time OpenGL setup.
         """
         glEnable(GL_LIGHTING)
         glClearColor(1, 1, 1, 1)
@@ -128,9 +122,7 @@ class View(object):
         glLoadIdentity()
 
     def draw_lights(self):
-        """
-        Render the lights in the scene
-        :return:
+        """ Render the lights in the scene
         """
         max_lights = min(len(self.lights), 8)
         # add all of the lights to the scene
@@ -142,14 +134,15 @@ class View(object):
             glLightfv(gl_defined_lights[i], GL_DIFFUSE, self.lights[i].diffuse)
 
     def pixel_coverage(self, pos, radius):
-        """
-        Compute the apparent diameter, in pixels, of a circle that is parallel to the screen, with a center at pos,
+        """ Compute the apparent diameter, in pixels, of a circle that is parallel to the screen, with a center at pos,
         and some radius.  If pos is behind the camera, it will return negative.
+
         :param pos: The position in the view to examine
         :type pos: pyglet_helper.util.Vector
         :param radius: The radius of coverage to examine
         :type radius: float
-        :return:
+        :return: The diameter in pixels.
+        :rtype: float
         """
         # The distance from the camera to this position, in the direction of the
         # camera.  This is the distance to the viewing plane that the coverage

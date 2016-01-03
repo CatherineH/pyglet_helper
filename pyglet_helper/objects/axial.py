@@ -6,12 +6,12 @@ from pyglet_helper.objects.material import Material
 
 class Axial(Primitive):
     """
-    A subclass for all shapes with some radial symmetry around an axis (spheres, cones, etc., )
+    A subclass for all shapes with some radial symmetry around an axis (spheres, cones, etc., ).
     """
     def __init__(self, axis=Vector(1, 0, 0), radius=1.0, color=Rgb(), pos=Vector(0, 0, 0),
                  material=Material(),other=None):
         """
-        Initiator
+
         :param other: another axial object to copy properties from (optional)
         :type other: pyglet_helper.objects.Axial
         :param axis: The axis for the orientation of the object.
@@ -24,7 +24,6 @@ class Axial(Primitive):
         :type pos: pyglet_helper.util.Vector
         :param material: The object's material
         :type material: pyglet_helper.util.Material
-        :return:
         """
         super(Axial, self).__init__(color=color, pos=pos, axis=axis, material=material)
         self._radius = None

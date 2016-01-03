@@ -9,7 +9,7 @@ class Box(Rectangular):
     """
     def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
         """
-        Initiator
+
         :param width: The box's width.
         :type width: float
         :param height: The box's height.
@@ -20,18 +20,16 @@ class Box(Rectangular):
         :type color: pyglet_helper.util.Rgb
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
-        :return:
         """
         super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
 
     def init_model(self, scene, skip_right_face=False):
-        """
-        Add the Vertexes and Normals to the compile list
+        """ Add the Vertexes and Normals to the compile list.
+
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
         :param skip_right_face: If True, the right face will not be rendered.
         :type skip_right_face: bool
-        :return:
         """
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
@@ -69,11 +67,10 @@ class Box(Rectangular):
         scene.box_model.gl_compile_end()
 
     def render(self, scene):
-        """
-        Render the box in the view
+        """Render the box in the view
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         if not scene.box_model.compiled:
             self.init_model(scene, False)

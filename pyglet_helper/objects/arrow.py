@@ -5,12 +5,12 @@ from pyglet_helper.util import Rgb, Tmatrix, Vector
 
 class Arrow(Primitive):
     """
-     A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing along +x, unit length,
+     A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing along +x, unit length.
     """
     def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0, shaft_width=0.0, color=Rgb(),
                  pos=Vector(0, 0, 0), axis=(1, 0, 0)):
         """
-        Initiator
+
         :param fixed_width: if True, the arrow's head width and length will not be scaled in proportion to its length.
         :type fixed_width: bool
         :param head_width: The width of the arrow's head section.
@@ -25,7 +25,6 @@ class Arrow(Primitive):
         :type pos: pyglet_helper.util.pos
         :param axis: The arrow's axis direction
         :type axis: pyglet_helper.util.Vector
-        :return:
         """
         super(Arrow, self).__init__(color=color, pos=pos, axis=axis)
         # True if the width of the point and shaft should not vary with the length
@@ -46,6 +45,10 @@ class Arrow(Primitive):
 
     @property
     def degenerate(self):
+        """
+        :return: True if the arrow has an effective length of 0
+        :rtype: bool
+        """
         return self.axis.mag() == 0.0
 
     @property
@@ -99,19 +102,20 @@ class Arrow(Primitive):
     def length(self, l):
         self.axis = self.axis.norm() * l
 
-    def get_center(self):
-        """
-        Calculates the center of the arrow by subtracting the axis off of the position
-        :return:
+    @property
+    def center(self):
+        """ Calculates the center of the arrow by subtracting the axis off of the position
+
+        :return: The arrow's center (position+axis)/2
+        :rtype: float
         """
         return (self.pos + self.axis) / 2.0
 
     def render(self, scene):
-        """
-        Render the arrow on the current view.
-        :param scene:
+        """ Render the arrow on the current view.
+
+        :param scene: The view to render the model into.
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         mat = Material()
         if self.degenerate:
@@ -156,21 +160,12 @@ class Arrow(Primitive):
                 glTranslated(-len + hl, 0, 0)
         glPopMatrix()
 
-    def grow_extent(self, world):
-        if self.degenerate:
-            return
-        hw, sw, len, hl = self.effective_geometry(1.0)
-        x = self.axis.cross(self.up).norm() * 0.5
-        y = self.axis.cross(x).norm() * 0.5
-        base = self.pos + self.axis.norm() * (len - hl)
-        for i in range(-1, 2, 2):
-            for j in range(-1, 2, 2):
-                world.add_point(self.pos + x * (i * sw) + y * (j * sw))
-                world.add_point(base + x * (i * hw) + y * (j * hw))
-        world.add_point(self.pos + self.axis)
-        world.add_body()
-
     def init_model(self, scene):
+        """Add the arrow head and shaft to the scene.
+
+        :param scene: The view to render the model into.
+        :type scene: pyglet_helper.objects.View
+        """
         if not scene.box_model.compiled:
             self.box = Box()
             self.box.init_model(scene)
@@ -179,14 +174,13 @@ class Arrow(Primitive):
             self.pyramid.init_model(scene)
 
     def effective_geometry(self, gcf):
-        """
-        Initializes these four variables with the effective geometry for the
+        """Initializes these four variables with the effective geometry for the
         arrow.  The resulting geometry is scaled to view space, but oriented
         and positioned in model space.  The only required transforms are
         reorientation and translation.
+
         :param gcf: The scaling factor
         :type gcf: float
-        :return:
         """
         """
         First calculate the actual geometry based on the specs for headwidth,

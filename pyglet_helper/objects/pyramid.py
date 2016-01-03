@@ -9,7 +9,6 @@ class Pyramid(Rectangular):
     """
     def __init__(self, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
         """
-        Initiator
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
         :param pos: The object's position.
@@ -26,11 +25,10 @@ class Pyramid(Rectangular):
         self.compiled = False
 
     def init_model(self, scene):
-        """
-        Add the pyramid normals and vertices to the View
+        """ Add the pyramid normals and vertices to the View
+
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         # Note that this model is also used by arrow!
         scene.pyramid_model.gl_compile_begin()
@@ -85,11 +83,10 @@ class Pyramid(Rectangular):
         return out
 
     def render(self, scene):
-        """
-        Add a pyramid to the view.
+        """Add a pyramid to the view.
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         if not scene.pyramid_model.compiled:
             self.init_model(scene)

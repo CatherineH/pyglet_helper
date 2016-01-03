@@ -10,7 +10,7 @@ class Ring(Axial):
     """
     def __init__(self, thickness=0.0, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
         """
-        Initiator
+
         :param thickness: The ring's thickness.
         :type thickness: float
         :param radius: The ring's radius.
@@ -21,7 +21,6 @@ class Ring(Axial):
         :type pos: pyglet_helper.util.Vector
         :param axis: The cone points from the base to the point along the axis.
         :type axis: pyglet_helper.util.Vector
-        :return:
         """
         super(Ring, self).__init__(radius=radius, color=color, pos=pos, axis=axis)
         self._thickness = None
@@ -50,11 +49,10 @@ class Ring(Axial):
         return self.radius == 0.0
 
     def render(self, scene):
-        """
-        Add a ring to the view.
+        """ Add a ring to the view.
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         if self.degenerate:
             return
@@ -140,13 +138,13 @@ class Ring(Axial):
 
 
 def clamp(lower, value, upper):
-    """
-    Restrict a value to be between a lower value and upper value. Used to restrict the number of polygons in the ring
+    """ Restrict a value to be between a lower value and upper value. Used to restrict the number of polygons in the ring
     object
+
     :param lower: the lowest possible value of value
     :type lower: float or int
     :param value: the value to check
-    :param value: float or int
+    :type value: float or int
     :param upper: the largest possible value of value
     :type upper: float or int
     :rtype: float or int

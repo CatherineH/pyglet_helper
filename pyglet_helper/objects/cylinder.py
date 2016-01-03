@@ -5,11 +5,11 @@ from pyglet_helper.util import Quadric, Rgb, Vector
 
 class Cylinder(Axial):
     """
-     A Cylinder object
+     A Cylinder object.
     """
     def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0, color=Rgb(0, 0, 0)):
         """
-        Initiator
+
         :param radius: The cylinder's radius.
         :type radius: float
         :param color: The object's color.
@@ -18,17 +18,15 @@ class Cylinder(Axial):
         :type pos: pyglet_helper.util.Vector
         :param axis: The cone points from the base to the point along the axis.
         :type axis: pyglet_helper.util.Vector
-        :return:
         """
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color)
         self.axis = Vector(axis)
 
     def init_model(self, scene):
-        """
-        Add the cylinder quadrics to the View
+        """ Add the cylinder quadrics to the view.
+
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         # The number of faces corresponding to each level of detail.
         n_faces = [8, 16, 32, 64, 96, 188]
@@ -56,11 +54,10 @@ class Cylinder(Axial):
         self.axis = self.axis.norm() * l
 
     def render(self, scene):
-        """
-        Add the cylinder to the view.
+        """ Add the cylinder to the view.
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         if self.radius == 0.0:
             return
@@ -108,9 +105,10 @@ class Cylinder(Axial):
             scene.cylinder_model[lod].gl_render()
         glPopMatrix()
 
-    def get_center(self):
+    @property
+    def center(self):
         """
-        Get the center of the object.
-        :return:
+        :return: Position + axis/2
+        :rtype: float
         """
         return self.pos + self.axis * 0.5

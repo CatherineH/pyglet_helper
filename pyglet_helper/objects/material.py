@@ -4,9 +4,17 @@ from pyglet_helper.util import ShaderProgram, Texture
 
 class Material(object):
     """
-     A Material object, used for storing and handling shader programs
+     A Material object, used for storing and handling shader programs.
     """
     def __init__(self, translucent=False, shader_program=None):
+        """
+
+        :param translucent:
+        :type translucent: bool
+        :param shader_program: The GLSL (Graphics library shader language) code to be executed).
+        :type shader_program: str
+        :return:
+        """
 
         self._textures = None
         self._shader = None

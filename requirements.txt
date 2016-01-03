@@ -1,4 +1,0 @@
-ttfquery
-pyglet
-enum
-numpy

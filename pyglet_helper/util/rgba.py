@@ -3,11 +3,10 @@ from pyglet.gl import *
 
 class Rgba(object):
     """
-    Define a color to be used by OpenGl, including RGB and opacity
+    Defines a color to be used by OpenGl, including RGB and opacity.
     """
     def __init__(self, red=1.0, green=1.0, blue=1.0, opacity=1.0, c=None):
         """
-        Initiator
         :param red: The red value of the color, value between 0 and 1
         :type red: float
         :param green: The green value of the color, value between 0 and 1
@@ -18,7 +17,6 @@ class Rgba(object):
         :type opacity: float
         :param c: A list of values to copy into a new color
         :type c: list
-        :return:
         """
         if c is not None:
             if len(c) == 4:
@@ -35,17 +33,19 @@ class Rgba(object):
             self.opacity = opacity
 
     def desaturate(self):
-        """
-        Return a desaturated version of the color
-        :rtype: Rgba()
+        """ Return a desaturated version of the color
+
+        :rtype: pyglet_helper.util.Rgba
+        :return: the desaturized color.
         """
         ret = Rgb(red=self.red, green=self.green, blue=self.blue).desaturate()
         return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
 
     def grayscale(self):
-        """
-        Return a version of the color projected onto a grayscale space
-        :rtype: Rgba()
+        """ Return a version of the color projected onto a grayscale space
+
+        :return: the color, projected onto grayscale.
+        :rtype: pyglet_helper.util.Rgba()
         """
         ret = Rgb(red=self.red, green=self.green, blue=self.blue).grayscale()
         return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
@@ -66,7 +66,6 @@ class Rgb:
     """
     def __init__(self, red=1.0, green=1.0, blue=1.0, c=None):
         """
-        Initiator
         :param red: The red value of the color, value between 0 and 1
         :type red: float
         :param green: The green value of the color, value between 0 and 1
@@ -75,7 +74,6 @@ class Rgb:
         :type blue: float
         :param c: A list of values to copy into a new color
         :type c: list
-        :return:
         """
         if c is not None:
             if len(c) == 3:
@@ -111,10 +109,10 @@ class Rgb:
         self = Rgb(red=bw, green=bw, blue=bw)
 
     def desaturate(self):
-        """
-        Convert the color to HSV space, reduce the saturation by a factor of 0.5, then convert back to RGB space
-        :rtype: Rgb()
-        :return: Desaturated color
+        """ Convert the color to HSV space, reduce the saturation by a factor of 0.5, then convert back to RGB space
+
+        :rtype: pyglet_helper.util.Rgb()
+        :return: the desaturated color.
         """
         saturation = 0.5  # cut the saturation by this factor
 
@@ -192,10 +190,10 @@ class Rgb:
         return ret
 
     def grayscale(self):
-        """
-        Convert the color to grayscale
-        :return: the converted color
-        :rtype: Rgb()
+        """ Convert the color to grayscale
+
+        :return: the color, projected onto grayscale.
+        :rtype: pyglet_helper.util.Rgb()
         """
         # The constants 0.299, 0.587, and 0.114 are intended to account for the
         # relative intensity of each color to the human eye.
@@ -205,11 +203,10 @@ class Rgb:
         return Rgb(red=black, green=black, blue=black)
 
     def gl_set(self, opacity=1.0):
-        """
-        Set the current material to this color
+        """ Set the current material to this color
+
         :param opacity: the opacity value of the color
         :type opacity: float
-        :return:
         """
         color = (GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)

@@ -1,0 +1,1239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyglet_helper.util package &mdash; PygletHelper 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="PygletHelper 0.0.1 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyglet-helper-util-package">
+<h1>pyglet_helper.util package<a class="headerlink" href="#pyglet-helper-util-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyglet_helper.util.color">
+<span id="pyglet-helper-util-color-module"></span><h2>pyglet_helper.util.color module<a class="headerlink" href="#module-pyglet_helper.util.color" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyglet_helper.util.display_list">
+<span id="pyglet-helper-util-display-list-module"></span><h2>pyglet_helper.util.display_list module<a class="headerlink" href="#module-pyglet_helper.util.display_list" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.display_list.DisplayList">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.display_list.</code><code class="descname">DisplayList</code><span class="sig-paren">(</span><em>built=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.display_list.DisplayList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class for storing the OpenGl commands for rendering an object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>built</strong> (<em>bool</em>) &#8211; If True, the commands have been executed</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.util.display_list.DisplayList.compiled">
+<code class="descname">compiled</code><a class="headerlink" href="#pyglet_helper.util.display_list.DisplayList.compiled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns whether the current list has beein completed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.display_list.DisplayList.gl_compile_begin">
+<code class="descname">gl_compile_begin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.display_list.DisplayList.gl_compile_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the beginning of the list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.display_list.DisplayList.gl_compile_end">
+<code class="descname">gl_compile_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.display_list.DisplayList.gl_compile_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the end of the list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.display_list.DisplayList.gl_render">
+<code class="descname">gl_render</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.display_list.DisplayList.gl_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call all of the commands in the current list.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util.linear">
+<span id="pyglet-helper-util-linear-module"></span><h2>pyglet_helper.util.linear module<a class="headerlink" href="#module-pyglet_helper.util.linear" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.linear.Tmatrix">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.linear.</code><code class="descname">Tmatrix</code><span class="sig-paren">(</span><em>t=None</em>, <em>a=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A 3D affine transformation matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>t</strong> (<em>pyglet_helper.util.Tmatrix</em>) &#8211; A tmatrix to copy to the current matrix</li>
+<li><strong>a</strong> (<em>array_like</em>) &#8211; A matrix factor of the current matrix</li>
+<li><strong>b</strong> (<em>array_like</em>) &#8211; A matrix factor of the current matrix</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_color_get">
+<code class="descname">gl_color_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_color_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the matrix with the contents of the OpenGL color matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_load">
+<code class="descname">gl_load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrites the currently active matrix in OpenGL with this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_modelview_get">
+<code class="descname">gl_modelview_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_modelview_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the matrix with the contents of the OpenGL modelview</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_mult">
+<code class="descname">gl_mult</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_mult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies the active OpenGL by this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_projection_get">
+<code class="descname">gl_projection_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_projection_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the matrix with the contents of the OpenGL projection matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.gl_texture_get">
+<code class="descname">gl_texture_get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.gl_texture_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the matrix with the contents of the OpenGL texture matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">matrix</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.inverse">
+<code class="descname">inverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.inverse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.origin">
+<code class="descname">origin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the matrix&#8217;s origin as a vector</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the origin</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.project">
+<code class="descname">project</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multply a vector or vertex by the current matrix to produce a new vertex</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vertex or Vector</em>) &#8211; the vertex or vector to be transformed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The transformed vertex</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vertex</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.scale">
+<code class="descname">scale</code><span class="sig-paren">(</span><em>v</em>, <em>w=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the transformation matrix by a vector or vertex</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vertex or Vector</em>) &#8211; The vector or vertex describing the scaling</li>
+<li><strong>w</strong> (<em>float</em>) &#8211; The scaling factor for the normalization column. If undefined, the value will be taken from the vextex, or set to 1.0</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.times_inv">
+<code class="descname">times_inv</code><span class="sig-paren">(</span><em>v</em>, <em>w=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.times_inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiply a vector or vertex v by the inverted transformation matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; the vector to be transformed</li>
+<li><strong>w</strong> &#8211; The vector&#8217;s normalization factor. If None, it will be taken from v or set to 1.0</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:type w; float
+:rtype: Vector or Vertex
+:return: The transformed Vector or Vertex</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.times_v">
+<code class="descname">times_v</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.times_v" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiply a vector or vertex by the transformation matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; the vector or vertex to be transformed</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the transformed vector or vertex</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">Vector or Vertex</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.translate">
+<code class="descname">translate</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate the transformation by a 3D value described in v</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vertex or Vector</em>) &#8211; The vertex or vector describing the transformation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.w_column">
+<code class="descname">w_column</code><span class="sig-paren">(</span><em>v=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.w_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the fourth column of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; The vector to set the fourth column to</li>
+<li><strong>x</strong> (<em>float</em>) &#8211; The value of the first row (if v is set, it will be ignored)</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; The value of the second row (if v is set, it will be ignored)</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; The value of the third row (if v is set, it will be ignored)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.w_row">
+<code class="descname">w_row</code><span class="sig-paren">(</span><em>x=0</em>, <em>y=0</em>, <em>z=0</em>, <em>w=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.w_row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the bottom row of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; the value to set the first column to</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; the value to set the second column to</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; the value to set the third column to</li>
+<li><strong>w</strong> (<em>float</em>) &#8211; the value to set the fourth column to</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.x_column">
+<code class="descname">x_column</code><span class="sig-paren">(</span><em>v=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.x_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the first column of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; The vector to set the first column to</li>
+<li><strong>x</strong> (<em>float</em>) &#8211; The value of the first row (if v is set, it will be ignored)</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; The value of the second row (if v is set, it will be ignored)</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; The value of the third row (if v is set, it will be ignored)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.y_column">
+<code class="descname">y_column</code><span class="sig-paren">(</span><em>v=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.y_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the second column of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; The vector to set the second column to</li>
+<li><strong>x</strong> (<em>float</em>) &#8211; The value of the first row (if v is set, it will be ignored)</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; The value of the second row (if v is set, it will be ignored)</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; The value of the third row (if v is set, it will be ignored)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Tmatrix.z_column">
+<code class="descname">z_column</code><span class="sig-paren">(</span><em>v=None</em>, <em>x=None</em>, <em>y=None</em>, <em>z=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Tmatrix.z_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the third column of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; The vector to set the third column to</li>
+<li><strong>x</strong> (<em>float</em>) &#8211; The value of the first row (if v is set, it will be ignored)</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; The value of the second row (if v is set, it will be ignored)</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; The value of the third row (if v is set, it will be ignored)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.linear.Vector">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.linear.</code><code class="descname">Vector</code><span class="sig-paren">(</span><em>a=0.0</em>, <em>b=0.0</em>, <em>c=0.0</em>, <em>v=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A vector object used for math operations, and for storing 3D points</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>a</strong> (<em>float, Vector, Vertex, or array_like</em>) &#8211; Either the x component of the vector, a Vector, a Vertex, or an array_like</li>
+<li><strong>b</strong> (<em>float</em>) &#8211; if a was a float, b is the y component of the vector</li>
+<li><strong>c</strong> (<em>float</em>) &#8211; if a was a float, c is the z component of the vector</li>
+<li><strong>v</strong> (<em>array_like</em>) &#8211; an array_like of length 3 defining the components of the vector (optional)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.clear">
+<code class="descname">clear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zero the state of the vector.
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.comp">
+<code class="descname">comp</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.comp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scalar projection of this to v</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; the vector or vertex the current vector will be compared to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the scaling factor between v and the current vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.cross">
+<code class="descname">cross</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.cross" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cross product of this vector and another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vertex or Vector</em>) &#8211; The other vector to be crossed with the current vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The cross product of self and v</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.diff_angle">
+<code class="descname">diff_angle</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.diff_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the angular difference between two vectors, in radians, between 0 and pi.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<a class="reference internal" href="#pyglet_helper.util.linear.Vector" title="pyglet_helper.util.linear.Vector"><em>Vector</em></a>) &#8211; The vector to be calculated against</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The angular difference between the current vector and v, in radians</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.dot">
+<code class="descname">dot</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.dot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the dot product of this vector and another.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vertex or Vector</em>) &#8211; The other vector to be multiplied with the current vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The dot product</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.fabs">
+<code class="descname">fabs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.fabs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project the current vector into the positive quadrant
+:return: The vector in the positive quadrant
+:rtype: Vector</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.gl_normal">
+<code class="descname">gl_normal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.gl_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the current vector as an OpenGL Normal
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.gl_render">
+<code class="descname">gl_render</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.gl_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the current vector as an OpenGL Vertex
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.mag">
+<code class="descname">mag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the vector&#8217;s magnitude</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the magnitude</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.nonzero">
+<code class="descname">nonzero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.nonzero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check to see if any component of the vector is non-zero</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if any component of the vector is nonzero, False otherwise</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.norm">
+<code class="descname">norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a vector of unit length from this vector</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">unit vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.proj">
+<code class="descname">proj</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.proj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vector projection of this to v</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<a class="reference internal" href="#pyglet_helper.util.linear.Vector" title="pyglet_helper.util.linear.Vector"><em>Vector</em></a>) &#8211; the vector to project the current vector onto</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the projected vector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#pyglet_helper.util.linear.Vector" title="pyglet_helper.util.linear.Vector">Vector</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>angle</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates the vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) &#8211; The angle to rotate by</li>
+<li><strong>axis</strong> (<a class="reference internal" href="#pyglet_helper.util.linear.Vector" title="pyglet_helper.util.linear.Vector"><em>Vector</em></a>) &#8211; The axis to rotate around (optional, if not set, the axis will be the +z axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">rotated vector</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pyglet_helper.util.Vector</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.scale">
+<code class="descname">scale</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale this vector to another, by elementwise multiplication</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; the Vector to scale by</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the scaled vector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.scale_inv">
+<code class="descname">scale_inv</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.scale_inv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale this vector to another, by elementwise division</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>v</strong> (<em>Vector or Vertex</em>) &#8211; the vector to scale by</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the scaled vector</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.set_mag">
+<code class="descname">set_mag</code><span class="sig-paren">(</span><em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.set_mag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vector.sum">
+<code class="descname">sum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vector.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum the components of the vector
+:return:</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vector.x">
+<code class="descname">x</code><a class="headerlink" href="#pyglet_helper.util.linear.Vector.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vector.y">
+<code class="descname">y</code><a class="headerlink" href="#pyglet_helper.util.linear.Vector.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vector.z">
+<code class="descname">z</code><a class="headerlink" href="#pyglet_helper.util.linear.Vector.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.linear.Vertex">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.linear.</code><code class="descname">Vertex</code><span class="sig-paren">(</span><em>x=0</em>, <em>y=0</em>, <em>z=0</em>, <em>w=0</em>, <em>v=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vertex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A homogeneous Vertex</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) &#8211; The x coordinate of the vertex</li>
+<li><strong>y</strong> (<em>float</em>) &#8211; The y coordinate of the vertex</li>
+<li><strong>z</strong> (<em>float</em>) &#8211; The z coordinate of the vertex</li>
+<li><strong>w</strong> (<em>float</em>) &#8211; The normalization factor of the x,y, and z components</li>
+<li><strong>v</strong> (<em>list</em>) &#8211; A list of values to copy into the vertex</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vertex.gl_render">
+<code class="descname">gl_render</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.gl_render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Send the vertex to OpenGl</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.linear.Vertex.project">
+<code class="descname">project</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.project" title="Permalink to this definition">¶</a></dt>
+<dd><p>Project the vector according to its normalization factor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A copy of the current vector scaled to w.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Vector</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vertex.w">
+<code class="descname">w</code><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.w" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vertex.x">
+<code class="descname">x</code><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vertex.y">
+<code class="descname">y</code><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.linear.Vertex.z">
+<code class="descname">z</code><a class="headerlink" href="#pyglet_helper.util.linear.Vertex.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyglet_helper.util.linear.rotation">
+<code class="descclassname">pyglet_helper.util.linear.</code><code class="descname">rotation</code><span class="sig-paren">(</span><em>angle</em>, <em>axis</em>, <em>origin=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.linear.rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a rotation matrix to perform rotations about an axis passing through
+the origin through an angle in the direction specified by the Right Hand Rule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>angle</strong> (<em>float</em>) &#8211; the angle of the rotation about the axis</li>
+<li><strong>axis</strong> (<em>Vector or Vertex</em>) &#8211; the axis of rotation</li>
+<li><strong>origin</strong> (<em>Vector or Vertex</em>) &#8211; the location of the rotation axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the new transformation matrix</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pyglet_helper.util.Tmatrix</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util.quadric">
+<span id="pyglet-helper-util-quadric-module"></span><h2>pyglet_helper.util.quadric module<a class="headerlink" href="#module-pyglet_helper.util.quadric" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.quadric.DrawingStyle">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.quadric.</code><code class="descname">DrawingStyle</code><span class="sig-paren">(</span><em>*keys</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.DrawingStyle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration of the possible quadric drawing styles.</p>
+<p>Create an enumeration instance.</p>
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.DrawingStyle.FILL">
+<code class="descname">FILL</code><em class="property"> = 3</em><a class="headerlink" href="#pyglet_helper.util.quadric.DrawingStyle.FILL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.DrawingStyle.LINE">
+<code class="descname">LINE</code><em class="property"> = 2</em><a class="headerlink" href="#pyglet_helper.util.quadric.DrawingStyle.LINE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.DrawingStyle.POINT">
+<code class="descname">POINT</code><em class="property"> = 1</em><a class="headerlink" href="#pyglet_helper.util.quadric.DrawingStyle.POINT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.DrawingStyle.SILHOUETTE">
+<code class="descname">SILHOUETTE</code><em class="property"> = 4</em><a class="headerlink" href="#pyglet_helper.util.quadric.DrawingStyle.SILHOUETTE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.quadric.NormalStyle">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.quadric.</code><code class="descname">NormalStyle</code><span class="sig-paren">(</span><em>*keys</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.NormalStyle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration of the possible options when generating a quadric&#8217;s normals.</p>
+<p>Create an enumeration instance.</p>
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.NormalStyle.FLAT">
+<code class="descname">FLAT</code><em class="property"> = 2</em><a class="headerlink" href="#pyglet_helper.util.quadric.NormalStyle.FLAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.NormalStyle.NONE">
+<code class="descname">NONE</code><em class="property"> = 1</em><a class="headerlink" href="#pyglet_helper.util.quadric.NormalStyle.NONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.NormalStyle.SMOOTH">
+<code class="descname">SMOOTH</code><em class="property"> = 3</em><a class="headerlink" href="#pyglet_helper.util.quadric.NormalStyle.SMOOTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.quadric.Orientation">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.quadric.</code><code class="descname">Orientation</code><span class="sig-paren">(</span><em>*keys</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.Orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration of the possible winding styles when rendering a quadric.</p>
+<p>Create an enumeration instance.</p>
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.Orientation.INSIDE">
+<code class="descname">INSIDE</code><em class="property"> = 2</em><a class="headerlink" href="#pyglet_helper.util.quadric.Orientation.INSIDE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.Orientation.OUTSIDE">
+<code class="descname">OUTSIDE</code><em class="property"> = 1</em><a class="headerlink" href="#pyglet_helper.util.quadric.Orientation.OUTSIDE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.quadric.Quadric">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.quadric.</code><code class="descname">Quadric</code><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Generates a Quadric. Used for cylinders, spheres, and disks.</p>
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.Quadric.drawing_style">
+<code class="descname">drawing_style</code><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.drawing_style" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.Quadric.normal_style">
+<code class="descname">normal_style</code><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.normal_style" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.quadric.Quadric.orientation">
+<code class="descname">orientation</code><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.orientation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.quadric.Quadric.render_cylinder">
+<code class="descname">render_cylinder</code><span class="sig-paren">(</span><em>base_radius</em>, <em>height</em>, <em>slices</em>, <em>stacks</em>, <em>top_radius=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.render_cylinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the polygons for a cylinder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>base_radius</strong> (<em>float</em>) &#8211; The radius of the bottom of the cylinder.</li>
+<li><strong>height</strong> (<em>float</em>) &#8211; The cylinder&#8217;s height</li>
+<li><strong>slices</strong> (<em>int</em>) &#8211; The number of longitudinal lines</li>
+<li><strong>stacks</strong> (<em>int</em>) &#8211; The number of latitudinal lines</li>
+<li><strong>top_radius</strong> (<em>float</em>) &#8211; The radius of the top of the cylinder. If undefined, the top radius will be the same as the base radius</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.quadric.Quadric.render_disk">
+<code class="descname">render_disk</code><span class="sig-paren">(</span><em>radius</em>, <em>slices</em>, <em>rings</em>, <em>rotation</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.render_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the polygons for a disk</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> (<em>float</em>) &#8211; The disk&#8217;s radius</li>
+<li><strong>slices</strong> (<em>float</em>) &#8211; The number of longitudinal lines</li>
+<li><strong>rings</strong> (<em>int</em>) &#8211; The number of concentric rings in the disk, for rendering</li>
+<li><strong>rotation</strong> (<em>float</em>) &#8211; The rotation of the disk along the z-axis</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.quadric.Quadric.render_sphere">
+<code class="descname">render_sphere</code><span class="sig-paren">(</span><em>radius</em>, <em>slices</em>, <em>stacks</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.quadric.Quadric.render_sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a sphere.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> (<em>float</em>) &#8211; The radius of the sphere</li>
+<li><strong>slices</strong> (<em>int</em>) &#8211; The number of longitudinal lines</li>
+<li><strong>stacks</strong> (<em>int</em>) &#8211; The number of latitudinal lines</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util.rgba">
+<span id="pyglet-helper-util-rgba-module"></span><h2>pyglet_helper.util.rgba module<a class="headerlink" href="#module-pyglet_helper.util.rgba" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.rgba.Rgb">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.rgba.</code><code class="descname">Rgb</code><span class="sig-paren">(</span><em>red=1.0</em>, <em>green=1.0</em>, <em>blue=1.0</em>, <em>c=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define an RGB color to be used by OpenGl</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>red</strong> (<em>float</em>) &#8211; The red value of the color, value between 0 and 1</li>
+<li><strong>green</strong> (<em>float</em>) &#8211; The green value of the color, value between 0 and 1</li>
+<li><strong>blue</strong> (<em>float</em>) &#8211; The blue value of the color, value between 0 and 1</li>
+<li><strong>c</strong> (<em>list</em>) &#8211; A list of values to copy into a new color</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgb.desaturate">
+<code class="descname">desaturate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgb.desaturate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the color to HSV space, reduce the saturation by a factor of 0.5, then convert back to RGB space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Rgb()</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the desaturated color.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgb.gl_set">
+<code class="descname">gl_set</code><span class="sig-paren">(</span><em>opacity=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgb.gl_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current material to this color</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>opacity</strong> (<em>float</em>) &#8211; the opacity value of the color</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgb.grayscale">
+<code class="descname">grayscale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgb.grayscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the color to grayscale</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the color, projected onto grayscale.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Rgb()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.rgba.Rgb.rgb">
+<code class="descname">rgb</code><a class="headerlink" href="#pyglet_helper.util.rgba.Rgb.rgb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.rgba.Rgba">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.rgba.</code><code class="descname">Rgba</code><span class="sig-paren">(</span><em>red=1.0</em>, <em>green=1.0</em>, <em>blue=1.0</em>, <em>opacity=1.0</em>, <em>c=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgba" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Defines a color to be used by OpenGl, including RGB and opacity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>red</strong> (<em>float</em>) &#8211; The red value of the color, value between 0 and 1</li>
+<li><strong>green</strong> (<em>float</em>) &#8211; The green value of the color, value between 0 and 1</li>
+<li><strong>blue</strong> (<em>float</em>) &#8211; The blue value of the color, value between 0 and 1</li>
+<li><strong>opacity</strong> (<em>float</em>) &#8211; The opacity value of the color, value between 0 and 1</li>
+<li><strong>c</strong> (<em>list</em>) &#8211; A list of values to copy into a new color</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgba.desaturate">
+<code class="descname">desaturate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgba.desaturate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a desaturated version of the color</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Rgba</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the desaturized color.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgba.gl_set">
+<code class="descname">gl_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgba.gl_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set this color to the current material in OpenGL.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.rgba.Rgba.grayscale">
+<code class="descname">grayscale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.rgba.Rgba.grayscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a version of the color projected onto a grayscale space</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the color, projected onto grayscale.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pyglet_helper.util.Rgba()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util.shader_program">
+<span id="pyglet-helper-util-shader-program-module"></span><h2>pyglet_helper.util.shader_program module<a class="headerlink" href="#module-pyglet_helper.util.shader_program" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.shader_program.</code><code class="descname">ShaderProgram</code><span class="sig-paren">(</span><em>source=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.compile">
+<code class="descname">compile</code><span class="sig-paren">(</span><em>v</em>, <em>shader_type</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.compile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.get_section">
+<code class="descname">get_section</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.get_section" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Extract section beginning with</div></blockquote>
+<dl class="docutils">
+<dt>[name]</dt>
+<dd>and ending with</dd>
+</dl>
+<dl class="docutils">
+<dt>[</dt>
+<dd>e.g.
+[vertex]
+void main() {}
+[fragment]
+void main() {}</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.gl_free">
+<code class="descname">gl_free</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.gl_free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.realize">
+<code class="descname">realize</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.realize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.source">
+<code class="descname">source</code><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.uniform_location">
+<code class="descname">uniform_location</code><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.uniform_location" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.ShaderProgram.uniform_matrix">
+<code class="descname">uniform_matrix</code><span class="sig-paren">(</span><em>v</em>, <em>loc</em>, <em>_in</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.ShaderProgram.uniform_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.util.shader_program.UseShaderProgram">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.shader_program.</code><code class="descname">UseShaderProgram</code><span class="sig-paren">(</span><em>v</em>, <em>program=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.UseShaderProgram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="pyglet_helper.util.shader_program.UseShaderProgram.init">
+<code class="descname">init</code><span class="sig-paren">(</span><em>program</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.shader_program.UseShaderProgram.init" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.shader_program.UseShaderProgram.ok">
+<code class="descname">ok</code><a class="headerlink" href="#pyglet_helper.util.shader_program.UseShaderProgram.ok" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util.texture">
+<span id="pyglet-helper-util-texture-module"></span><h2>pyglet_helper.util.texture module<a class="headerlink" href="#module-pyglet_helper.util.texture" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.util.texture.Texture">
+<em class="property">class </em><code class="descclassname">pyglet_helper.util.texture.</code><code class="descname">Texture</code><span class="sig-paren">(</span><em>damaged=False</em>, <em>handle=0</em>, <em>have_opacity=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.texture.Texture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class to assist in managing OpenGL texture resources.</p>
+<dl class="method">
+<dt id="pyglet_helper.util.texture.Texture.damage">
+<code class="descname">damage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.texture.Texture.damage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.texture.Texture.gl_activate">
+<code class="descname">gl_activate</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.texture.Texture.gl_activate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Make this texture active.  This function constitutes use under the</dt>
+<dd>&#8220;initialize on first use&#8221; rule, and will incur a one-time speed and
+continuous graphics memory penalty.  Precondition: an OpenGL context
+must be active.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.util.texture.Texture.gl_free">
+<code class="descname">gl_free</code><span class="sig-paren">(</span><em>_handle</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.util.texture.Texture.gl_free" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Returns e.g. GL_TEXTURE_2D - the thing to be enabled to make this texture</dt>
+<dd>work with the fixed function pipeline.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.util.texture.Texture.have_opacity">
+<code class="descname">have_opacity</code><a class="headerlink" href="#pyglet_helper.util.texture.Texture.have_opacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyglet_helper.util" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyglet_helper.util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.color">pyglet_helper.util.color module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.display_list">pyglet_helper.util.display_list module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.linear">pyglet_helper.util.linear module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.quadric">pyglet_helper.util.quadric module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.rgba">pyglet_helper.util.rgba module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.shader_program">pyglet_helper.util.shader_program module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util.texture">pyglet_helper.util.texture module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyglet_helper.util.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Catherine Holloway.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/pyglet_helper.util.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

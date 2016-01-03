@@ -9,7 +9,6 @@ class Sphere(Axial):
     """
     def __init__(self, color=Rgb(), pos=Vector(0, 0, 0), radius=1.0, material=Material(), other=None):
         """
-        Initiator
         :param radius: The sphere's radius.
         :type radius: float
         :param color: The object's color.
@@ -22,7 +21,6 @@ class Sphere(Axial):
         :type material: pyglet_helper.util.Material
         :param other: another sphere object to copy properties from (optional)
         :type other: pyglet_helper.objects.Sphere
-        :return:
         """
         super(Sphere, self).__init__(color=color, pos=pos, radius=radius, material=material)
         # Construct a unit sphere at the origin.
@@ -32,8 +30,7 @@ class Sphere(Axial):
 
     @property
     def scale(self):
-        """
-         Exposed for the benefit of the ellipsoid object, which overrides it.
+        """ Exposed for the benefit of the ellipsoid object, which overrides it.
          The default is to use <radius, radius, radius> for the scale.
         """
         return Vector(self.radius, self.radius, self.radius)
@@ -48,19 +45,16 @@ class Sphere(Axial):
 
     @property
     def degenerate(self):
-        """
-        Returns true if this object should not be drawn.  Conditions are:
+        """ Returns true if this object should not be drawn.  Conditions are:
         zero radius, or visible is false.  (overridden by the ellipsoid class).
         """
         return self.radius == 0.0
 
-    # True until the first sphere is rendered, then false.
     def init_model(self, scene):
-        """
-        Add the sphere quadrics to the View
+        """ Add the sphere quadrics to the View
+
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         sph = Quadric()
 
@@ -90,11 +84,10 @@ class Sphere(Axial):
         scene.sphere_model[5].gl_compile_end()
 
     def render(self, geometry):
-        """
-        Add the sphere to the view.
+        """ Add the sphere to the view.
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         # Renders a simple sphere with the #2 level of detail.
         if self.radius == 0.0:

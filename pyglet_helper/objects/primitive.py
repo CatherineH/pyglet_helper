@@ -3,11 +3,10 @@ from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 
 
 def trail_update(obj):
-    """
-    A function for keeping track of the change in a primitive object's position
-    :param obj: the primitive object to track
+    """A function for keeping track of the change in a primitive object's position.
+
+    :param obj: the primitive object to track.
     :type obj: pyglet_helper.objects.Primitive
-    :return:
     """
     # trail_update does not detect changes such as ball.pos.x += 1
     # which are detected in create_display/_Interact which looks at trail_list
@@ -26,12 +25,12 @@ def trail_update(obj):
 
 class Primitive(Renderable):
     """
-     A base class for all geometric shapes
+     A base class for all geometric shapes.
     """
     def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), make_trail=False,
                  trail_initialized=False, obj_initialized=False, color=Rgb(), material=Material(), other=None):
         """
-        Initiator
+
         :param axis: The orientation to use when drawing.
         :type axis: pyglet_helper.util.Vector
         :param up: A vector that points to the current up direction in the view.
@@ -41,7 +40,7 @@ class Primitive(Renderable):
         :param make_trail: If True, the position of the primitive object will be tracked over time.
         :type make_trail: bool
         :param trail_initialized: If True, the trail, meaning the list of tracked positions over time, has been
-        initialized
+         initialized
         :type trail_initialized: bool
         :param obj_initialized: If True, the object has been initialized
         :type obj_initialized: bool
@@ -51,7 +50,6 @@ class Primitive(Renderable):
         :type material: pyglet_helper.util.Material
         :param other: another object to copy properties from (optional)
         :type other: pyglet_helper.objects.Primitive
-        :return:
         """
         super(Primitive, self).__init__(color=color, mat=material)
         self._axis = None
@@ -77,15 +75,15 @@ class Primitive(Renderable):
             self.axis = other.axis
 
     def model_world_transform(self, world_scale=0.0, object_scale=Vector(1, 1, 1)):
-        """
-         Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
+        """Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
+
         :param world_scale: The global scaling factor.
         :type world_scale: float
         :param object_scale: The scaling to applied to this specific object
         :type object_scale: pyglet_helper.util.Vector
         :rtype: pyglet_helper.util.Tmatrix
         :returns:  Returns a tmatrix that performs reorientation of the object from model orientation to world
-        (and view) orientation.
+         (and view) orientation.
         """
         ret = Tmatrix()
         # A unit vector along the z_axis.
@@ -117,15 +115,14 @@ class Primitive(Renderable):
         return type(self)
 
     def rotate(self, angle, axis, origin):
-        """
-        Rotate the primitive's axis by angle about a specified axis at a specified origin.
+        """Rotate the primitive's axis by angle about a specified axis at a specified origin.
+
         :param angle: the angle to rotate by, in radians
         :type angle: float
         :param axis: The axis to rotate around.
         :type axis: pyglet_helper.util.Vector
         :param origin: The center of the axis of rotation.
         :type origin: pyglet_helper.util.Vector
-        :return:
         """
         R = rotation(angle, axis, origin)
         fake_up = self.up

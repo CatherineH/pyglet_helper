@@ -1,0 +1,1207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyglet_helper.objects package &mdash; PygletHelper 0.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="PygletHelper 0.0.1 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyglet-helper-objects-package">
+<h1>pyglet_helper.objects package<a class="headerlink" href="#pyglet-helper-objects-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pyglet_helper.objects.arrow">
+<span id="pyglet-helper-objects-arrow-module"></span><h2>pyglet_helper.objects.arrow module<a class="headerlink" href="#module-pyglet_helper.objects.arrow" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.arrow.Arrow">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.arrow.</code><code class="descname">Arrow</code><span class="sig-paren">(</span><em>fixed_width=False</em>, <em>head_width=0.0</em>, <em>head_length=0.0</em>, <em>shaft_width=0.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.primitive.Primitive" title="pyglet_helper.objects.primitive.Primitive"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.primitive.Primitive</span></code></a></p>
+<p>A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing along +x, unit length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fixed_width</strong> (<em>bool</em>) &#8211; if True, the arrow&#8217;s head width and length will not be scaled in proportion to its length.</li>
+<li><strong>head_width</strong> (<em>float</em>) &#8211; The width of the arrow&#8217;s head section.</li>
+<li><strong>head_length</strong> (<em>float</em>) &#8211; The length of the arrow&#8217;s length section</li>
+<li><strong>shaft_width</strong> (<em>float</em>) &#8211; The length of the arrow&#8217;s shaft section</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The arrow&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.pos</em>) &#8211; The arrow&#8217;s position</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The arrow&#8217;s axis direction</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the center of the arrow by subtracting the axis off of the position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The arrow&#8217;s center (position+axis)/2</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.degenerate">
+<code class="descname">degenerate</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if the arrow has an effective length of 0</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.arrow.Arrow.effective_geometry">
+<code class="descname">effective_geometry</code><span class="sig-paren">(</span><em>gcf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.effective_geometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes these four variables with the effective geometry for the
+arrow.  The resulting geometry is scaled to view space, but oriented
+and positioned in model space.  The only required transforms are
+reorientation and translation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gcf</strong> (<em>float</em>) &#8211; The scaling factor</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.fixed_width">
+<code class="descname">fixed_width</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.fixed_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.head_length">
+<code class="descname">head_length</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.head_length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.head_width">
+<code class="descname">head_width</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.head_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.arrow.Arrow.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the arrow head and shaft to the scene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.length">
+<code class="descname">length</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.arrow.Arrow.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the arrow on the current view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.arrow.Arrow.shaft_width">
+<code class="descname">shaft_width</code><a class="headerlink" href="#pyglet_helper.objects.arrow.Arrow.shaft_width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.axial">
+<span id="pyglet-helper-objects-axial-module"></span><h2>pyglet_helper.objects.axial module<a class="headerlink" href="#module-pyglet_helper.objects.axial" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.axial.Axial">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.axial.</code><code class="descname">Axial</code><span class="sig-paren">(</span><em>axis=Vector(1</em>, <em>0</em>, <em>0)</em>, <em>radius=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>material=&lt;pyglet_helper.objects.material.Material object&gt;</em>, <em>other=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.axial.Axial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.primitive.Primitive" title="pyglet_helper.objects.primitive.Primitive"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.primitive.Primitive</span></code></a></p>
+<p>A subclass for all shapes with some radial symmetry around an axis (spheres, cones, etc., ).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>other</strong> (<em>pyglet_helper.objects.Axial</em>) &#8211; another axial object to copy properties from (optional)</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The axis for the orientation of the object.</li>
+<li><strong>radius</strong> (<em>float</em>) &#8211; The object&#8217;s radius.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>material</strong> (<em>pyglet_helper.util.Material</em>) &#8211; The object&#8217;s material</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.axial.Axial.material_matrix">
+<code class="descname">material_matrix</code><a class="headerlink" href="#pyglet_helper.objects.axial.Axial.material_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.axial.Axial.radius">
+<code class="descname">radius</code><a class="headerlink" href="#pyglet_helper.objects.axial.Axial.radius" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.box">
+<span id="pyglet-helper-objects-box-module"></span><h2>pyglet_helper.objects.box module<a class="headerlink" href="#module-pyglet_helper.objects.box" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.box.Box">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.box.</code><code class="descname">Box</code><span class="sig-paren">(</span><em>width=1.0</em>, <em>height=1.0</em>, <em>length=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.box.Box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.rectangular.Rectangular" title="pyglet_helper.objects.rectangular.Rectangular"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.rectangular.Rectangular</span></code></a></p>
+<p>A box object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> (<em>float</em>) &#8211; The box&#8217;s width.</li>
+<li><strong>height</strong> (<em>float</em>) &#8211; The box&#8217;s height.</li>
+<li><strong>length</strong> (<em>float</em>) &#8211; The box&#8217;s length.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.objects.box.Box.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em>, <em>skip_right_face=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.box.Box.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the Vertexes and Normals to the compile list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model to.</li>
+<li><strong>skip_right_face</strong> (<em>bool</em>) &#8211; If True, the right face will not be rendered.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.box.Box.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.box.Box.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the box in the view</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.cone">
+<span id="pyglet-helper-objects-cone-module"></span><h2>pyglet_helper.objects.cone module<a class="headerlink" href="#module-pyglet_helper.objects.cone" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.cone.Cone">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.cone.</code><code class="descname">Cone</code><span class="sig-paren">(</span><em>radius=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>axis=Vector(1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cone.Cone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.axial.Axial" title="pyglet_helper.objects.axial.Axial"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.axial.Axial</span></code></a></p>
+<p>A Cone object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>radius</strong> (<em>float</em>) &#8211; The cone&#8217;s bottom radius.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The cone points from the base to the point along the axis.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cone.Cone.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.cone.Cone.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the center of the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">position + axis/2</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cone.Cone.degenerate">
+<code class="descname">degenerate</code><a class="headerlink" href="#pyglet_helper.objects.cone.Cone.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if radius == 0 or the length is 0</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.cone.Cone.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cone.Cone.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the cone quadrics to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cone.Cone.length">
+<code class="descname">length</code><a class="headerlink" href="#pyglet_helper.objects.cone.Cone.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.cone.Cone.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cone.Cone.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the cone to the scene.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.cylinder">
+<span id="pyglet-helper-objects-cylinder-module"></span><h2>pyglet_helper.objects.cylinder module<a class="headerlink" href="#module-pyglet_helper.objects.cylinder" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.cylinder.Cylinder">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.cylinder.</code><code class="descname">Cylinder</code><span class="sig-paren">(</span><em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>axis=Vector(1</em>, <em>0</em>, <em>0)</em>, <em>radius=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.axial.Axial" title="pyglet_helper.objects.axial.Axial"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.axial.Axial</span></code></a></p>
+<p>A Cylinder object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> (<em>float</em>) &#8211; The cylinder&#8217;s radius.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The cone points from the base to the point along the axis.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cylinder.Cylinder.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder.center" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Position + axis/2</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cylinder.Cylinder.degenerate">
+<code class="descname">degenerate</code><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.cylinder.Cylinder.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the cylinder quadrics to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.cylinder.Cylinder.length">
+<code class="descname">length</code><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.cylinder.Cylinder.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.cylinder.Cylinder.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the cylinder to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.ellipsoid">
+<span id="pyglet-helper-objects-ellipsoid-module"></span><h2>pyglet_helper.objects.ellipsoid module<a class="headerlink" href="#module-pyglet_helper.objects.ellipsoid" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.ellipsoid.</code><code class="descname">Ellipsoid</code><span class="sig-paren">(</span><em>height=1.0</em>, <em>width=1.0</em>, <em>length=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.sphere.Sphere" title="pyglet_helper.objects.sphere.Sphere"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.sphere.Sphere</span></code></a></p>
+<p>An Ellipsoid object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> (<em>float</em>) &#8211; The ellipsoid&#8217;s width.</li>
+<li><strong>height</strong> (<em>float</em>) &#8211; The ellipsoid&#8217;s height.</li>
+<li><strong>length</strong> (<em>float</em>) &#8211; The ellipsoid&#8217;s length.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.degenerate">
+<code class="descname">degenerate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.height">
+<code class="descname">height</code><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.length">
+<code class="descname">length</code><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.scale">
+<code class="descname">scale</code><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.scale" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.size">
+<code class="descname">size</code><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ellipsoid.Ellipsoid.width">
+<code class="descname">width</code><a class="headerlink" href="#pyglet_helper.objects.ellipsoid.Ellipsoid.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.light">
+<span id="pyglet-helper-objects-light-module"></span><h2>pyglet_helper.objects.light module<a class="headerlink" href="#module-pyglet_helper.objects.light" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.light.Light">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.light.</code><code class="descname">Light</code><span class="sig-paren">(</span><em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>specular=(0.5</em>, <em>0.5</em>, <em>1</em>, <em>0.5)</em>, <em>diffuse=(1</em>, <em>1</em>, <em>1</em>, <em>1)</em>, <em>position=(1</em>, <em>0.5</em>, <em>1</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.light.Light" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.renderable.Renderable" title="pyglet_helper.objects.renderable.Renderable"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.renderable.Renderable</span></code></a></p>
+<p>A light object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>specular</strong> (<em>array_like</em>) &#8211; The color of the specular reflections on the objects in the scene.</li>
+<li><strong>diffuse</strong> &#8211; The color of the diffuse reflections of the objects in the scene.</li>
+<li><strong>position</strong> (<em>array_like</em>) &#8211; The object&#8217;s position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.light.Light.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.light.Light.center" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.light.Light.get_vertex">
+<code class="descname">get_vertex</code><span class="sig-paren">(</span><em>gcf</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.light.Light.get_vertex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.light.Light.is_light">
+<code class="descname">is_light</code><a class="headerlink" href="#pyglet_helper.objects.light.Light.is_light" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.light.Light.material">
+<code class="descname">material</code><a class="headerlink" href="#pyglet_helper.objects.light.Light.material" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.light.Light.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.light.Light.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the light to the scene.
+:param scene: The view to render the model into
+:type scene: pyglet_helper.objects.View</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.light.Light.rgb">
+<code class="descname">rgb</code><a class="headerlink" href="#pyglet_helper.objects.light.Light.rgb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.material">
+<span id="pyglet-helper-objects-material-module"></span><h2>pyglet_helper.objects.material module<a class="headerlink" href="#module-pyglet_helper.objects.material" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.material.Material">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.material.</code><code class="descname">Material</code><span class="sig-paren">(</span><em>translucent=False</em>, <em>shader_program=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.material.Material" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A Material object, used for storing and handling shader programs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>translucent</strong> (<em>bool</em>) &#8211; </li>
+<li><strong>shader_program</strong> (<em>str</em>) &#8211; The GLSL (Graphics library shader language) code to be executed).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.objects.material.Material.get_shader_program">
+<code class="descname">get_shader_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.material.Material.get_shader_program" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.material.Material.shader">
+<code class="descname">shader</code><a class="headerlink" href="#pyglet_helper.objects.material.Material.shader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.material.Material.textures">
+<code class="descname">textures</code><a class="headerlink" href="#pyglet_helper.objects.material.Material.textures" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.material.Material.translucent">
+<code class="descname">translucent</code><a class="headerlink" href="#pyglet_helper.objects.material.Material.translucent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.primitive">
+<span id="pyglet-helper-objects-primitive-module"></span><h2>pyglet_helper.objects.primitive module<a class="headerlink" href="#module-pyglet_helper.objects.primitive" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.primitive.Primitive">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.primitive.</code><code class="descname">Primitive</code><span class="sig-paren">(</span><em>axis=Vector(1</em>, <em>0</em>, <em>0)</em>, <em>up=Vector(0</em>, <em>1</em>, <em>0)</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>make_trail=False</em>, <em>trail_initialized=False</em>, <em>obj_initialized=False</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>material=&lt;pyglet_helper.objects.material.Material object&gt;</em>, <em>other=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.renderable.Renderable" title="pyglet_helper.objects.renderable.Renderable"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.renderable.Renderable</span></code></a></p>
+<p>A base class for all geometric shapes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The orientation to use when drawing.</li>
+<li><strong>up</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; A vector that points to the current up direction in the view.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>make_trail</strong> (<em>bool</em>) &#8211; If True, the position of the primitive object will be tracked over time.</li>
+<li><strong>trail_initialized</strong> (<em>bool</em>) &#8211; If True, the trail, meaning the list of tracked positions over time, has been
+initialized</li>
+<li><strong>obj_initialized</strong> (<em>bool</em>) &#8211; If True, the object has been initialized</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>material</strong> (<em>pyglet_helper.util.Material</em>) &#8211; The object&#8217;s material</li>
+<li><strong>other</strong> (<em>pyglet_helper.objects.Primitive</em>) &#8211; another object to copy properties from (optional)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.axis">
+<code class="descname">axis</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.axis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.blue">
+<code class="descname">blue</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.blue" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.center" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.green">
+<code class="descname">green</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.green" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.is_light">
+<code class="descname">is_light</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.is_light" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.make_trail">
+<code class="descname">make_trail</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.make_trail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.primitive.Primitive.model_world_transform">
+<code class="descname">model_world_transform</code><span class="sig-paren">(</span><em>world_scale=0.0</em>, <em>object_scale=Vector(1</em>, <em>1</em>, <em>1)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.model_world_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs scale, rotation, translation, and world scale (gcf) transforms in that order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>world_scale</strong> (<em>float</em>) &#8211; The global scaling factor.</li>
+<li><strong>object_scale</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The scaling to applied to this specific object</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">pyglet_helper.util.Tmatrix</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Returns a tmatrix that performs reorientation of the object from model orientation to world
+(and view) orientation.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.pos">
+<code class="descname">pos</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.pos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.primitive_object">
+<code class="descname">primitive_object</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.primitive_object" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.red">
+<code class="descname">red</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.red" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.primitive.Primitive.rotate">
+<code class="descname">rotate</code><span class="sig-paren">(</span><em>angle</em>, <em>axis</em>, <em>origin</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate the primitive&#8217;s axis by angle about a specified axis at a specified origin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>angle</strong> (<em>float</em>) &#8211; the angle to rotate by, in radians</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The axis to rotate around.</li>
+<li><strong>origin</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The center of the axis of rotation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.typeid">
+<code class="descname">typeid</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.typeid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.up">
+<code class="descname">up</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.x">
+<code class="descname">x</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.x" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.y">
+<code class="descname">y</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.primitive.Primitive.z">
+<code class="descname">z</code><a class="headerlink" href="#pyglet_helper.objects.primitive.Primitive.z" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyglet_helper.objects.primitive.trail_update">
+<code class="descclassname">pyglet_helper.objects.primitive.</code><code class="descname">trail_update</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.primitive.trail_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function for keeping track of the change in a primitive object&#8217;s position.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<em>pyglet_helper.objects.Primitive</em>) &#8211; the primitive object to track.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.pyramid">
+<span id="pyglet-helper-objects-pyramid-module"></span><h2>pyglet_helper.objects.pyramid module<a class="headerlink" href="#module-pyglet_helper.objects.pyramid" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.pyramid.Pyramid">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.pyramid.</code><code class="descname">Pyramid</code><span class="sig-paren">(</span><em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>width=1.0</em>, <em>height=1.0</em>, <em>length=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.pyramid.Pyramid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.rectangular.Rectangular" title="pyglet_helper.objects.rectangular.Rectangular"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.rectangular.Rectangular</span></code></a></p>
+<p>A Pyramid Object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>width</strong> (<em>float</em>) &#8211; The pyramid&#8217;s width.</li>
+<li><strong>height</strong> (<em>float</em>) &#8211; The pyramid&#8217;s height.</li>
+<li><strong>length</strong> (<em>float</em>) &#8211; The pyramid&#8217;s length.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.pyramid.Pyramid.center">
+<code class="descname">center</code><a class="headerlink" href="#pyglet_helper.objects.pyramid.Pyramid.center" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.pyramid.Pyramid.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.pyramid.Pyramid.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the pyramid normals and vertices to the View</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.pyramid.Pyramid.material_matrix">
+<code class="descname">material_matrix</code><a class="headerlink" href="#pyglet_helper.objects.pyramid.Pyramid.material_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.pyramid.Pyramid.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.pyramid.Pyramid.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a pyramid to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.rectangular">
+<span id="pyglet-helper-objects-rectangular-module"></span><h2>pyglet_helper.objects.rectangular module<a class="headerlink" href="#module-pyglet_helper.objects.rectangular" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.rectangular.Rectangular">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.rectangular.</code><code class="descname">Rectangular</code><span class="sig-paren">(</span><em>other=None</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>width=1.0</em>, <em>height=1.0</em>, <em>length=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.primitive.Primitive" title="pyglet_helper.objects.primitive.Primitive"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.primitive.Primitive</span></code></a></p>
+<p>A base class for rectangular-like objects (such as the box or pyramid)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>width</strong> (<em>float</em>) &#8211; The object&#8217;s width.</li>
+<li><strong>height</strong> (<em>float</em>) &#8211; The object&#8217;s height.</li>
+<li><strong>length</strong> (<em>float</em>) &#8211; The object&#8217;s length.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.objects.rectangular.Rectangular.apply_transform">
+<code class="descname">apply_transform</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular.apply_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scale the object to the correct height, width and length</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; the object&#8217;s current view</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.rectangular.Rectangular.height">
+<code class="descname">height</code><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular.height" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.rectangular.Rectangular.length">
+<code class="descname">length</code><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.rectangular.Rectangular.size">
+<code class="descname">size</code><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.rectangular.Rectangular.width">
+<code class="descname">width</code><a class="headerlink" href="#pyglet_helper.objects.rectangular.Rectangular.width" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.renderable">
+<span id="pyglet-helper-objects-renderable-module"></span><h2>pyglet_helper.objects.renderable module<a class="headerlink" href="#module-pyglet_helper.objects.renderable" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.renderable.Renderable">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.renderable.</code><code class="descname">Renderable</code><span class="sig-paren">(</span><em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>mat=&lt;pyglet_helper.objects.material.Material object&gt;</em>, <em>opacity=1.0</em>, <em>visible=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.renderable.Renderable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A base class for all geometric shapes and lights.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>material</strong> (<em>pyglet_helper.util.Material</em>) &#8211; The object&#8217;s material</li>
+<li><strong>opacity</strong> (<em>float</em>) &#8211; The transparency value of the object</li>
+<li><strong>visible</strong> (<em>bool</em>) &#8211; If True, the object will be rendered on the screen</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.renderable.Renderable.material">
+<code class="descname">material</code><a class="headerlink" href="#pyglet_helper.objects.renderable.Renderable.material" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.renderable.Renderable.translucent">
+<code class="descname">translucent</code><a class="headerlink" href="#pyglet_helper.objects.renderable.Renderable.translucent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyglet_helper.objects.renderable.View">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.renderable.</code><code class="descname">View</code><span class="sig-paren">(</span><em>gcf=1.0</em>, <em>view_width=800</em>, <em>view_height=600</em>, <em>anaglyph=False</em>, <em>coloranaglyph=False</em>, <em>forward_changed=False</em>, <em>gcf_changed=False</em>, <em>lod_adjust=0</em>, <em>tan_hfov_x=0</em>, <em>tan_hfov_y=0</em>, <em>enable_shaders=True</em>, <em>background_color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.renderable.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class for handling the environment in which all objects are rendered</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>gcf</strong> (<em>float</em>) &#8211; The global scaling factor, a coefficient applied to all objects in the view</li>
+<li><strong>view_width</strong> (<em>int</em>) &#8211; The width of the viewport in pixels.</li>
+<li><strong>view_height</strong> (<em>int</em>) &#8211; The height of the viewport in pixels.</li>
+<li><strong>anaglyph</strong> (<em>bool</em>) &#8211; If True, the scene will be rendered in anaglyph stereo mode.</li>
+<li><strong>coloranaglyph</strong> (<em>bool</em>) &#8211; If True, the scene will be rendered in coloranaglyph stereo mode.</li>
+<li><strong>forward_changed</strong> (<em>bool</em>) &#8211; True if the forward vector changed since the last rending operation.</li>
+<li><strong>gcf_changed</strong> (<em>bool</em>) &#8211; True if the global scaling factor changed since the last render cycle.</li>
+<li><strong>lod_adjust</strong> (<em>int</em>) &#8211; The level-of-detail.</li>
+<li><strong>tan_hfov_x</strong> (<em>int</em>) &#8211; The tangent of half the horizontal field of view.</li>
+<li><strong>tan_hfov_y</strong> (<em>int</em>) &#8211; The tangent of half the vertical field of view.</li>
+<li><strong>enable_shaders</strong> (<em>bool</em>) &#8211; If True, shader programs will be allowed</li>
+<li><strong>background_color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The scene&#8217;s background color</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyglet_helper.objects.renderable.View.draw_lights">
+<code class="descname">draw_lights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.renderable.View.draw_lights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the lights in the scene</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.renderable.View.pixel_coverage">
+<code class="descname">pixel_coverage</code><span class="sig-paren">(</span><em>pos</em>, <em>radius</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.renderable.View.pixel_coverage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the apparent diameter, in pixels, of a circle that is parallel to the screen, with a center at pos,
+and some radius.  If pos is behind the camera, it will return negative.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The position in the view to examine</li>
+<li><strong>radius</strong> (<em>float</em>) &#8211; The radius of coverage to examine</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The diameter in pixels.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.renderable.View.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.renderable.View.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does some one-time OpenGL setup.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.ring">
+<span id="pyglet-helper-objects-ring-module"></span><h2>pyglet_helper.objects.ring module<a class="headerlink" href="#module-pyglet_helper.objects.ring" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.ring.Ring">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.ring.</code><code class="descname">Ring</code><span class="sig-paren">(</span><em>thickness=0.0</em>, <em>radius=1.0</em>, <em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>axis=Vector(1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.ring.Ring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.axial.Axial" title="pyglet_helper.objects.axial.Axial"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.axial.Axial</span></code></a></p>
+<p>A Ring object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>thickness</strong> (<em>float</em>) &#8211; The ring&#8217;s thickness.</li>
+<li><strong>radius</strong> (<em>float</em>) &#8211; The ring&#8217;s radius.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The cone points from the base to the point along the axis.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ring.Ring.degenerate">
+<code class="descname">degenerate</code><a class="headerlink" href="#pyglet_helper.objects.ring.Ring.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ring.Ring.material_matrix">
+<code class="descname">material_matrix</code><a class="headerlink" href="#pyglet_helper.objects.ring.Ring.material_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.ring.Ring.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.ring.Ring.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a ring to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.ring.Ring.thickness">
+<code class="descname">thickness</code><a class="headerlink" href="#pyglet_helper.objects.ring.Ring.thickness" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyglet_helper.objects.ring.clamp">
+<code class="descclassname">pyglet_helper.objects.ring.</code><code class="descname">clamp</code><span class="sig-paren">(</span><em>lower</em>, <em>value</em>, <em>upper</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.ring.clamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restrict a value to be between a lower value and upper value. Used to restrict the number of polygons in the ring
+object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lower</strong> (<em>float or int</em>) &#8211; the lowest possible value of value</li>
+<li><strong>value</strong> (<em>float or int</em>) &#8211; the value to check</li>
+<li><strong>upper</strong> (<em>float or int</em>) &#8211; the largest possible value of value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float or int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the restricted value</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects.sphere">
+<span id="pyglet-helper-objects-sphere-module"></span><h2>pyglet_helper.objects.sphere module<a class="headerlink" href="#module-pyglet_helper.objects.sphere" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pyglet_helper.objects.sphere.Sphere">
+<em class="property">class </em><code class="descclassname">pyglet_helper.objects.sphere.</code><code class="descname">Sphere</code><span class="sig-paren">(</span><em>color=&lt;pyglet_helper.util.rgba.Rgb instance&gt;</em>, <em>pos=Vector(0</em>, <em>0</em>, <em>0)</em>, <em>radius=1.0</em>, <em>material=&lt;pyglet_helper.objects.material.Material object&gt;</em>, <em>other=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyglet_helper.objects.axial.Axial" title="pyglet_helper.objects.axial.Axial"><code class="xref py py-class docutils literal"><span class="pre">pyglet_helper.objects.axial.Axial</span></code></a></p>
+<p>A Sphere object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>radius</strong> (<em>float</em>) &#8211; The sphere&#8217;s radius.</li>
+<li><strong>color</strong> (<em>pyglet_helper.util.Rgb</em>) &#8211; The object&#8217;s color.</li>
+<li><strong>pos</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The object&#8217;s position.</li>
+<li><strong>axis</strong> (<em>pyglet_helper.util.Vector</em>) &#8211; The cone points from the base to the point along the axis.</li>
+<li><strong>material</strong> (<em>pyglet_helper.util.Material</em>) &#8211; The object&#8217;s material</li>
+<li><strong>other</strong> (<em>pyglet_helper.objects.Sphere</em>) &#8211; another sphere object to copy properties from (optional)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyglet_helper.objects.sphere.Sphere.degenerate">
+<code class="descname">degenerate</code><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere.degenerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if this object should not be drawn.  Conditions are:
+zero radius, or visible is false.  (overridden by the ellipsoid class).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.sphere.Sphere.init_model">
+<code class="descname">init_model</code><span class="sig-paren">(</span><em>scene</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere.init_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the sphere quadrics to the View</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model to.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.sphere.Sphere.material_matrix">
+<code class="descname">material_matrix</code><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere.material_matrix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyglet_helper.objects.sphere.Sphere.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>geometry</em><span class="sig-paren">)</span><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the sphere to the view.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>scene</strong> (<em>pyglet_helper.objects.View</em>) &#8211; The view to render the model into</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyglet_helper.objects.sphere.Sphere.scale">
+<code class="descname">scale</code><a class="headerlink" href="#pyglet_helper.objects.sphere.Sphere.scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exposed for the benefit of the ellipsoid object, which overrides it.
+The default is to use &lt;radius, radius, radius&gt; for the scale.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyglet_helper.objects">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pyglet_helper.objects" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pyglet_helper.objects package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.arrow">pyglet_helper.objects.arrow module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.axial">pyglet_helper.objects.axial module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.box">pyglet_helper.objects.box module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.cone">pyglet_helper.objects.cone module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.cylinder">pyglet_helper.objects.cylinder module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.ellipsoid">pyglet_helper.objects.ellipsoid module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.light">pyglet_helper.objects.light module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.material">pyglet_helper.objects.material module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.primitive">pyglet_helper.objects.primitive module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.pyramid">pyglet_helper.objects.pyramid module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.rectangular">pyglet_helper.objects.rectangular module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.renderable">pyglet_helper.objects.renderable module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.ring">pyglet_helper.objects.ring module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects.sphere">pyglet_helper.objects.sphere module</a></li>
+<li><a class="reference internal" href="#module-pyglet_helper.objects">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pyglet_helper.objects.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Catherine Holloway.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/pyglet_helper.objects.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

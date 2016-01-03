@@ -9,7 +9,7 @@ class Cone(Axial):
     """
     def __init__(self, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
         """
-        Initiator
+
         :param radius: The cone's bottom radius.
         :type radius: float
         :param color: The object's color.
@@ -24,11 +24,10 @@ class Cone(Axial):
         self.axis = Vector(axis)
 
     def init_model(self, scene):
-        """
-        Add the cone quadrics to the view.
+        """Add the cone quadrics to the view.
+
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         # The number of faces corresponding to each level of detail.
         n_sides = [8, 16, 32, 46, 68, 90]
@@ -49,11 +48,10 @@ class Cone(Axial):
         self.axis = self.axis.norm() * l
 
     def render(self, scene):
-        """
-        Add a cone to the scene.
+        """Add the cone to the scene.
+
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         if self.radius == 0:
             return
@@ -102,13 +100,20 @@ class Cone(Axial):
             scene.cone_model[lod].gl_render()
         glPopMatrix()
 
-    def get_center(self):
-        """
-        Get the center of the object.
-        :return:
+    @property
+    def center(self):
+        """ Get the center of the object.
+
+        :return: position + axis/2
+        :rtype: float
         """
         return self.pos + self.axis / 2.0
 
     @property
     def degenerate(self):
+        """
+
+        :return: True if radius == 0 or the length is 0
+        :rtype: bool
+        """
         return self.radius == 0.0 or self.axis.mag() == 0.0

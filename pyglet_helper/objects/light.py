@@ -10,7 +10,7 @@ class Light(Renderable):
     """
     def __init__(self, color=Rgb(), specular=(.5, .5, 1, 0.5), diffuse=(1, 1, 1, 1), position=(1, 0.5, 1, 0)):
         """
-        Initiator
+
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
         :param specular: The color of the specular reflections on the objects in the scene.
@@ -19,7 +19,6 @@ class Light(Renderable):
         :type position: array_like
         :param position: The object's position.
         :type position: array_like
-        :return:
         """
         super(Light, self).__init__(color=color)
         self.color = None
@@ -53,11 +52,9 @@ class Light(Renderable):
         return True
 
     def render(self, v):
-        """
-        Add the light to the scene.
+        """ Add the light to the scene.
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
-        :return:
         """
         v.lights.append(self)
         v.draw_lights()
