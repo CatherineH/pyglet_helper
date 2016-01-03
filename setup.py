@@ -2,6 +2,8 @@ import os
 import sys
 
 from setuptools import setup, find_packages
+from pyglet_helper import __version__
+
 
 DESCRIPTION = 'An extension to Pyglet'
 
@@ -52,6 +54,7 @@ def main():
                                                'turbulence3.tga', 'wood.tga']},
         # Package info
         packages=create_package_list('pyglet_helper'),
+        version=__version__,
         zip_safe=False)
 
 
