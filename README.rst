@@ -54,3 +54,9 @@ Finally, render the object, and run the pyglet window:
     _ball.render(scene)
     pyglet.app.run()
 
+Documentation
+-------------
+
+The documentation is available on my github_page_.
+
+.. _github_page:: http://catherineh.github.io/pyglet_helper/
