@@ -57,6 +57,6 @@ Finally, render the object, and run the pyglet window:
 Documentation
 -------------
 
-The documentation is available on my github_page_.
+The documentation is available on my `github page`_.
 
-.. _github_page:: http://catherineh.github.io/pyglet_helper/
+.. _github page: http://catherineh.github.io/pyglet_helper/
