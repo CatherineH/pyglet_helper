@@ -45,6 +45,7 @@ def main():
             'vis': os.path.join(SITE_PACKAGES, 'vis'),
         },
         install_requires=[
+            'enum',
             'numpy',
             'pyglet',
             'ttfquery',

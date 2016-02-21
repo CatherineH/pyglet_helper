@@ -9,7 +9,7 @@ class Axial(Primitive):
     A subclass for all shapes with some radial symmetry around an axis (spheres, cones, etc., ).
     """
     def __init__(self, axis=Vector(1, 0, 0), radius=1.0, color=Rgb(), pos=Vector(0, 0, 0),
-                 material=Material(),other=None):
+                 material=Material(), other=None):
         """
 
         :param other: another axial object to copy properties from (optional)
@@ -33,6 +33,10 @@ class Axial(Primitive):
             self.radius = radius
 
     @property
+    def scale(self):
+        return self.axis
+
+    @property
     def radius(self):
         return self._radius
 
@@ -46,6 +50,8 @@ class Axial(Primitive):
         out.translate(Vector(.0005, .5, .5))
         scale = self.scale(self.axis.mag(), self.radius, self.radius)
         out.scale(self.scale * (.999 / max(self.scale.x, self.scale.y * 2)))
-        # Undo the rotation inside quadric::render_cylinder() and ::render_disk():
-        out = out * self.rotation(+.5 * pi, Vector(0, 1, 0))  # xxx performance
+        # Undo the rotation inside quadric::render_cylinder() and ::render_disk():]
+        out_vector = Vector(0, 1, 0)
+        out_vector = out_vector.rotate(angle=.5*pi)
+        out = out * out_vector
         return out

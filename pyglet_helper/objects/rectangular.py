@@ -31,6 +31,10 @@ class Rectangular(Primitive):
         self.length = length
 
     @property
+    def scale(self):
+        return self.length
+
+    @property
     def length(self):
         return self.axis.mag()
 

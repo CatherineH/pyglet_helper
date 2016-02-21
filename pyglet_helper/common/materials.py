@@ -50,16 +50,15 @@ Unstable interfaces:
         materials.shader().
 """
 
-from numpy import array, reshape, fromstring, ubyte, ndarray, zeros, asarray
+from numpy import array, reshape, fromstring, ubyte, zeros, asarray
 import os.path
 import math
-import warnings
 
 from pyglet_helper.util.texture import Texture
 from pyglet_helper.objects.material import Material
 
 
-class raw_texture(Texture):
+class RawTexture(Texture):
     def __init__(self, **kwargs):
         Texture.__init__(self)
         for key, value in kwargs.items():
@@ -69,11 +68,13 @@ class raw_texture(Texture):
                 self.__setattr__(key, value)
 
 
-class shader_material(Material):
+class ShaderMaterial(Material):
     def __init__(self, **kwargs):
         Material.__init__(self)
         for key, value in kwargs.items():
             self.__setattr__(key, value)
+        if not hasattr(self, "name"):
+            self.name = "no_name"
 
 
 Lheader = 18  # length of header in targa file
@@ -144,7 +145,7 @@ def loadTGA(fileid):
         image[2::bytes] = red
         image = image.reshape((height, width, bytes))
     else:
-        raise IOError("%s is not a valid targa file." % filename)
+        raise IOError("%s is not a valid targa file." % fileid)
     # Photoshop "save as targa" starts the data in lower left; last byte in header is zero.
     # Visual and POV-Ray start data in upper left; last header byte is nonzero.
     if data[Lheader - 1] == 0:
@@ -155,18 +156,19 @@ def loadTGA(fileid):
 # as reported by Jason Morgan.
 import sys
 
-if hasattr(sys, 'frozen') and (sys.frozen == "windows_exe" or sys.frozen == "console_exe"):
-    texturePath = "visual\\"
+if hasattr(sys, 'frozen'):
+    if getattr(sys, 'frozen') == "windows_exe" or getattr(sys, 'frozen') == "console_exe":
+        texturePath = "visual\\"
 else:
     texturePath = os.path.split(__file__)[0] + "/"
 del sys
 
 data = loadTGA(texturePath + "turbulence3")  # the targa file is 512*512*3
-tx_turb3 = raw_texture(data=reshape(data, (64, 64, 64, 3)), interpolate=True, mipmap=False)
-tx_wood = raw_texture(data=loadTGA(texturePath + "wood"), interpolate=True)
-tx_brick = raw_texture(data=loadTGA(texturePath + "brickbump"), interpolate=True)
+tx_turb3 = RawTexture(data=reshape(data, (64, 64, 64, 3)), interpolate=True, mipmap=False)
+tx_wood = RawTexture(data=loadTGA(texturePath + "wood"), interpolate=True)
+tx_brick = RawTexture(data=loadTGA(texturePath + "brickbump"), interpolate=True)
 data_r = loadTGA(texturePath + "random")
-tx_random = raw_texture(data=reshape(data_r, (64, 64, 64, 3)), interpolate=True, mipmap=False)
+tx_random = RawTexture(data=reshape(data_r, (64, 64, 64, 3)), interpolate=True, mipmap=False)
 
 
 def get_default_channels(data):
@@ -202,7 +204,7 @@ def texture(data, channels=None,
     if not channel_code:
         raise ValueError("Unsupported channel combination: " + repr(channels))
 
-    raw_tx = raw_texture(data=data,
+    raw_tx = RawTexture(data=data,
                          type=channel_code,
                          mipmap=mipmap,
                          interpolate=interpolate,
@@ -700,7 +702,7 @@ def shader(name, shader, version, library=library, **kwargs):
                 basic();
             }"""
     shader = library + "\n".join([l.strip() for l in shader.split("\n")])
-    return shader_material(name=name, shader=shader, **kwargs)
+    return ShaderMaterial(name=name, shader=shader, **kwargs)
 
 
 materials = [

@@ -34,7 +34,7 @@ class Material(object):
     @property
     def shader(self):
         if hasattr(self, '_shader') and type(self._shader) == 'shader_program':
-            return self._shader.get_source()
+            return self._shader.source()
         else:
             return None
 

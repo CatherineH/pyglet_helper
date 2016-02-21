@@ -1,5 +1,14 @@
 from pyglet.gl import *
 
+
+def uniform_matrix( v, loc, _in):
+    matrix = [0] * 16
+    in_p = _in.matrix_addr()
+    for i in range(0, 16):
+        matrix[i] = in_p[i]
+    v.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
+
+
 class ShaderProgram(object):
     def __init__(self, source=None):
         self._source = None
@@ -15,7 +24,6 @@ class ShaderProgram(object):
     def source(self, source):
         self._source = source
 
-    @property
     def uniform_location(self, v, name):
         # TODO: change interface to cache the uniforms we actually want and avoid string comparisons
         if self.program <= 0 or not v.glext.ARB_shader_objects:
@@ -24,13 +32,6 @@ class ShaderProgram(object):
         if cache == 0:
             cache = 2 + v.glext.glGetUniformLocationARB(self.program, name)
         return cache - 2
-
-    def uniform_matrix(self, v, loc, _in):
-        matrix = [0] * 16
-        in_p = _in.matrix_addr()
-        for i in range(0, 16):
-            matrix[i] = in_p[i]
-        v.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
 
     def realize(self, v):
         if self.program != -1:
@@ -44,8 +45,8 @@ class ShaderProgram(object):
 
         self.program = v.glext.glCreateProgramObjectARB()
 
-        self.compile(v, GL_VERTEX_SHADER_ARB, self.getSection("varying") + self.getSection("vertex"))
-        self.compile(v, GL_FRAGMENT_SHADER_ARB, self.getSection("varying") + self.getSection("fragment"))
+        self.compile(v, GL_VERTEX_SHADER_ARB)
+        self.compile(v, GL_FRAGMENT_SHADER_ARB)
 
         v.glext.glLinkProgramARB(self.program)
 
@@ -58,10 +59,9 @@ class ShaderProgram(object):
             length = v.glext.glGetObjectParameterivARB(self.program, GL_OBJECT_INFO_LOG_LENGTH_ARB)
             temp = ['a'] * (length + 2)
             length, temp[0] = v.glext.glGetInfoLogARB(self.program, length + 1)
-            temp[0] = infoLog.append(length)
 
             # TODO: A way to report infoLog to the program?
-            print( "VPython WARNING: errors in shader program:\n" + info_log + "\n")
+            print( "VPython WARNING: errors in shader program:\n" + str(temp) + "\n")
 
             # Get rid of the program, since it can't be used without generating GL errors.  We set
             # program to 0 instead of -1 so that binding it will revert to the fixed function pipeline,
@@ -77,6 +77,12 @@ class ShaderProgram(object):
         v.glext.glAttachObjectARB(self.program, shader)
         v.glext.glDeleteObjectARB(shader)
 
+    def get(self):
+        return self.program
+
+    def gl_free(self, program):
+        glDeleteObjectARB(program)
+
     def get_section(self, name):
         """
         Extract section beginning with \n[name]\n and ending with \n[
@@ -85,13 +91,18 @@ class ShaderProgram(object):
         void main() {}
         [fragment]
         void main() {}
+        :param name: the name of the section to extract
+        :type name: str
+        :returns: the section of interest
+        :rtype: str
         """
         header = "\n[" + name + "]\n"
         _source = "\n" + self.source
 
-        p = _source.find(header, p)
-        while p != _source.npos:
-            p += header.size()
+        section = ""
+        p = _source.find(header)
+        while p < len(_source):
+            p += len(header)
             end = self.source.find("\n[", p)
             if end == self.source.npos:
                 end = self.source.size()
@@ -100,21 +111,19 @@ class ShaderProgram(object):
             p = end
             p = _source.find(header, p)
 
-            return section
-
-    def gl_free(self, program):
-        glDeleteObjectARB(program)
+        return section
 
 
 class UseShaderProgram(object):
-    def __init__(self, v, program=-1):
+    def __init__(self, v, program=None):
         # use_shader_program(NULL) does nothing, rather than enabling the fixed function
         # pipeline explicitly.  This is convenient, but maybe we need a way to do the other thing?
         self.v = v
         self.program = program
+        self.oldProgram = None
         self.init()
 
-    def __exit__(self):
+    def __exit__(self, type, value, traceback):
         if self.oldProgram < 0 or not self.v.glext.ARB_shader_objects:
             return
         self.v.glext.glUseProgramObjectARB(self.oldProgram)
@@ -123,7 +132,7 @@ class UseShaderProgram(object):
     def ok(self):
         return self.m_ok  # true if the shader program was successfully invoked
 
-    def init(self, program):
+    def init(self):
         self.m_ok = False
         if not self.program or not self.v.glext.ARB_shader_objects or not self.v.enable_shaders:
             self.oldProgram = -1

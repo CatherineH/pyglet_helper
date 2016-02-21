@@ -27,14 +27,12 @@ class Texture(object):
             continuous graphics memory penalty.  Precondition: an OpenGL context
             must be active.
         """
-        self.damage_check()
         if self.damaged:
             self.damaged = False
         if not self.handle:
             return
 
-        glBindTexture(self.enable_type(), self.handle)
-        self.gl_transform()
+        glBindTexture(GL_TEXTURE_2D, self.handle)
 
     def gl_free(self, _handle):
         """

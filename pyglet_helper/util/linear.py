@@ -35,9 +35,9 @@ class Vector(object):
                 self.y = a[1]
                 self.z = a[2]
             elif hasattr(a, 'x') and hasattr(a, 'y') and hasattr(a, 'z'):
-                self.x = a.x
-                self.y = a.y
-                self.z = a.z
+                self.x = getattr(a, 'x')
+                self.y = getattr(a, 'y')
+                self.z = getattr(a, 'z')
             elif a is not None and b is not None and c is not None:
                 self.x = a
                 self.y = b
@@ -327,9 +327,9 @@ class Vertex(object):
             self.y = v.y
             self.z = v.z
         elif type(x) == Vector:
-            self.x = x.x
-            self.y = x.y
-            self.z = x.z
+            self.x = getattr(x, 'x')
+            self.y = getattr(x, 'y')
+            self.z = getattr(x, 'z')
         else:
             self.x = x
             self.y = y

@@ -39,7 +39,7 @@ class Sphere(Axial):
     def material_matrix(self):
         out = Tmatrix()
         out.translate(Vector(.5, .5, .5))
-        scale = self.scale()
+        scale = self.scale
         out.scale(scale * (.5 / max(scale.x, max(scale.y, scale.z))))
         return out
 
