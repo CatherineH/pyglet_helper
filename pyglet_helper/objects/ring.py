@@ -1,4 +1,6 @@
-from pyglet.gl import *
+from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, glEnableClientState, glEndList, glGenLists, \
+    glNewList, glNormalPointer, glPopClientAttrib, glPushClientAttrib, glVertexPointer, GL_CLIENT_VERTEX_ARRAY_BIT, \
+    GL_COMPILE, GL_FLOAT, GL_TRIANGLES, GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_UNSIGNED_INT
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Rgb, Vector
 from math import pi, sin, cos, sqrt

@@ -1,5 +1,7 @@
-from pyglet.gl import *
-from numpy import matrix, identity, array, nditer
+from pyglet.gl import glNormal3dv, glVertex3d, glVertex4d, GLdouble, \
+    glLoadMatrixd, glMultMatrixd, glGetFloatv, GLfloat, GL_MODELVIEW_MATRIX, \
+    GL_TEXTURE_MATRIX, GL_COLOR_MATRIX, GL_PROJECTION_MATRIX
+from numpy import matrix, identity, nditer
 from numpy.linalg import inv
 from math import sqrt, acos, asin, pi
 
@@ -728,8 +730,9 @@ class Tmatrix(object):
 
 
 def rotation(angle, axis, origin=None):
-    """ Returns a rotation matrix to perform rotations about an axis passing through
-    the origin through an angle in the direction specified by the Right Hand Rule.
+    """ Returns a rotation matrix to perform rotations about an axis passing
+    through the origin through an angle in the direction specified by the Right
+    Hand Rule.
 
     :param angle: the angle of the rotation about the axis
     :type angle: float

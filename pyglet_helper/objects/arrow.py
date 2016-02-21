@@ -1,17 +1,20 @@
-from pyglet.gl import *
+from pyglet.gl import glScaled, glTranslated, glPushMatrix, glPopMatrix
 from pyglet_helper.objects import Box, Material, Primitive, Pyramid
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
 
 class Arrow(Primitive):
     """
-     A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing along +x, unit length.
+     A 3D 4-sided arrow, with adjustable head and shaft. By default, pointing
+     along +x, unit length.
     """
-    def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0, shaft_width=0.0, color=Rgb(),
+    def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0,
+                 shaft_width=0.0, color=Rgb(),
                  pos=Vector(0, 0, 0), axis=(1, 0, 0)):
         """
 
-        :param fixed_width: if True, the arrow's head width and length will not be scaled in proportion to its length.
+        :param fixed_width: if True, the arrow's head width and length will not
+         be scaled in proportion to its length.
         :type fixed_width: bool
         :param head_width: The width of the arrow's head section.
         :type head_width: float
@@ -27,16 +30,17 @@ class Arrow(Primitive):
         :type axis: pyglet_helper.util.Vector
         """
         super(Arrow, self).__init__(color=color, pos=pos, axis=axis)
-        # True if the width of the point and shaft should not vary with the length
+        # True if the width of the point and shaft should not vary with the
+        # length
         # of the arrow.
         self.fixed_width = fixed_width
         self._head_width = None
         self._head_length = None
         self._shaft_width = None
         self._fixed_width = None
-        # If zero, then use automatic scaling for the width's of the parts of the
-        # arrow.  If nonzero, they specify proportions for the arrow in world
-        # space.
+        # If zero, then use automatic scaling for the width's of the parts of
+        # the arrow.  If nonzero, they specify proportions for the arrow in
+        # world space.
         self.head_width = head_width
         self.head_length = head_length
         self.shaft_width = shaft_width
@@ -95,16 +99,9 @@ class Arrow(Primitive):
         self._fixed_width = fixed
 
     @property
-    def length(self):
-        return self.axis.mag()
-
-    @length.setter
-    def length(self, l):
-        self.axis = self.axis.norm() * l
-
-    @property
     def center(self):
-        """ Calculates the center of the arrow by subtracting the axis off of the position
+        """ Calculates the center of the arrow by subtracting the axis off of
+        the position
 
         :return: The arrow's center (position+axis)/2
         :rtype: float
@@ -122,27 +119,32 @@ class Arrow(Primitive):
             return
         self.init_model(scene)
         self.color.gl_set(self.opacity)
-        hw, sw, len, hl = self.effective_geometry(1.0)
+        hw, sw, _len, hl = self.effective_geometry(1.0)
         if self.mat and self.mat.get_shader_program():
-            model_material_loc = self.mat.get_shader_program().get_uniform_location(scene, "model_material")
+            model_material_loc = self.mat.get_shader_program().\
+                get_uniform_location(scene, "model_material")
         else:
             model_material_loc = -1
-        # Render the shaft and the head in back to front order (the shaft is in front
-        # of the head if axis points away from the camera)
-        shaft = self.axis.dot(scene.camera - (self.pos + self.axis * (1 - hl / len))) < 0
+        # Render the shaft and the head in back to front order (the shaft is in
+        # front of the head if axis points away from the camera)
+        shaft = self.axis.dot(scene.camera - (self.pos + self.axis *
+                                              (1 - hl / _len))) < 0
         glPushMatrix()
         self.model_world_transform(scene.gcf).gl_mult()
 
         for part in range(0, 2):
             if part == shaft:
-                glScaled(len - hl, sw, sw)
+                glScaled(_len - hl, sw, sw)
                 glTranslated(0.5, 0, 0)
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
                     s = 1.0 / max(len, hw)
-                    model_mat.translate(Vector((len - hl) * s * 0.5, 0.5, 0.5))
-                    model_mat.scale(Vector((len - hl), sw, sw) * s)
-                    mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
+                    model_mat.translate(Vector((_len - hl) * s * 0.5, 0.5,
+                                               0.5))
+                    model_mat.scale(Vector((_len - hl), sw, sw) * s)
+                    mat.get_shader_program().\
+                        set_uniform_matrix(scene, model_material_loc,
+                                           model_mat)
                 scene.box_model.gl_render()
                 glTranslated(-0.5, 0, 0)
                 glScaled(1 / (len - hl), 1 / sw, 1 / sw)
@@ -152,9 +154,11 @@ class Arrow(Primitive):
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
                     s = 1.0 / max(len, hw)
-                    model_mat.translate(Vector((len - hl) * s, 0.5, 0.5))
+                    model_mat.translate(Vector((_len - hl) * s, 0.5, 0.5))
                     model_mat.scale(Vector(hl, hw, hw) * s)
-                    mat.get_shader_program().set_uniform_matrix(scene, model_material_loc, model_mat)
+                    mat.get_shader_program().\
+                        set_uniform_matrix(scene, model_material_loc,
+                                           model_mat)
                 scene.pyramid_model.gl_render()
                 glScaled(1 / hl, 1 / hw, 1 / hw)
                 glTranslated(-len + hl, 0, 0)

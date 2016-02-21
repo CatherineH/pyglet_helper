@@ -1,10 +1,14 @@
 import os
-from pyglet.gl import *
+from pyglet.gl import glViewport, glMatrixMode, GL_PROJECTION, gluPerspective, gluLookAt, GL_MODELVIEW
+from pyglet.window import Window
+from pyglet.clock import schedule
+from pyglet.event import EVENT_HANDLED
+from pyglet.image import get_buffer_manager
 from pyglet_helper.objects import *
 from pyglet_helper.util import color, Vector
 from math import sin, cos, pi
 
-window = pyglet.window.Window()
+window = Window()
 scene = View()
 
 
@@ -17,7 +21,7 @@ def update(dt):
     ry %= 2.0 * pi
     rz %= 2.0 * pi
 
-pyglet.clock.schedule(update)
+schedule(update)
 
 
 @window.event
@@ -33,7 +37,7 @@ def on_resize(width, height):
         0, 1, 0  # up
     )
     glMatrixMode(GL_MODELVIEW)
-    return pyglet.event.EVENT_HANDLED
+    return EVENT_HANDLED
 
 
 @window.event
@@ -66,7 +70,7 @@ def on_draw():
     if screennum < 99:
         path = os.path.dirname(__file__)
         filename = os.path.join(path, 'screenshot%02d.png' % (screennum, ))
-        pyglet.image.get_buffer_manager().get_color_buffer().save(filename)
+        get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
 
 screennum = 0

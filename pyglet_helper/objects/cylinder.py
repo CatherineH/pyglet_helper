@@ -1,4 +1,4 @@
-from pyglet.gl import *
+from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace, glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 
@@ -45,13 +45,6 @@ class Cylinder(Axial):
     def degenerate(self):
         return not self.visible or self.radius == 0.0 or self.axis.mag() == 0.0
 
-    @property
-    def length(self):
-        return self.axis.mag()
-
-    @length.setter
-    def length(self, l):
-        self.axis = self.axis.norm() * l
 
     def render(self, scene):
         """ Add the cylinder to the view.
@@ -63,28 +56,8 @@ class Cylinder(Axial):
             return
         self.init_model(scene)
 
-        # See sphere.render() for a description of the level of detail calc.
-        coverage = scene.pixel_coverage(self.pos, self.radius)
-        lod = 0
-        if coverage < 0:
-            lod = 5
-        elif coverage < 10:
-            lod = 0
-        elif coverage < 25:
-            lod = 1
-        elif coverage < 50:
-            lod = 2
-        elif coverage < 196:
-            lod = 3
-        elif coverage < 400:
-            lod = 4
-        else:
-            lod = 5
-        lod += scene.lod_adjust
-        if lod < 0:
-            lod = 0
-        elif lod > 5:
-            lod = 5
+        coverage_levels = [10, 25, 50, 196, 400]
+        lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
         glPushMatrix()
         self.model_world_transform(scene.gcf, Vector(self.length, self.radius, self.radius)).gl_mult()

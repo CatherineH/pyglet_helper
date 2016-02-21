@@ -1,12 +1,14 @@
-from pyglet.gl import *
+from pyglet.gl import glDeleteObjectARB, GL_VERTEX_SHADER_ARB, \
+    GL_FRAGMENT_SHADER_ARB, GL_OBJECT_LINK_STATUS_ARB, \
+    GL_OBJECT_INFO_LOG_LENGTH_ARB
 
 
-def uniform_matrix( v, loc, _in):
+def uniform_matrix(view, loc, _in):
     matrix = [0] * 16
     in_p = _in.matrix_addr()
     for i in range(0, 16):
         matrix[i] = in_p[i]
-    v.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
+    view.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
 
 
 class ShaderProgram(object):
@@ -24,49 +26,56 @@ class ShaderProgram(object):
     def source(self, source):
         self._source = source
 
-    def uniform_location(self, v, name):
-        # TODO: change interface to cache the uniforms we actually want and avoid string comparisons
-        if self.program <= 0 or not v.glext.ARB_shader_objects:
+    def uniform_location(self, view, name):
+        # TODO: change interface to cache the uniforms we actually want and
+        # avoid string comparisons
+        if self.program <= 0 or not view.glext.ARB_shader_objects:
             return -1
         cache = self.uniforms[name]
         if cache == 0:
-            cache = 2 + v.glext.glGetUniformLocationARB(self.program, name)
+            cache = 2 + view.glext.glGetUniformLocationARB(self.program, name)
         return cache - 2
 
-    def realize(self, v):
+    def realize(self, view):
         if self.program != -1:
             return
 
-        if not v.enable_shaders:
+        if not view.enable_shaders:
             return
 
-        if not v.glext.ARB_shader_objects:
+        if not view.glext.ARB_shader_objects:
             return
 
-        self.program = v.glext.glCreateProgramObjectARB()
+        self.program = view.glext.glCreateProgramObjectARB()
 
-        self.compile(v, GL_VERTEX_SHADER_ARB)
-        self.compile(v, GL_FRAGMENT_SHADER_ARB)
+        self.compile(view, GL_VERTEX_SHADER_ARB)
+        self.compile(view, GL_FRAGMENT_SHADER_ARB)
 
-        v.glext.glLinkProgramARB(self.program)
+        view.glext.glLinkProgramARB(self.program)
 
         # Check if linking succeeded
-        link_ok = v.glext.glGetObjectParameterivARB(self.program, GL_OBJECT_LINK_STATUS_ARB)
+        link_ok = view.glext.\
+            glGetObjectParameterivARB(self.program, GL_OBJECT_LINK_STATUS_ARB)
 
         if not link_ok:
-            # Some drivers (incorrectly?) set the GL error in glLinkProgramARB() in this situation
-            info_log = []
-            length = v.glext.glGetObjectParameterivARB(self.program, GL_OBJECT_INFO_LOG_LENGTH_ARB)
+            # Some drivers (incorrectly?) set the GL error in
+            # glLinkProgramARB() in this situation
+            length = view.glext.\
+                glGetObjectParameterivARB(self.program,
+                                          GL_OBJECT_INFO_LOG_LENGTH_ARB)
             temp = ['a'] * (length + 2)
-            length, temp[0] = v.glext.glGetInfoLogARB(self.program, length + 1)
+            length, temp[0] = view.glext.glGetInfoLogARB(self.program,
+                                                         length + 1)
 
             # TODO: A way to report infoLog to the program?
-            print( "VPython WARNING: errors in shader program:\n" + str(temp) + "\n")
+            print( "VPython WARNING: errors in shader program:\n" + str(temp) +
+                   "\n")
 
-            # Get rid of the program, since it can't be used without generating GL errors.  We set
-            # program to 0 instead of -1 so that binding it will revert to the fixed function pipeline,
-            #   and realize() won't be called again.
-            v.glext.glDeleteObjectARB(self.program)
+            # Get rid of the program, since it can't be used without generating
+            # GL errors.  We set program to 0 instead of -1 so that binding it
+            # will revert to the fixed function pipeline, and realize() won't
+            # be called again.
+            view.glext.glDeleteObjectARB(self.program)
             self.program = 0
             return
 
@@ -100,33 +109,34 @@ class ShaderProgram(object):
         _source = "\n" + self.source
 
         section = ""
-        p = _source.find(header)
-        while p < len(_source):
-            p += len(header)
-            end = self.source.find("\n[", p)
+        pos = _source.find(header)
+        while pos < len(_source):
+            pos += len(header)
+            end = self.source.find("\n[", pos)
             if end == self.source.npos:
                 end = self.source.size()
 
-            section += self.source.substr(p, end - p)
-            p = end
-            p = _source.find(header, p)
+            section += self.source.substr(pos, end - pos)
+            pos = end
+            pos = _source.find(header, pos)
 
         return section
 
 
 class UseShaderProgram(object):
-    def __init__(self, v, program=None):
-        # use_shader_program(NULL) does nothing, rather than enabling the fixed function
-        # pipeline explicitly.  This is convenient, but maybe we need a way to do the other thing?
-        self.v = v
+    def __init__(self, view, program=None):
+        # use_shader_program(NULL) does nothing, rather than enabling the fixed
+        # function pipeline explicitly.  This is convenient, but maybe we need
+        # a way to do the other thing?
+        self.view = view
         self.program = program
         self.oldProgram = None
         self.init()
 
     def __exit__(self, type, value, traceback):
-        if self.oldProgram < 0 or not self.v.glext.ARB_shader_objects:
+        if self.oldProgram < 0 or not self.view.glext.ARB_shader_objects:
             return
-        self.v.glext.glUseProgramObjectARB(self.oldProgram)
+        self.view.glext.glUseProgramObjectARB(self.oldProgram)
 
     @property
     def ok(self):
@@ -134,15 +144,16 @@ class UseShaderProgram(object):
 
     def init(self):
         self.m_ok = False
-        if not self.program or not self.v.glext.ARB_shader_objects or not self.v.enable_shaders:
+        if not self.program or not self.view.glext.ARB_shader_objects or not \
+                self.view.enable_shaders:
             self.oldProgram = -1
             return
 
-        self.program.realize(self.v)
+        self.program.realize(self.view)
 
         # For now, nested shader invocations aren't supported.
         # oldProgram = v.glext.glGetHandleARB( GL_PROGRAM_OBJECT_ARB )
         self.oldProgram = 0
 
-        self.v.glext.glUseProgramObjectARB(self.program.program)
+        self.view.glext.glUseProgramObjectARB(self.program.program)
         self.m_ok = (self.program.program != 0)

@@ -48,17 +48,26 @@ This example demonstrates:
 
 from math import pi, sin, cos
 
-from pyglet.gl import *
-import pyglet
+from pyglet.gl import Config, glGenLists, glClear, glClearColor, glColor3f, glEnable, glTranslatef, glViewport, \
+    glRotatef, glNewList, glEndList, glPushClientAttrib, glEnableClientState, glVertexPointer, glCallList, \
+    glNormalPointer, glDrawElements, glPopClientAttrib, glLightfv, glLoadIdentity, gluPerspective, glMatrixMode, \
+    glMaterialfv, glMaterialf, GLfloat, GLuint, GL_LIGHTING, GL_LIGHT0, GL_LIGHT1, GL_DEPTH_TEST, \
+    GL_CULL_FACE, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, GL_DIFFUSE, GL_PROJECTION, GL_MODELVIEW, GL_POSITION, \
+    GL_SPECULAR, GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, GL_SHININESS, GL_COMPILE, GL_FLOAT, \
+    GL_CLIENT_VERTEX_ARRAY_BIT, GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_TRIANGLES, GL_UNSIGNED_INT
+from pyglet.window import Window, NoSuchConfigException
+from pyglet.event import EVENT_HANDLED
+from pyglet.clock import schedule
+from pyglet.app import run
 
 try:
     # Try and create a window with multisampling (antialiasing)
     config = Config(sample_buffers=1, samples=4,
                     depth_size=16, double_buffer=True, )
-    window = pyglet.window.Window(resizable=True, config=config)
-except pyglet.window.NoSuchConfigException:
+    window = Window(resizable=True, config=config)
+except NoSuchConfigException:
     # Fall back to no multisampling for old hardware
-    window = pyglet.window.Window(resizable=True)
+    window = Window(resizable=True)
 
 
 @window.event
@@ -69,7 +78,7 @@ def on_resize(width, height):
     glLoadIdentity()
     gluPerspective(60., width / float(height), .1, 1000.)
     glMatrixMode(GL_MODELVIEW)
-    return pyglet.event.EVENT_HANDLED
+    return EVENT_HANDLED
 
 
 def update(dt):
@@ -82,7 +91,7 @@ def update(dt):
     rz %= 360
 
 
-pyglet.clock.schedule(update)
+schedule(update)
 
 
 @window.event
@@ -195,4 +204,4 @@ setup()
 torus = Torus(1, 0.3, 50, 30)
 rx = ry = rz = 0
 
-pyglet.app.run()
+run()

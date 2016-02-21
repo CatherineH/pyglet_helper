@@ -1,4 +1,4 @@
-from pyglet.gl import *
+from pyglet.gl import glBindTexture, glDeleteTextures, GL_TEXTURE_2D
 
 
 class Texture(object):
@@ -9,7 +9,8 @@ class Texture(object):
         self._have_opacity = None
         self.damaged = damaged
         self.handle = handle
-        # A unique identifier for the texture, to be obtained from glGenTextures().
+        # A unique identifier for the texture, to be obtained from
+        # glGenTextures().
         self.have_opacity = have_opacity
 
     @property
@@ -24,8 +25,8 @@ class Texture(object):
         """
         Make this texture active.  This function constitutes use under the
             "initialize on first use" rule, and will incur a one-time speed and
-            continuous graphics memory penalty.  Precondition: an OpenGL context
-            must be active.
+            continuous graphics memory penalty.  Precondition: an OpenGL
+            context must be active.
         """
         if self.damaged:
             self.damaged = False
@@ -36,12 +37,13 @@ class Texture(object):
 
     def gl_free(self, _handle):
         """
-        Returns e.g. GL_TEXTURE_2D - the thing to be enabled to make this texture
-            work with the fixed function pipeline.
+        Returns e.g. GL_TEXTURE_2D - the thing to be enabled to make this
+            texture work with the fixed function pipeline.
         """
         print("Deleting texture number " + _handle)
         glDeleteTextures(1, _handle)
-        # Mutable subclasses must call this function whenever their texture data
+        # Mutable subclasses must call this function whenever their texture
+        # data
 
     # needs to be reloaded into OpenGL.
     def damage(self):

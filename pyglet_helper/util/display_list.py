@@ -1,5 +1,6 @@
 from __future__ import print_function
-from pyglet.gl import *
+from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
+    glNewList, GL_COMPILE
 
 
 class DisplayList(object):

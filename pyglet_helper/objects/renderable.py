@@ -1,4 +1,6 @@
-from pyglet.gl import *
+from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, \
+    GL_DEPTH_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_TEST, GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, \
+    GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7, GL_POSITION, GL_SPECULAR
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
@@ -39,6 +41,31 @@ class Renderable(object):
     @property
     def translucent(self):
         return self.opacity != 1.0 or (self.mat and self.mat.translucent)
+
+    def lod_adjust(self, scene, coverage_levels, pos, radius):
+        """
+        Calculate the level of detail required when rendering a glu object
+        :param pos: the object's position within the scene
+        :type pos: Vector
+        :param radius: the object's size within the scene
+        :type radius: float
+        :param coverage_levels: list with coverage comparison levels
+        :type coverage_levels: list of int
+        :return: level of detail (lod)
+        :rtype: int
+        """
+        # See sphere.render() for a description of the level of detail calc.
+        coverage = scene.pixel_coverage(pos, radius)
+        lod = len(coverage_levels)
+        for i in range(0, len(coverage_levels)):
+            if coverage < coverage_levels[i]:
+                lod = i
+        lod += scene.lod_adjust
+        if lod < 0:
+            lod = 0
+        elif lod > len(coverage_levels):
+            lod = len(coverage_levels)
+        return lod
 
 
 class View(object):

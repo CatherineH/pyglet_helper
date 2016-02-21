@@ -1,5 +1,8 @@
-from pyglet.gl.glu import *
-from pyglet.gl import *
+from pyglet.gl.glu import gluDeleteQuadric, gluNewQuadric, \
+    gluQuadricDrawStyle, gluQuadricNormals, gluQuadricOrientation, gluSphere, \
+    gluCylinder, gluDisk, GLU_FILL, GLU_POINT, GLU_LINE, GLU_SILHOUETTE, \
+    GLU_NONE, GLU_FLAT, GLU_INSIDE, GLU_SMOOTH, GLU_OUTSIDE
+from pyglet.gl import glRotatef, GLfloat
 from enum import Enum
 
 
@@ -115,7 +118,8 @@ class Quadric(object):
         """
         gluSphere(self.q, radius, slices, stacks)
 
-    def render_cylinder(self, base_radius, height, slices, stacks, top_radius=None):
+    def render_cylinder(self, base_radius, height, slices, stacks,
+                        top_radius=None):
         """ Generate the polygons for a cylinder
 
         :param base_radius: The radius of the bottom of the cylinder.
@@ -126,15 +130,19 @@ class Quadric(object):
         :type slices: int
         :param stacks: The number of latitudinal lines
         :type stacks: int
-        :param top_radius: The radius of the top of the cylinder. If undefined, the top radius will be the same as the base radius
+        :param top_radius: The radius of the top of the cylinder. If undefined,
+         the top radius will be the same as the base radius
         :type top_radius: float
         """
-        # rotate the cylinder so that it is drawn along the VPython axis convention
+        # rotate the cylinder so that it is drawn along the VPython axis
+        # convention
         glRotatef(90, 0, 1, 0)
         if top_radius is None:
-            gluCylinder(self.q, base_radius, base_radius, height, slices, stacks)
+            gluCylinder(self.q, base_radius, base_radius, height, slices,
+                        stacks)
         else:
-            gluCylinder(self.q, base_radius, top_radius, height, slices, stacks)
+            gluCylinder(self.q, base_radius, top_radius, height, slices,
+                        stacks)
         glRotatef(-90, 0, 1, 0)
 
     def render_disk(self, radius, slices, rings, rotation):

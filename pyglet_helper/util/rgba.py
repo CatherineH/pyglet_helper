@@ -1,4 +1,5 @@
-from pyglet.gl import *
+from pyglet.gl import GLfloat, glMaterialfv, glMaterialf, GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, GL_SPECULAR, \
+    GL_SHININESS
 
 
 class Rgba(object):
@@ -39,7 +40,8 @@ class Rgba(object):
         :return: the desaturized color.
         """
         ret = Rgb(red=self.red, green=self.green, blue=self.blue).desaturate()
-        return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
+        return Rgba(red=ret.red, green=ret.green, blue=ret.blue,
+                    opacity=self.opacity)
 
     def grayscale(self):
         """ Return a version of the color projected onto a grayscale space
@@ -48,7 +50,8 @@ class Rgba(object):
         :rtype: pyglet_helper.util.Rgba()
         """
         ret = Rgb(red=self.red, green=self.green, blue=self.blue).grayscale()
-        return Rgba(red=ret.red, green=ret.green, blue=ret.blue, opacity=self.opacity)
+        return Rgba(red=ret.red, green=ret.green, blue=ret.blue,
+                    opacity=self.opacity)
 
     def gl_set(self):
         """
@@ -88,7 +91,8 @@ class Rgb:
             self.blue = blue
 
     def __str__(self):
-        return "color: r" + str(self.red) + " b" + str(self.blue) + " g" + str(self.green)
+        return "color: r" + str(self.red) + " b" + str(self.blue) + " g" + \
+               str(self.green)
 
     def __getitem__(self, item):
         if item == 0:
@@ -109,7 +113,8 @@ class Rgb:
         self = Rgb(red=bw, green=bw, blue=bw)
 
     def desaturate(self):
-        """ Convert the color to HSV space, reduce the saturation by a factor of 0.5, then convert back to RGB space
+        """ Convert the color to HSV space, reduce the saturation by a factor
+        of 0.5, then convert back to RGB space
 
         :rtype: pyglet_helper.util.Rgb()
         :return: the desaturated color.
@@ -141,11 +146,14 @@ class Rgb:
         else:
             s = delta / cmax  # s
             if self.red == cmax:
-                h = (self.green - self.blue) / delta  # between yellow & magenta
+                # between yellow & magenta
+                h = (self.green - self.blue) / delta
             elif self.green == cmax:
-                h = 2.0 + (self.blue - self.red) / delta  # between cyan & yellow
+                # between cyan & yellow
+                h = 2.0 + (self.blue - self.red) / delta
             else:
-                h = 4.0 + (self.red - self.green) / delta  # between magenta & cyan
+                # between magenta & cyan
+                h = 4.0 + (self.red - self.green) / delta
 
             if h < 0.0:
                 h += 6.0  # make it 0 <= h < 6
@@ -198,7 +206,8 @@ class Rgb:
         # The constants 0.299, 0.587, and 0.114 are intended to account for the
         # relative intensity of each color to the human eye.
         gamma = 2.5
-        black = pow(0.299 * pow(self.red, gamma) + 0.587 * pow(self.green, gamma)
+        black = pow(0.299 * pow(self.red, gamma) + 0.587 * pow(self.green,
+                                                               gamma)
                     + 0.114 * pow(self.blue, gamma), 1.0 / gamma)
         return Rgb(red=black, green=black, blue=black)
 

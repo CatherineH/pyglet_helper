@@ -1,4 +1,5 @@
-from pyglet.gl import *
+from pyglet.gl import glEnable, glBegin, glDisable, glEnd, glPopMatrix, glPushMatrix, GL_CULL_FACE, GL_TRIANGLES, \
+    glNormal3f, GLfloat, glVertex3f, glNormal3fv
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 

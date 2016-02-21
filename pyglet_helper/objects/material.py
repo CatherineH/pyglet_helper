@@ -1,4 +1,3 @@
-from pyglet.gl import *
 from pyglet_helper.util import ShaderProgram, Texture
 
 

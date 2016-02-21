@@ -20,14 +20,6 @@ pyglet_helper.common.materials module
     :undoc-members:
     :show-inheritance:
 
-pyglet_helper.common.rate_function module
------------------------------------------
-
-.. automodule:: pyglet_helper.common.rate_function
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------

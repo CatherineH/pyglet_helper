@@ -28,16 +28,6 @@ class Ellipsoid(Sphere):
         self.length = length
 
     @property
-    def length(self):
-        return self.axis.mag()
-
-    @length.setter
-    def length(self, l):
-        if l < 0:
-            raise ValueError("length cannot be negative")
-        self.axis = self.axis.norm() * l
-
-    @property
     def height(self):
         return self._height
 

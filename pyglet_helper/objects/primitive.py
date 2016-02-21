@@ -166,6 +166,16 @@ class Primitive(Renderable):
     def y(self):
         return self.pos.y
 
+    @property
+    def length(self):
+        return self.axis.mag()
+
+    @length.setter
+    def length(self, l):
+        if l < 0:
+            raise RuntimeError("length cannot be negative")
+        self.axis = self.axis.norm() * l
+
     @y.setter
     def y(self, y):
         self.pos.y = y

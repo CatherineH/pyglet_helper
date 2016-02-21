@@ -30,8 +30,8 @@ The following example will show how to create a window with a sphere:
 
 First, create a pyglet window to draw the shapes to:
 ::
-    from pyglet.gl import *
-    window = pyglet.window.Window()
+    from pyglet.window import Window
+    window = Window()
 
 Then, create a pyglet_helper view:
 ::

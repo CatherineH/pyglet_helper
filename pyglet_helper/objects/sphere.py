@@ -1,4 +1,4 @@
-from pyglet.gl import *
+from pyglet.gl import glEnable, glPushMatrix, glCullFace, glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
 from pyglet_helper.objects import Axial, Material
 from pyglet_helper.util import Quadric, Rgb, Tmatrix, Vector
 
@@ -94,28 +94,8 @@ class Sphere(Axial):
             return
         self.init_model(geometry)
 
-        # coverage is the radius of this sphere in pixels:
-        coverage = geometry.pixel_coverage(self.pos, self.radius)
-        lod = 0
-
-        if coverage < 0:  # Behind the camera, but still visible.
-            lod = 4
-        elif coverage < 30:
-            lod = 0
-        elif coverage < 100:
-            lod = 1
-        elif coverage < 500:
-            lod = 2
-        elif coverage < 5000:
-            lod = 3
-        else:
-            lod = 4
-
-        lod += geometry.lod_adjust  # allow user to reduce level of detail
-        if lod > 5:
-            lod = 5
-        elif lod < 0:
-            lod = 0
+        coverage_levels = [30, 100, 500, 5000]
+        lod = self.lod_adjust(geometry, coverage_levels, self.pos, self.radius)
         glPushMatrix()
 
         self.model_world_transform(geometry.gcf, self.scale).gl_mult()

@@ -1,6 +1,6 @@
-from pyglet.gl import *
+from pyglet.gl import GLfloat
 from pyglet_helper.objects import Renderable
-from pyglet_helper.util import Rgb, Vector, Vertex
+from pyglet_helper.util import Rgb, Vector
 import abc
 
 

@@ -1,4 +1,4 @@
-from pyglet.gl import *
+from pyglet.gl import glPushMatrix, glEnable, glCullFace, glPopMatrix, GL_BACK, GL_CULL_FACE, GL_FRONT
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 
@@ -39,13 +39,6 @@ class Cone(Axial):
             q.render_disk(1.0, n_sides[i], n_stacks[i] * 2, -1)
             scene.cone_model[i].gl_compile_end()
 
-    @property
-    def length(self):
-        return self.axis.mag()
-
-    @length.setter
-    def length(self, l):
-        self.axis = self.axis.norm() * l
 
     def render(self, scene):
         """Add the cone to the scene.
@@ -58,28 +51,8 @@ class Cone(Axial):
 
         self.init_model(scene)
 
-        # See sphere.gl_render() for a description of the level of detail calc.
-        coverage = scene.pixel_coverage(self.pos, self.radius)
-        lod = 0
-        if coverage < 0:
-            lod = 5
-        elif coverage < 10:
-            lod = 0
-        elif coverage < 30:
-            lod = 1
-        elif coverage < 90:
-            lod = 2
-        elif coverage < 250:
-            lod = 3
-        elif coverage < 450:
-            lod = 4
-        else:
-            lod = 5
-        lod += scene.lod_adjust
-        if lod < 0:
-            lod = 0
-        elif lod > 5:
-            lod = 5
+        coverage_levels = [10, 30, 90, 250, 450]
+        lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
         length = self.axis.mag()
         glPushMatrix()
