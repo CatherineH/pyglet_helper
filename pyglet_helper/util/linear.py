@@ -56,12 +56,26 @@ class Vector(object):
         return Vector(self.x - v.x, self.y - v.y, self.z - v.z)
 
     def __mul__(self, v):
+        """
+        Multiply the vector by a float or another vector
+        :param v: the multiplication factor
+        :type v: float or Vector or Vertex
+        :return: resulting vector
+        :rtype: Vector
+        """
         if type(v) == type(self):
             return Vector(self.x * v.x, self.y * v.y, self.z * v.z)
         else:
             return Vector(self.x * v, self.y * v, self.z * v)
 
     def __rmul__(self, v):
+        """
+        Multiply the vector by a float or another vector
+        :param v: the multiplication factor
+        :type v: float or Vector or Vertex
+        :return: resulting vector
+        :rtype: Vector
+        """
         if type(v) == type(self):
             return Vector(v.x * self.x, v.y * self.y, v.z * self.z)
         else:

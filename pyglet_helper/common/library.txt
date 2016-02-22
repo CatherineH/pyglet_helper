@@ -1,0 +1,82 @@
+[vertex]
+    uniform mat4 model_material;  // object space -> material position
+    void basic(void)
+    {
+        position = vec3(gl_ModelViewMatrix * gl_Vertex);
+        normal = normalize(gl_NormalMatrix * gl_Normal);
+        gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+        gl_FrontColor = gl_Color;
+        mat_pos = vec3( model_material * gl_Vertex );
+    }
+[varying]
+    #version 110
+    // These are available to fragment shaders and must be set by vertex
+    // shaders.
+
+    varying vec3 normal;          // eye space surface normal
+    varying vec3 position;        // eye space surface position
+    varying vec3 mat_pos;         // surface material position in [0,1]^3
+    #define VPYTHON_SHADER_VERSION 400
+[fragment]
+    // Available inputs (see also the varying section)
+
+    #define object_color gl_Color.rgb // the .color attribute of the object being rendered
+    #define object_opacity gl_Color.a // the .opacity attribute of the object being rendered
+    uniform int light_count;
+    uniform vec4 light_pos[8];
+    uniform vec4 light_color[8];
+    // Outputs of a material_main() function
+    #define material_color gl_FragColor.rgb
+    #define material_opacity gl_FragColor.a
+    // Return lit surface color based on the given surface properties and the lights
+    //   specified by the light_* uniforms.
+    vec3 lightAt( vec3 normal, vec3 to_eye, vec3 diffuse_color, vec3 specular_color, float shininess )
+    {
+        vec3 color = gl_LightModel.ambient.rgb * diffuse_color;
+        // All this ugliness is to deal with the need of Geforce 7xxx (and probably similar generation
+        // ATI cards) to unroll loops at compile time.  If you are trying to understand this code, look
+        // at just the else case.
+        int count = light_count;
+        if (count <= 2) {
+            for(int i=0; i<2; i++) {
+                if (i<count) {
+                    vec3 L = normalize( light_pos[i].xyz - position*light_pos[i].w );
+                    color += (light_color[i].rgb * max(dot(normal,L), 0.0))*diffuse_color;
+                    if (shininess != 0.0) {
+                        vec3 R = -reflect(L,normal);
+                        color += specular_color * light_color[i].rgb * pow(max(dot(R,to_eye),0.0),shininess);
+                    }
+                }
+            }
+        } else if (count <= 4) {
+            for(int i=0; i<4; i++) {
+                if (i<count) {
+                    vec3 L = normalize( light_pos[i].xyz - position*light_pos[i].w );
+                    color += (light_color[i].rgb * max(dot(normal,L), 0.0))*diffuse_color;
+                    if (shininess != 0.0) {
+                        vec3 R = -reflect(L,normal);
+                        color += specular_color * light_color[i].rgb * pow(max(dot(R,to_eye),0.0),shininess);
+                    }
+                }
+            }
+        } else {
+            for(int i=0; i<8; i++) {
+                if (i<count) {
+                    vec3 L = normalize( light_pos[i].xyz - position*light_pos[i].w );
+                    color += (light_color[i].rgb * max(dot(normal,L), 0.0))*diffuse_color;
+                    if (shininess != 0.0) {
+                        vec3 R = -reflect(L,normal);
+                        color += specular_color * light_color[i].rgb * pow(max(dot(R,to_eye),0.0),shininess);
+                    }
+                }
+            }
+        }
+
+        return color;
+    }
+    vec3 noise3D( sampler3D tex, vec3 mat_pos, const float second_octave_scale ) {
+        const float octave = 8.;
+        return texture3D( tex, mat_pos).rgb + texture3D( tex, mat_pos*octave ).rgb * (second_octave_scale / octave);
+    }
+    // Eventually there will probably be an "outer" main function which will call material_main
+    #define material_main main

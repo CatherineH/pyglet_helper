@@ -1,15 +1,16 @@
-#from pyglet_helper.objects import *
-from pyglet_helper.objects.material import *
-from pyglet_helper.objects.renderable import *
-from pyglet_helper.objects.primitive import *
-from pyglet_helper.objects.rectangular import *
-from pyglet_helper.objects.box import *
-from pyglet_helper.objects.pyramid import *
-from pyglet_helper.objects.arrow import *
-from pyglet_helper.objects.axial import *
-from pyglet_helper.objects.cone import *
-from pyglet_helper.objects.cylinder import *
-from pyglet_helper.objects.sphere import *
-from pyglet_helper.objects.ellipsoid import *
-from pyglet_helper.objects.light import *
-from pyglet_helper.objects.ring import *
+from pyglet_helper.objects.material import Material, unshaded, emissive, \
+    diffuse, plastic, rough, shiny, chrome, ice, glass, blazed, silver, \
+    wood, marble, earth, BlueMarble, bricks
+from pyglet_helper.objects.renderable import Renderable, View
+from pyglet_helper.objects.primitive import trail_update, Primitive
+from pyglet_helper.objects.rectangular import Rectangular
+from pyglet_helper.objects.box import Box
+from pyglet_helper.objects.pyramid import Pyramid
+from pyglet_helper.objects.arrow import Arrow
+from pyglet_helper.objects.axial import Axial
+from pyglet_helper.objects.cone import Cone
+from pyglet_helper.objects.cylinder import Cylinder
+from pyglet_helper.objects.sphere import Sphere
+from pyglet_helper.objects.ellipsoid import Ellipsoid
+from pyglet_helper.objects.light import Light
+from pyglet_helper.objects.ring import Ring

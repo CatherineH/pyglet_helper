@@ -10,7 +10,8 @@ class Material(object):
 
         :param translucent:
         :type translucent: bool
-        :param shader_program: The GLSL (Graphics library shader language) code to be executed).
+        :param shader_program: The GLSL (Graphics library shader language) code
+         to be executed).
         :type shader_program: str
         :return:
         """

@@ -27,8 +27,10 @@ class Primitive(Renderable):
     """
      A base class for all geometric shapes.
     """
-    def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0), pos=Vector(0, 0, 0), make_trail=False,
-                 trail_initialized=False, obj_initialized=False, color=Rgb(), material=Material(), other=None):
+    def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0),
+                 pos=Vector(0, 0, 0), make_trail=False,
+                 trail_initialized=False, obj_initialized=False, color=Rgb(),
+                 material=Material(), other=None):
         """
 
         :param axis: The orientation to use when drawing.
@@ -74,15 +76,18 @@ class Primitive(Renderable):
             self.pos = other.pos
             self.axis = other.axis
 
-    def model_world_transform(self, world_scale=0.0, object_scale=Vector(1, 1, 1)):
-        """Performs scale, rotation, translation, and world scale (gcf) transforms in that order.
+    def model_world_transform(self, world_scale=0.0,
+                              object_scale=Vector(1, 1, 1)):
+        """Performs scale, rotation, translation, and world scale (gcf)
+        transforms in that order.
 
         :param world_scale: The global scaling factor.
         :type world_scale: float
         :param object_scale: The scaling to applied to this specific object
         :type object_scale: pyglet_helper.util.Vector
         :rtype: pyglet_helper.util.Tmatrix
-        :returns:  Returns a tmatrix that performs reorientation of the object from model orientation to world
+        :returns:  Returns a tmatrix that performs reorientation of the object
+        from model orientation to world
          (and view) orientation.
         """
         ret = Tmatrix()
@@ -103,7 +108,8 @@ class Primitive(Renderable):
         ret.x_column(x_axis)
         ret.y_column(y_axis)
         ret.z_column(z_axis)
-        ret.w_column(self.pos * world_scale)
+        w_column = world_scale*self.pos
+        ret.w_column(w_column)
         ret.w_row()
 
         ret.scale(object_scale * world_scale, 1)
@@ -115,7 +121,8 @@ class Primitive(Renderable):
         return type(self)
 
     def rotate(self, angle, axis, origin):
-        """Rotate the primitive's axis by angle about a specified axis at a specified origin.
+        """Rotate the primitive's axis by angle about a specified axis at a
+        specified origin.
 
         :param angle: the angle to rotate by, in radians
         :type angle: float
@@ -130,7 +137,8 @@ class Primitive(Renderable):
             fake_up = Vector(1, 0, 0)
             if not self.axis.cross(fake_up):
                 fake_up = Vector(0, 1, 0)
-        # is this rotation needed at present? Is it already included in the transformation matrix?
+        # is this rotation needed at present? Is it already included in the
+        # transformation matrix?
         #self.pos = R * self._pos
         self.up = R.times_v(fake_up)
         self._axis = R.times_v(self._axis)
@@ -255,7 +263,8 @@ class Primitive(Renderable):
     @make_trail.setter
     def make_trail(self, x):
         if x and not self.obj_initialized:
-            raise RuntimeError("Can't set make_trail=True unless object was created with make_trail specified")
+            raise RuntimeError("Can't set make_trail=True unless object was "
+                               "created with make_trail specified")
         if self.startup:
             self.startup = False
         self._make_trail = x

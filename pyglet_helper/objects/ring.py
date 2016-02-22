@@ -1,8 +1,10 @@
-from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, glEnableClientState, glEndList, glGenLists, \
-    glNewList, glNormalPointer, glPopClientAttrib, glPushClientAttrib, glVertexPointer, GL_CLIENT_VERTEX_ARRAY_BIT, \
-    GL_COMPILE, GL_FLOAT, GL_TRIANGLES, GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_UNSIGNED_INT
+from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, \
+    glEnableClientState, glEndList, glGenLists, glNewList, glNormalPointer, \
+    glPopClientAttrib, glPushClientAttrib, glVertexPointer, \
+    GL_CLIENT_VERTEX_ARRAY_BIT, GL_COMPILE, GL_FLOAT, GL_TRIANGLES, \
+    GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_UNSIGNED_INT
 from pyglet_helper.objects import Axial
-from pyglet_helper.util import Rgb, Vector
+from pyglet_helper.util import Rgb, Tmatrix, Vector
 from math import pi, sin, cos, sqrt
 
 
@@ -10,7 +12,8 @@ class Ring(Axial):
     """
     A Ring object
     """
-    def __init__(self, thickness=0.0, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
+    def __init__(self, thickness=0.0, radius=1.0, color=Rgb(),
+                 pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
         """
 
         :param thickness: The ring's thickness.
@@ -24,12 +27,13 @@ class Ring(Axial):
         :param axis: The cone points from the base to the point along the axis.
         :type axis: pyglet_helper.util.Vector
         """
-        super(Ring, self).__init__(radius=radius, color=color, pos=pos, axis=axis)
+        super(Ring, self).__init__(radius=radius, color=color, pos=pos,
+                                   axis=axis)
         self._thickness = None
         self.list = None
         self.axis = axis
-        # The radius of the ring's body.  If not specified, it is set to 1/10 of
-        # the radius of the body.
+        # The radius of the ring's body.  If not specified, it is set to 1/10
+        # of the radius of the body.
         self.thickness = thickness
 
     @property
@@ -41,9 +45,11 @@ class Ring(Axial):
         self._thickness = t
 
     @property
-    def material_matrix(self, out):
+    def material_matrix(self):
+        out = Tmatrix()
         out.translate(Vector(.5, .5, .5))
-        out.scale(Vector(self.radius, self.radius, self.radius) * (.5 / (self.radius + self.thickness)))
+        out.scale(Vector(self.radius, self.radius, self.radius) *
+                  (.5 / (self.radius + self.thickness)))
         return out
 
     @property
@@ -128,7 +134,8 @@ class Ring(Axial):
         glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_NORMAL_ARRAY)
-        self.model_world_transform(scene.gcf, Vector(self.radius, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(self.radius, self.radius,
+                                                     self.radius)).gl_mult()
 
         glVertexPointer(3, GL_FLOAT, 0, vertices)
         glNormalPointer(GL_FLOAT, 0, normals)
@@ -140,8 +147,8 @@ class Ring(Axial):
 
 
 def clamp(lower, value, upper):
-    """ Restrict a value to be between a lower value and upper value. Used to restrict the number of polygons in the ring
-    object
+    """ Restrict a value to be between a lower value and upper value. Used to
+    restrict the number of polygons in the ring object
 
     :param lower: the lowest possible value of value
     :type lower: float or int

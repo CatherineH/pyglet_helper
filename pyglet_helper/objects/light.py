@@ -8,14 +8,17 @@ class Light(Renderable):
     """
     A light object
     """
-    def __init__(self, color=Rgb(), specular=(.5, .5, 1, 0.5), diffuse=(1, 1, 1, 1), position=(1, 0.5, 1, 0)):
+    def __init__(self, color=Rgb(), specular=(.5, .5, 1, 0.5),
+                 diffuse=(1, 1, 1, 1), position=(1, 0.5, 1, 0)):
         """
 
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
-        :param specular: The color of the specular reflections on the objects in the scene.
+        :param specular: The color of the specular reflections on the objects
+        in the scene.
         :type specular: array_like
-        :param diffuse: The color of the diffuse reflections of the objects in the scene.
+        :param diffuse: The color of the diffuse reflections of the objects in
+        the scene.
         :type position: array_like
         :param position: The object's position.
         :type position: array_like
@@ -51,14 +54,14 @@ class Light(Renderable):
     def is_light(self):
         return True
 
-    def render(self, v):
+    def render(self, scene):
         """ Add the light to the scene.
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
         """
-        v.lights.append(self)
-        v.draw_lights()
+        scene.lights.append(self)
+        scene.draw_lights()
 
     @abc.abstractmethod
-    def get_vertex(self, gcf):
+    def get_vertex(self):
         return 0

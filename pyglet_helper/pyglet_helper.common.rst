@@ -4,13 +4,6 @@ pyglet_helper.common package
 Submodules
 ----------
 
-pyglet_helper.common.crayola module
------------------------------------
-
-.. automodule:: pyglet_helper.common.crayola
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 pyglet_helper.common.materials module
 -------------------------------------

@@ -39,7 +39,6 @@ class Cone(Axial):
             q.render_disk(1.0, n_sides[i], n_stacks[i] * 2, -1)
             scene.cone_model[i].gl_compile_end()
 
-
     def render(self, scene):
         """Add the cone to the scene.
 
