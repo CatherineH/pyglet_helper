@@ -31,8 +31,8 @@ class DisplayList(object):
         """
         try:
             glCallList(self.handle)
-        except GLException as e:
-            print("Got GL Exception on call list: " + str(e))
+        except GLException as e_msg:
+            print("Got GL Exception on call list: " + str(e_msg))
         self.built = True
 
     @property

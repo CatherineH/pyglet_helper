@@ -1,5 +1,5 @@
-from pyglet.gl import GLfloat, glMaterialfv, glMaterialf, GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, GL_SPECULAR, \
-    GL_SHININESS
+from pyglet.gl import GLfloat, glMaterialfv, glMaterialf, GL_FRONT_AND_BACK, \
+    GL_AMBIENT_AND_DIFFUSE, GL_SPECULAR, GL_SHININESS
 
 
 class Rgba(object):
@@ -57,17 +57,17 @@ class Rgba(object):
         """
         Set this color to the current material in OpenGL.
         """
-        color = (GLfloat * 4)(*[self.red, self.green, self.blue, self.opacity])
+        color = (GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
         glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)
         glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
 
 
-class Rgb:
+class Rgb(object):
     """
     Define an RGB color to be used by OpenGl
     """
-    def __init__(self, red=1.0, green=1.0, blue=1.0, c=None):
+    def __init__(self, red=1.0, green=1.0, blue=1.0, color=None):
         """
         :param red: The red value of the color, value between 0 and 1
         :type red: float
@@ -75,14 +75,14 @@ class Rgb:
         :type green: float
         :param blue: The blue value of the color, value between 0 and 1
         :type blue: float
-        :param c: A list of values to copy into a new color
-        :type c: list
+        :param color: A list of values to copy into a new color
+        :type color: list
         """
-        if c is not None:
-            if len(c) == 3:
-                self.red = c[0]
-                self.green = c[1]
-                self.blue = c[2]
+        if color is not None:
+            if len(color) == 3:
+                self.red = color[0]
+                self.green = color[1]
+                self.blue = color[2]
             else:
                 raise ValueError("RGB color vector must be of length 4!")
         else:
@@ -106,11 +106,23 @@ class Rgb:
 
     @property
     def rgb(self):
-        return [self.red, self.green, self.blue]
+        """
+        Get a tuple with the three components of the rgba color
+        :return: (red, green, blue)
+        :rtype: tuple
+        """
+        return (self.red, self.green, self.blue)
 
     @rgb.setter
-    def rgb(self, bw):
-        self = Rgb(red=bw, green=bw, blue=bw)
+    def rgb(self, grayscale):
+        """
+        Set the current rgb color to a grayscale value
+        :param grayscale: the grayscale value'
+        :type grayscale: float
+        """
+        self.red = grayscale
+        self.green = grayscale
+        self.blue = grayscale
 
     def desaturate(self):
         """ Convert the color to HSV space, reduce the saturation by a factor
@@ -119,7 +131,7 @@ class Rgb:
         :rtype: pyglet_helper.util.Rgb()
         :return: the desaturated color.
         """
-        saturation = 0.5  # cut the saturation by this factor
+        cut_saturation = 0.5  # cut the saturation by this factor
 
         # r,g,b values are from 0 to 1
         # h = [0,360], s = [0,1], v = [0,1]
@@ -136,65 +148,65 @@ class Rgb:
             cmax = self.green
         if self.blue > cmax:
             cmax = self.blue
-        v = cmax  # v
+        value = cmax  # v
         delta = cmax - cmin
 
         if cmin == cmax:  # completely unsaturated color is some gray
             # if r = g = b = 0, s = 0, v in principle undefined but set to 0
-            s = 0.0
-            h = 0.0
+            saturation = 0.0
+            hue = 0.0
         else:
-            s = delta / cmax  # s
+            saturation = delta / cmax  # s
             if self.red == cmax:
                 # between yellow & magenta
-                h = (self.green - self.blue) / delta
+                hue = (self.green - self.blue) / delta
             elif self.green == cmax:
                 # between cyan & yellow
-                h = 2.0 + (self.blue - self.red) / delta
+                hue = 2.0 + (self.blue - self.red) / delta
             else:
                 # between magenta & cyan
-                h = 4.0 + (self.red - self.green) / delta
+                hue = 4.0 + (self.red - self.green) / delta
 
-            if h < 0.0:
-                h += 6.0  # make it 0 <= h < 6
+            if hue < 0.0:
+                hue += 6.0  # make it 0 <= h < 6
 
         # unsaturate somewhat to make sure both eyes have something to see
-        s *= saturation
+        saturation *= cut_saturation
         ret = Rgb()
-        if s == 0.0:
+        if saturation == 0.0:
             # achromatic (grey)
-            ret.red = ret.green = ret.blue = v
+            ret.red = ret.green = ret.blue = value
         else:
-            i = int(h)  # h represents sector 0 to 5
-            f = h - i  # fractional part of h
-            p = v * (1.0 - s)
-            q = v * (1.0 - s * f)
-            t = v * (1.0 - s * (1.0 - f))
+            i = int(hue)  # hue represents sector 0 to 5
+            fraction = hue - i  # fractional part of hue
+            p_vandam = value * (1.0 - saturation)
+            q_vandam = value * (1.0 - saturation * fraction)
+            t_vandam = value * (1.0 - saturation * (1.0 - fraction))
 
             if i == 0:
-                ret.red = v
-                ret.green = t
-                ret.blue = p
+                ret.red = value
+                ret.green = t_vandam
+                ret.blue = p_vandam
             elif i == 1:
-                ret.red = q
-                ret.green = v
-                ret.blue = p
+                ret.red = q_vandam
+                ret.green = value
+                ret.blue = p_vandam
             elif i == 2:
-                ret.red = p
-                ret.green = v
-                ret.blue = t
+                ret.red = p_vandam
+                ret.green = value
+                ret.blue = t_vandam
             elif i == 3:
-                ret.red = p
-                ret.green = q
-                ret.blue = v
+                ret.red = p_vandam
+                ret.green = q_vandam
+                ret.blue = value
             elif i == 4:
-                ret.red = t
-                ret.green = p
-                ret.blue = v
+                ret.red = t_vandam
+                ret.green = p_vandam
+                ret.blue = value
             else:  # case 5:
-                ret.red = v
-                ret.green = p
-                ret.blue = q
+                ret.red = value
+                ret.green = p_vandam
+                ret.blue = q_vandam
         return ret
 
     def grayscale(self):

@@ -1,5 +1,6 @@
-from pyglet.gl import glEnable, glBegin, glDisable, glEnd, glPopMatrix, glPushMatrix, GL_CULL_FACE, GL_TRIANGLES, \
-    glNormal3f, GLfloat, glVertex3f, glNormal3fv
+from pyglet.gl import glEnable, glBegin, glDisable, glEnd, glPopMatrix, \
+    glPushMatrix, GL_CULL_FACE, GL_TRIANGLES, glNormal3f, GLfloat, glVertex3f, \
+    glNormal3fv
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
@@ -8,7 +9,8 @@ class Pyramid(Rectangular):
     """
     A Pyramid Object
     """
-    def __init__(self, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
+    def __init__(self, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0,
+                 color=Rgb()):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -22,7 +24,8 @@ class Pyramid(Rectangular):
         :type length: float
         :return:
         """
-        super(Pyramid, self).__init__(pos=pos, color=color, width=width, height=height, length=length)
+        super(Pyramid, self).__init__(pos=pos, color=color, width=width,
+                                      height=height, length=length)
         self.compiled = False
 
     def init_model(self, scene):
@@ -47,7 +50,8 @@ class Pyramid(Rectangular):
         triangle_indices[4] = [0, 3, 2]  # left (base) 1
         triangle_indices[5] = [0, 2, 1]  # left (base) 2
 
-        normals = [[1, 2, 0], [1, -2, 0], [1, 0, 2], [1, 0, -2], [-1, 0, 0], [-1, 0, 0]]
+        normals = [[1, 2, 0], [1, -2, 0], [1, 0, 2], [1, 0, -2], [-1, 0, 0],
+                   [-1, 0, 0]]
 
         glEnable(GL_CULL_FACE)
         glBegin(GL_TRIANGLES)
@@ -56,14 +60,16 @@ class Pyramid(Rectangular):
         for f in range(0, 6):
             glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
             for v in range(0, 3):
-                vert = [GLfloat(i) for i in vertices[triangle_indices[f][2 - v]]]
+                vert = [GLfloat(i) for i in vertices[triangle_indices[f]
+                [2 - v]]]
                 glVertex3f(*vert)
 
         # Outside
         for f in range(0, 6):
             glNormal3fv(*[GLfloat(i) for i in normals[f]])
             for v in range(0, 3):
-                glVertex3f(*[GLfloat(i) for i in vertices[triangle_indices[f][v]]])
+                glVertex3f(*[GLfloat(i) for i in vertices[triangle_indices[f]
+                [v]]])
 
         glEnd()
         glDisable(GL_CULL_FACE)

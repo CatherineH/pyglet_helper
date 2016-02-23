@@ -3,15 +3,10 @@ from pyglet.gl import glDeleteObjectARB, GL_VERTEX_SHADER_ARB, \
     GL_OBJECT_INFO_LOG_LENGTH_ARB
 
 
-def uniform_matrix(view, loc, _in):
-    matrix = [0] * 16
-    in_p = _in.matrix_addr()
-    for i in range(0, 16):
-        matrix[i] = in_p[i]
-    view.glext.glUniformMatrix4fvARB(loc, 1, False, matrix)
-
-
 class ShaderProgram(object):
+    """
+    An interface for storing and executing shader programs
+    """
     def __init__(self, source=None):
         self._source = None
         self.source = source
@@ -20,15 +15,31 @@ class ShaderProgram(object):
 
     @property
     def source(self):
+        """
+        Get the shader program's source as a string
+        :return: the shader program's source
+        :rtype: str
+        """
         return self._source
 
     @source.setter
     def source(self, source):
+        """
+        Set the shader program's source
+        :param source: valid shader program
+        :type source: str
+        """
         self._source = source
 
     def uniform_location(self, view, name):
-        # TODO: change interface to cache the uniforms we actually want and
-        # avoid string comparisons
+        """
+        Get the location of the shader by name in the view.
+        :param view: the view to inspect
+        :type view: str
+        :param name: the View to examine
+        :type name: pyglet_helper.objects.view
+        :return:
+        """
         if self.program <= 0 or not view.glext.ARB_shader_objects:
             return -1
         cache = self.uniforms[name]
@@ -37,6 +48,11 @@ class ShaderProgram(object):
         return cache - 2
 
     def realize(self, view):
+        """
+        Render the shader program
+        :param view: the view to render the shader program in
+        :type view: pyglet_helper.objects.View
+        """
         if self.program != -1:
             return
 
@@ -67,9 +83,8 @@ class ShaderProgram(object):
             length, temp[0] = view.glext.glGetInfoLogARB(self.program,
                                                          length + 1)
 
-            # TODO: A way to report infoLog to the program?
-            print( "VPython WARNING: errors in shader program:\n" + str(temp) +
-                   "\n")
+            print("VPython WARNING: errors in shader program:\n" + str(temp)
+                  + "\n")
 
             # Get rid of the program, since it can't be used without generating
             # GL errors.  We set program to 0 instead of -1 so that binding it
@@ -79,18 +94,34 @@ class ShaderProgram(object):
             self.program = 0
             return
 
-    def compile(self, v, shader_type):
-        shader = v.glext.glCreateShaderObjectARB(shader_type)
-        v.glext.glShaderSourceARB(shader, 1)
-        v.glext.glCompileShaderARB(shader)
-        v.glext.glAttachObjectARB(self.program, shader)
-        v.glext.glDeleteObjectARB(shader)
+    def compile(self, view, shader_type):
+        """
+        Compiles and attaches the current shader
+        :param view: the view to render the shader program to
+        :type view: pyglet_helper.objects.View
+        :param shader_type: the shader type, e.g., GL_VERTEX_SHADER,
+        GL_GEOMETRY_SHADER
+        :type shader_type: valid opengl shader type
+        """
+        shader = view.glext.glCreateShaderObjectARB(shader_type)
+        view.glext.glShaderSourceARB(shader, 1)
+        view.glext.glCompileShaderARB(shader)
+        view.glext.glAttachObjectARB(self.program, shader)
+        view.glext.glDeleteObjectARB(shader)
 
     def get(self):
+        """
+        gets a handle to the current program
+        :return: handle to the current program
+        :rtype: glShaderObject
+        """
         return self.program
 
-    def gl_free(self, program):
-        glDeleteObjectARB(program)
+    def gl_free(self):
+        """
+        Remove the current program from memory
+        """
+        glDeleteObjectARB(self.program)
 
     def get_section(self, name):
         """
@@ -124,36 +155,47 @@ class ShaderProgram(object):
 
 
 class UseShaderProgram(object):
+    """
+    A Class to handle the initialization of ShaderPrograms
+    """
     def __init__(self, view, program=None):
-        # use_shader_program(NULL) does nothing, rather than enabling the fixed
-        # function pipeline explicitly.  This is convenient, but maybe we need
-        # a way to do the other thing?
+
         self.view = view
+        self.m_ok = None
         self.program = program
-        self.oldProgram = None
+        self.old_program = None
         self.init()
 
-    def __exit__(self, type, value, traceback):
-        if self.oldProgram < 0 or not self.view.glext.ARB_shader_objects:
+    def __exit__(self, _type, value, traceback):
+        if self.old_program < 0 or not self.view.glext.ARB_shader_objects:
             return
-        self.view.glext.glUseProgramObjectARB(self.oldProgram)
+        self.view.glext.glUseProgramObjectARB(self.old_program)
 
     @property
-    def ok(self):
-        return self.m_ok  # true if the shader program was successfully invoked
+    def invoked(self):
+        """
+        Has the shader program been invoked?
+        :return: True if the shader program was successfully invoked
+        :rtype: boolean
+        """
+        return self.m_ok
 
     def init(self):
+        """
+        Initialize the shader program
+        :return: Nothing
+        """
         self.m_ok = False
         if not self.program or not self.view.glext.ARB_shader_objects or not \
                 self.view.enable_shaders:
-            self.oldProgram = -1
+            self.old_program = -1
             return
 
         self.program.realize(self.view)
 
         # For now, nested shader invocations aren't supported.
-        # oldProgram = v.glext.glGetHandleARB( GL_PROGRAM_OBJECT_ARB )
-        self.oldProgram = 0
+        # old_program = v.glext.glGetHandleARB( GL_PROGRAM_OBJECT_ARB )
+        self.old_program = 0
 
         self.view.glext.glUseProgramObjectARB(self.program.program)
         self.m_ok = (self.program.program != 0)

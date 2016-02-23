@@ -12,13 +12,15 @@ class Vector(object):
     """
     def __init__(self, a=0.0, b=0.0, c=0.0, v=None):
         """
-        :param a: Either the x component of the vector, a Vector, a Vertex, or an array_like
+        :param a: Either the x component of the vector, a Vector, a Vertex, or
+        an array_like
         :type a: float, Vector, Vertex, or array_like
         :param b: if a was a float, b is the y component of the vector
         :type b: float
         :param c: if a was a float, c is the z component of the vector
         :type c: float
-        :param v: an array_like of length 3 defining the components of the vector (optional)
+        :param v: an array_like of length 3 defining the components of the
+        vector (optional)
         :type v: array_like
         """
         self._x = None
@@ -94,7 +96,8 @@ class Vector(object):
         """ Check to see if any component of the vector is non-zero
 
         :rtype: bool
-        :return: True if any component of the vector is nonzero, False otherwise
+        :return: True if any component of the vector is nonzero, False
+        otherwise
         """
         return self.x or self.y or self.z
 
@@ -120,13 +123,15 @@ class Vector(object):
             # This step ensures that vector(0,0,0).norm() returns vector(0,0,0)
             # instead of NaN
             magnitude = 1.0 / magnitude
-        return Vector(self.x * magnitude, self.y * magnitude, self.z * magnitude)
+        return Vector(self.x * magnitude, self.y * magnitude,
+                      self.z * magnitude)
 
     def set_mag(self, m):
         self = self.norm() * m
 
     def __repr__(self):
-        return "Vector(" + str(self.x) + "," + str(self.y) + "," + str(self.z) + ")"
+        return "Vector(" + str(self.x) + "," + str(self.y) + "," + \
+               str(self.z) + ")"
 
     def dot(self, v):
         """ Calculates the dot product of this vector and another.
@@ -177,11 +182,13 @@ class Vector(object):
         return self.dot(v) / v.mag()**2.0 * v
 
     def diff_angle(self, v):
-        """ Calculates the angular difference between two vectors, in radians, between 0 and pi.
+        """ Calculates the angular difference between two vectors, in radians,
+        between 0 and pi.
 
         :param v: The vector to be calculated against
         :type v: Vector
-        :return: The angular difference between the current vector and v, in radians
+        :return: The angular difference between the current vector and v, in
+        radians
         :rtype: float
         """
         vn1 = self.norm()
@@ -221,7 +228,8 @@ class Vector(object):
 
         :param angle: The angle to rotate by
         :type angle: float
-        :param axis: The axis to rotate around (optional, if not set, the axis will be the +z axis
+        :param axis: The axis to rotate around (optional, if not set, the axis
+        will be the +z axis
         :type axis: Vector
         :return: rotated vector
         :rtype: pyglet_helper.util.Vector
@@ -444,7 +452,8 @@ class Tmatrix(object):
         self.m = inv(self.m)
 
     def project(self, v):
-        """ Multply a vector or vertex by the current matrix to produce a new vertex
+        """ Multply a vector or vertex by the current matrix to produce a new
+        vertex
 
         :param v: the vertex or vector to be transformed
         :type v: Vertex or Vector
@@ -456,10 +465,14 @@ class Tmatrix(object):
             w = v.w
         else:
             w = 1.0
-        o.x = self.m[0, 0] * v.x + self.m[1, 0] * v.y + self.m[2, 0] * v.z + self.m[3, 0] * w
-        o.y = self.m[0, 1] * v.x + self.m[1, 1] * v.y + self.m[2, 1] * v.z + self.m[3, 1] * w
-        o.z = self.m[0, 2] * v.x + self.m[1, 2] * v.y + self.m[2, 2] * v.z + self.m[3, 2] * w
-        o.w = self.m[0, 3] * v.x + self.m[1, 3] * v.y + self.m[2, 3] * v.z + self.m[3, 3] * w
+        o.x = self.m[0, 0] * v.x + self.m[1, 0] * v.y + self.m[2, 0] * v.z + \
+              self.m[3, 0] * w
+        o.y = self.m[0, 1] * v.x + self.m[1, 1] * v.y + self.m[2, 1] * v.z + \
+              self.m[3, 1] * w
+        o.z = self.m[0, 2] * v.x + self.m[1, 2] * v.y + self.m[2, 2] * v.z + \
+              self.m[3, 2] * w
+        o.w = self.m[0, 3] * v.x + self.m[1, 3] * v.y + self.m[2, 3] * v.z + \
+              self.m[3, 3] * w
         return o
 
     def scale(self, v, w=None):
@@ -467,7 +480,8 @@ class Tmatrix(object):
 
         :param v: The vector or vertex describing the scaling
         :type v: Vertex or Vector
-        :param w: The scaling factor for the normalization column. If undefined, the value will be taken from the vextex, or set to 1.0
+        :param w: The scaling factor for the normalization column. If
+        undefined, the value will be taken from the vextex, or set to 1.0
         :type w: float
         """
         if w is None:
@@ -502,17 +516,22 @@ class Tmatrix(object):
         :param v: The vertex or vector describing the transformation
         :type v: Vertex or Vector
         """
-        self.m[3, 0] += v.x * self.m[0, 0] + v.y * self.m[1, 0] + v.z * self.m[2, 0]
-        self.m[3, 1] += v.x * self.m[0, 1] + v.y * self.m[1, 1] + v.z * self.m[2, 1]
-        self.m[3, 2] += v.x * self.m[0, 2] + v.y * self.m[1, 2] + v.z * self.m[2, 2]
-        self.m[3, 3] += v.x * self.m[0, 3] + v.y * self.m[1, 3] + v.z * self.m[2, 3]
+        self.m[3, 0] += v.x * self.m[0, 0] + v.y * self.m[1, 0] + v.z * \
+                                                                  self.m[2, 0]
+        self.m[3, 1] += v.x * self.m[0, 1] + v.y * self.m[1, 1] + v.z * \
+                                                                  self.m[2, 1]
+        self.m[3, 2] += v.x * self.m[0, 2] + v.y * self.m[1, 2] + v.z * \
+                                                                  self.m[2, 2]
+        self.m[3, 3] += v.x * self.m[0, 3] + v.y * self.m[1, 3] + v.z * \
+                                                                  self.m[2, 3]
 
     def times_inv(self, v, w=None):
         """ Multiply a vector or vertex v by the inverted transformation matrix
 
         :param v: the vector to be transformed
         :type v: Vector or Vertex
-        :param w: The vector's normalization factor. If None, it will be taken from v or set to 1.0
+        :param w: The vector's normalization factor. If None, it will be taken
+        from v or set to 1.0
         :type w; float
         :rtype: Vector or Vertex
         :return: The transformed Vector or Vertex
@@ -526,13 +545,19 @@ class Tmatrix(object):
         y = v.y - self.m[3, 1] * w
         z = v.z - self.m[3, 2] * w
         if type(v) == Vector:
-            return Vector(self.m[0, 0] * x + self.m[0, 1] * y + self.m[0, 2] * z,
-                          self.m[1, 0] * x + self.m[1, 1] * y + self.m[1, 2] * z,
-                          self.m[2, 0] * x + self.m[2, 1] * y + self.m[2, 2] * z)
+            return Vector(self.m[0, 0] * x + self.m[0, 1] * y + self.m[0, 2] *
+                          z,
+                          self.m[1, 0] * x + self.m[1, 1] * y + self.m[1, 2] *
+                          z,
+                          self.m[2, 0] * x + self.m[2, 1] * y + self.m[2, 2] *
+                          z)
         if type(v) == Vertex:
-            return Vertex(self.m[0, 0] * x + self.m[0, 1] * y + self.m[0, 2] * z,
-                          self.m[1, 0] * x + self.m[1, 1] * y + self.m[1, 2] * z,
-                          self.m[2, 0] * x + self.m[2, 1] * y + self.m[2, 2] * z, w)
+            return Vertex(self.m[0, 0] * x + self.m[0, 1] * y + self.m[0, 2] *
+                          z,
+                          self.m[1, 0] * x + self.m[1, 1] * y + self.m[1, 2] *
+                          z,
+                          self.m[2, 0] * x + self.m[2, 1] * y + self.m[2, 2] *
+                          z, w)
 
     def times_v(self, v):
         """ Multiply a vector or vertex by the transformation matrix
@@ -543,13 +568,19 @@ class Tmatrix(object):
         :rtype: Vector or Vertex
         """
         if type(v) == Vector:
-            return Vector(self.m[0, 0] * v.x + self.m[1, 0] * v.y + self.m[2, 0] * v.z,
-                          self.m[0, 1] * v.x + self.m[1, 1] * v.y + self.m[2, 1] * v.z,
-                          self.m[0, 2] * v.x + self.m[1, 2] * v.y + self.m[2, 2] * v.z)
+            return Vector(self.m[0, 0] * v.x + self.m[1, 0] * v.y +
+                          self.m[2, 0] * v.z,
+                          self.m[0, 1] * v.x + self.m[1, 1] * v.y +
+                          self.m[2, 1] * v.z,
+                          self.m[0, 2] * v.x + self.m[1, 2] * v.y +
+                          self.m[2, 2] * v.z)
         if type(v) == Vertex:
-            return Vertex(self.m[0, 0] * v.x + self.m[1, 0] * v.y + self.m[2, 0] * v.z,
-                          self.m[0, 1] * v.x + self.m[1, 1] * v.y + self.m[2, 1] * v.z,
-                          self.m[0, 2] * v.x + self.m[1, 2] * v.y + self.m[2, 2] * v.z, v.w)
+            return Vertex(self.m[0, 0] * v.x + self.m[1, 0] * v.y +
+                          self.m[2, 0] * v.z,
+                          self.m[0, 1] * v.x + self.m[1, 1] * v.y +
+                          self.m[2, 1] * v.z,
+                          self.m[0, 2] * v.x + self.m[1, 2] * v.y +
+                          self.m[2, 2] * v.z, v.w)
 
     def x_column(self, v=None, x=None, y=None, z=None):
         """ Sets the first column of the matrix
@@ -668,14 +699,16 @@ class Tmatrix(object):
         """
         Overwrites the currently active matrix in OpenGL with this one.
         """
-        ctypes_matrix = (GLdouble * 16)(*[float(value) for value in nditer(self.m)])
+        ctypes_matrix = (GLdouble * 16)(*[float(value) for value in
+                                          nditer(self.m)])
         glLoadMatrixd(ctypes_matrix)
 
     def gl_mult(self):
         """
         Multiplies the active OpenGL by this one.
         """
-        ctype_matrix = (GLdouble * 16)(*[float(value) for value in nditer(self.m)])
+        ctype_matrix = (GLdouble * 16)(*[float(value) for value in
+                                         nditer(self.m)])
         glMultMatrixd(ctype_matrix)
 
     def gl_modelview_get(self):
@@ -719,7 +752,8 @@ class Tmatrix(object):
         return self.m
 
     def gl_projection_get(self):
-        """Initialize the matrix with the contents of the OpenGL projection matrix
+        """Initialize the matrix with the contents of the OpenGL projection
+        matrix
 
         :return: the current matrix
         :rtype: matrix
@@ -732,13 +766,17 @@ class Tmatrix(object):
         return self
 
     def __str__(self):
-        output = "| " + str(self.m[0, 0]) + " " + str(self.m[1, 0]) + " " + str(self.m[2, 0]) + " " + str(
+        output = "| " + str(self.m[0, 0]) + " " + str(self.m[1, 0]) + " " + \
+                 str(self.m[2, 0]) + " " + str(
             self.m[3, 0]) + "|\n"
-        output += "| " + str(self.m[0, 1]) + " " + str(self.m[1, 1]) + " " + str(self.m[2, 1]) + " " + str(
+        output += "| " + str(self.m[0, 1]) + " " + str(self.m[1, 1]) + " " + \
+                  str(self.m[2, 1]) + " " + str(
             self.m[3, 1]) + "|\n"
-        output += "| " + str(self.m[0, 2]) + " " + str(self.m[1, 2]) + " " + str(self.m[2, 2]) + " " + str(
+        output += "| " + str(self.m[0, 2]) + " " + str(self.m[1, 2]) + " " + \
+                  str(self.m[2, 2]) + " " + str(
             self.m[3, 2]) + "|\n"
-        output += "| " + str(self.m[0, 3]) + " " + str(self.m[1, 3]) + " " + str(self.m[2, 3]) + " " + str(
+        output += "| " + str(self.m[0, 3]) + " " + str(self.m[1, 3]) + " " + \
+                  str(self.m[2, 3]) + " " + str(
             self.m[3, 3]) + "|\n"
         return output
 

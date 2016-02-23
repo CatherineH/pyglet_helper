@@ -3,7 +3,8 @@ from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 
 
 def trail_update(obj):
-    """A function for keeping track of the change in a primitive object's position.
+    """A function for keeping track of the change in a primitive object's
+    position.
 
     :param obj: the primitive object to track.
     :type obj: pyglet_helper.objects.Primitive
@@ -35,13 +36,16 @@ class Primitive(Renderable):
 
         :param axis: The orientation to use when drawing.
         :type axis: pyglet_helper.util.Vector
-        :param up: A vector that points to the current up direction in the view.
+        :param up: A vector that points to the current up direction in the
+        view.
         :type up: pyglet_helper.util.Vector
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
-        :param make_trail: If True, the position of the primitive object will be tracked over time.
+        :param make_trail: If True, the position of the primitive object will
+        be tracked over time.
         :type make_trail: bool
-        :param trail_initialized: If True, the trail, meaning the list of tracked positions over time, has been
+        :param trail_initialized: If True, the trail, meaning the list of
+        tracked positions over time, has been
          initialized
         :type trail_initialized: bool
         :param obj_initialized: If True, the object has been initialized
@@ -207,7 +211,7 @@ class Primitive(Renderable):
         try:
             return self._axis
         except Exception as e:
-            print "caught exception: "+str(e)
+            print("caught exception: "+str(e))
             return None
 
     @axis.setter

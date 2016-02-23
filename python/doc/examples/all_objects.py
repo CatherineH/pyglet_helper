@@ -1,5 +1,6 @@
 import os
-from pyglet.gl import glViewport, glMatrixMode, GL_PROJECTION, gluPerspective, gluLookAt, GL_MODELVIEW
+from pyglet.gl import glViewport, glMatrixMode, GL_PROJECTION, \
+    gluPerspective, glLoadIdentity, gluLookAt, GL_MODELVIEW
 from pyglet.window import Window
 from pyglet.clock import schedule
 from pyglet.event import EVENT_HANDLED
