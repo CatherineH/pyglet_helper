@@ -1,9 +1,15 @@
-from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, \
-    GL_DEPTH_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_TEST, GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, \
-    GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7, GL_POSITION, GL_SPECULAR
+"""
+pyglet_helper.renderable contains objects needed to draw all geometric shapes
+"""
+from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
+    glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, \
+    GL_CULL_FACE, GL_DEPTH_TEST, GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, \
+    GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, \
+    GL_LIGHT7, GL_POSITION, GL_SPECULAR
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
-gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
+gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
+                     GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
 
 
 class Renderable(object):
@@ -72,8 +78,9 @@ class View(object):
     """
     A class for handling the environment in which all objects are rendered
     """
-    def __init__(self, gcf=1.0, view_width=800, view_height=600, anaglyph=False, coloranaglyph=False,
-                 forward_changed=False, gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
+    def __init__(self, gcf=1.0, view_width=800, view_height=600, anaglyph=False,
+                 coloranaglyph=False, forward_changed=False, gcf_changed=False,
+                 lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True, background_color=Rgb()):
         """
         :param gcf: The global scaling factor, a coefficient applied to all objects in the view
@@ -156,13 +163,16 @@ class View(object):
         for i in range(0, max_lights):
             # enable all of the lights
             glEnable(gl_defined_lights[i])
-            glLightfv(gl_defined_lights[i], GL_POSITION, self.lights[i].position)
-            glLightfv(gl_defined_lights[i], GL_SPECULAR, self.lights[i].specular)
+            glLightfv(gl_defined_lights[i], GL_POSITION,
+                      self.lights[i].position)
+            glLightfv(gl_defined_lights[i], GL_SPECULAR,
+                      self.lights[i].specular)
             glLightfv(gl_defined_lights[i], GL_DIFFUSE, self.lights[i].diffuse)
 
     def pixel_coverage(self, pos, radius):
-        """ Compute the apparent diameter, in pixels, of a circle that is parallel to the screen, with a center at pos,
-        and some radius.  If pos is behind the camera, it will return negative.
+        """ Compute the apparent diameter, in pixels, of a circle that is
+        parallel to the screen, with a center at pos, and some radius.  If pos
+        is behind the camera, it will return negative.
 
         :param pos: The position in the view to examine
         :type pos: pyglet_helper.util.Vector

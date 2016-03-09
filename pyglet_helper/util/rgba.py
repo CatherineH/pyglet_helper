@@ -1,3 +1,6 @@
+"""
+pyglet_helper.util.rgba contains object to describe colors
+"""
 from pyglet.gl import GLfloat, glMaterialfv, glMaterialf, GL_FRONT_AND_BACK, \
     GL_AMBIENT_AND_DIFFUSE, GL_SPECULAR, GL_SHININESS
 

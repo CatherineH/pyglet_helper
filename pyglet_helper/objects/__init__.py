@@ -1,3 +1,4 @@
+# pyglet_helper.objects contains renderable objects
 from pyglet_helper.objects.material import Material, unshaded, emissive, \
     diffuse, plastic, rough, shiny, chrome, ice, glass, blazed, silver, \
     wood, marble, earth, BlueMarble, bricks

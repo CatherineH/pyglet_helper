@@ -1,3 +1,5 @@
+""" pyglet_helper.light contains an object for creating lights
+"""
 from pyglet.gl import GLfloat
 from pyglet_helper.objects import Renderable
 from pyglet_helper.util import Rgb, Vector

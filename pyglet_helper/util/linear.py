@@ -1,3 +1,6 @@
+""" pyglet_helper.util.linear contains vector and vertex objects needed for
+transformations and describes linear algebra operations
+"""
 from pyglet.gl import glNormal3dv, glVertex3d, glVertex4d, GLdouble, \
     glLoadMatrixd, glMultMatrixd, glGetFloatv, GLfloat, GL_MODELVIEW_MATRIX, \
     GL_TEXTURE_MATRIX, GL_COLOR_MATRIX, GL_PROJECTION_MATRIX

@@ -1,3 +1,6 @@
+""" pyglet_helper.display_list contains a class for generating lists of
+objects to render to the screen
+"""
 from __future__ import print_function
 from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
     glNewList, GL_COMPILE

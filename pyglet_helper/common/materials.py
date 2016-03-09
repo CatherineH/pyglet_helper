@@ -58,6 +58,10 @@ from pyglet_helper.objects.material import Material, unshaded, emissive, \
 
 
 class RawTexture(Texture):
+    """
+    An extension of the pyglet_helper.util.Texture object to allow for
+    arbitrary input data
+    """
     def __init__(self, **kwargs):
         Texture.__init__(self)
         for key, value in kwargs.items():
@@ -69,6 +73,10 @@ class RawTexture(Texture):
 
 
 class ShaderMaterial(Material):
+    """
+    An extension of the pyglet_helper.object.Material object to allow for
+    arbitrary input data
+    """
     def __init__(self, **kwargs):
         Material.__init__(self)
         for key, value in kwargs.items():
@@ -77,10 +85,12 @@ class ShaderMaterial(Material):
             self.name = "no_name"
 
 
-Lheader = 18  # length of header in targa file
-
-
 def convert_data(data):
+    """
+    Convert an input data object into a numpy array of unsigned bytes
+    :param data:
+    :return:
+    """
     data = asarray(data)
     if data.dtype != ubyte:
         data = array(255 * data, ubyte)
@@ -96,6 +106,7 @@ def load_tga(fileid):
     :type fileid: str
     :return: image data
     """
+    Lheader = 18 # length of header in targa file
     if isinstance(fileid, str):
         if fileid[-4:] != ".tga":
             fileid += ".tga"
@@ -125,47 +136,26 @@ def load_tga(fileid):
 # The following code addresses a problem for those packaging a program using
 # py2exe, as reported by Jason Morgan.
 
-texturePath = ""
+TEXTURE_PATH = ""
 
 if hasattr(sys, 'frozen'):
     if getattr(sys, 'frozen') == "windows_exe" or getattr(sys, 'frozen') == \
             "console_exe":
-        texturePath = "visual\\"
+        TEXTURE_PATH = "visual\\"
 else:
-    texturePath = os.path.split(__file__)[0] + "/"
+    TEXTURE_PATH = os.path.split(__file__)[0] + "/"
 
-
-turbulence3_data = load_tga(str(texturePath) + "turbulence3")  # the targa
-# file
-#  is 512*512*3
-tx_turb3 = RawTexture(data=reshape(turbulence3_data, (64, 64, 64, 3)),
+TURBULENCE3_DATA = load_tga(str(TEXTURE_PATH) + "turbulence3")  # the targa
+# file is 512*512*3
+TX_TURB3 = RawTexture(data=reshape(TURBULENCE3_DATA, (64, 64, 64, 3)),
                       interpolate=True,
                       mipmap=False)
-tx_wood = RawTexture(data=load_tga(texturePath + "wood"), interpolate=True)
-tx_brick = RawTexture(data=load_tga(texturePath + "brickbump"),
+TX_WOOD = RawTexture(data=load_tga(TEXTURE_PATH + "wood"), interpolate=True)
+TX_BRICK = RawTexture(data=load_tga(TEXTURE_PATH + "brickbump"),
                       interpolate=True)
-data_r = load_tga(texturePath + "random")
-tx_random = RawTexture(data=reshape(data_r, (64, 64, 64, 3)), interpolate=True,
+DATA_R = load_tga(TEXTURE_PATH + "random")
+TX_RANDOM = RawTexture(data=reshape(data_r, (64, 64, 64, 3)), interpolate=True,
                        mipmap=False)
-
-
-def get_default_channels(data):
-    dims = data.shape
-    _bytes = dims[2]
-    if bytes == 1:
-        # default; else must specify opacity explicitly
-        channels = ("luminance",)
-    elif bytes == 2:
-        channels = ("luminance", "opacity")
-    elif bytes == 3:
-        channels = ("red", "green", "blue")
-    elif bytes == 4:
-        channels = ("red", "green", "blue", "opacity")
-    else:
-        raise ValueError("Must have 1, 3, or 4 values per pixel, not %d." %
-                         _bytes)
-    return channels
-
 
 _library = open("library.txt", "r").readall()
 

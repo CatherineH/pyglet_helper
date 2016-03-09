@@ -1,3 +1,6 @@
+""" pyglet_helper.util contains objects useful to creating materials and
+geometric shapes
+"""
 from pyglet_helper.util.color import blue, red, green, gray, magenta, yellow, \
     cyan, orange, black, purple, white
 from pyglet_helper.util.display_list import DisplayList

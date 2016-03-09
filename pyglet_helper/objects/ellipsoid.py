@@ -1,3 +1,6 @@
+"""
+pyglet_helper.ellipsoid contains an object for drawing an ellipsoid
+"""
 from pyglet_helper.objects import Sphere
 from pyglet_helper.util import Rgb, Vector
 
@@ -6,7 +9,8 @@ class Ellipsoid(Sphere):
     """
     An Ellipsoid object
     """
-    def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
+    def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(),
+                 pos=Vector(0, 0, 0)):
         """
 
         :param width: The ellipsoid's width.
@@ -68,4 +72,5 @@ class Ellipsoid(Sphere):
         return Vector(self.axis.mag(), self.height, self.width) * 0.5
 
     def degenerate(self):
-        return not self.visible or self.height == 0.0 or self.width == 0.0 or self.axis.mag() == 0.0
+        return not self.visible or self.height == 0.0 or self.width == 0.0 or \
+               self.axis.mag() == 0.0

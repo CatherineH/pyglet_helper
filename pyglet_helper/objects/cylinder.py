@@ -1,4 +1,8 @@
-from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace, glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
+"""
+pyglet_helper.cylinder contains an object for drawing a cylinder
+"""
+from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace,\
+    glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 
@@ -7,7 +11,8 @@ class Cylinder(Axial):
     """
      A Cylinder object.
     """
-    def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0, color=Rgb(0, 0, 0)):
+    def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0,
+                 color=Rgb(0, 0, 0)):
         """
 
         :param radius: The cylinder's radius.
@@ -60,7 +65,8 @@ class Cylinder(Axial):
         lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
         glPushMatrix()
-        self.model_world_transform(scene.gcf, Vector(self.length, self.radius, self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector(self.length, self.radius,
+                                                     self.radius)).gl_mult()
 
         if self.translucent:
             glEnable(GL_CULL_FACE)

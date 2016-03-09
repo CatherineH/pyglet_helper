@@ -1,3 +1,6 @@
+""" pyglet_helper.util.texture contains objects for describing textures to
+apply to objects
+"""
 from pyglet.gl import glBindTexture, glDeleteTextures, GL_TEXTURE_2D
 
 

@@ -1,3 +1,7 @@
+""" pyglet_helper.util.quadric contains objects required for drawing
+quadric-type
+geometric shapes
+"""
 from pyglet.gl.glu import gluDeleteQuadric, gluNewQuadric, \
     gluQuadricDrawStyle, gluQuadricNormals, gluQuadricOrientation, gluSphere, \
     gluCylinder, gluDisk, GLU_FILL, GLU_POINT, GLU_LINE, GLU_SILHOUETTE, \

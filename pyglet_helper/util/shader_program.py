@@ -1,3 +1,6 @@
+""" pyglet_helper.util.shader_program contains objects for creating programs to
+describe how the light treats the object
+"""
 from pyglet.gl import glDeleteObjectARB, GL_VERTEX_SHADER_ARB, \
     GL_FRAGMENT_SHADER_ARB, GL_OBJECT_LINK_STATUS_ARB, \
     GL_OBJECT_INFO_LOG_LENGTH_ARB

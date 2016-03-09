@@ -1,5 +1,8 @@
-from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, glPopMatrix, glPushMatrix, glVertex3f, GLfloat, \
-    GL_CULL_FACE, GL_TRIANGLES
+"""
+pyglet_helper.box contains an object for drawing a box to the screen
+"""
+from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, \
+    glPopMatrix, glPushMatrix, glVertex3f, GLfloat, GL_CULL_FACE, GL_TRIANGLES
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Vector
 
@@ -8,7 +11,8 @@ class Box(Rectangular):
     """
      A box object.
     """
-    def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(), pos=Vector(0, 0, 0)):
+    def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(),
+                 pos=Vector(0, 0, 0)):
         """
 
         :param width: The box's width.
@@ -22,7 +26,8 @@ class Box(Rectangular):
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
         """
-        super(Box, self).__init__(width=width, height=height, color=color, length=length, pos=pos)
+        super(Box, self).__init__(width=width, height=height, color=color,
+                                  length=length, pos=pos)
 
     def init_model(self, scene, skip_right_face=False):
         """ Add the Vertexes and Normals to the compile list.
@@ -39,30 +44,44 @@ class Box(Rectangular):
 
         s = 0.5
         vertices = [
-            [[+s, +s, +s], [+s, -s, +s], [+s, -s, -s], [+s, +s, -s]],  # Right face
-            [[-s, +s, -s], [-s, -s, -s], [-s, -s, +s], [-s, +s, +s]],  # Left face
-            [[-s, -s, +s], [-s, -s, -s], [+s, -s, -s], [+s, -s, +s]],  # Bottom face
-            [[-s, +s, -s], [-s, +s, +s], [+s, +s, +s], [+s, +s, -s]],  # Top face
-            [[+s, +s, +s], [-s, +s, +s], [-s, -s, +s], [+s, -s, +s]],  # Front face
-            [[-s, -s, -s], [-s, +s, -s], [+s, +s, -s], [+s, -s, -s]]  # Back face
+            [[+s, +s, +s], [+s, -s, +s], [+s, -s, -s], [+s, +s, -s]],
+            # Right face
+            [[-s, +s, -s], [-s, -s, -s], [-s, -s, +s], [-s, +s, +s]],
+            # Left face
+            [[-s, -s, +s], [-s, -s, -s], [+s, -s, -s], [+s, -s, +s]],
+            # Bottom face
+            [[-s, +s, -s], [-s, +s, +s], [+s, +s, +s], [+s, +s, -s]],
+            # Top face
+            [[+s, +s, +s], [-s, +s, +s], [-s, -s, +s], [+s, -s, +s]],
+            # Front face
+            [[-s, -s, -s], [-s, +s, -s], [+s, +s, -s], [+s, -s, -s]]
+            # Back face
         ]
-        normals = [[+1, 0, 0], [-1, 0, 0], [0, -1, 0], [0, +1, 0], [0, 0, +1], [0, 0, -1]]
+        normals = [[+1, 0, 0], [-1, 0, 0], [0, -1, 0],
+                   [0, +1, 0], [0, 0, +1], [0, 0, -1]]
         # Draw inside (reverse winding and normals)
         for f in range(skip_right_face, 6):
             glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
             for v in range(0, 3):
-                glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
+                glVertex3f(GLfloat(vertices[f][3 - v][0]),
+                           GLfloat(vertices[f][3 - v][1]),
                            GLfloat(vertices[f][3 - v][2]))
             for v in (0, 2, 3):
-                glVertex3f(GLfloat(vertices[f][3 - v][0]), GLfloat(vertices[f][3 - v][1]),
+                glVertex3f(GLfloat(vertices[f][3 - v][0]),
+                           GLfloat(vertices[f][3 - v][1]),
                            GLfloat(vertices[f][3 - v][2]))
         # Draw outside
         for f in range(skip_right_face, 6):
-            glNormal3f(GLfloat(normals[f][0]), GLfloat(normals[f][1]), GLfloat(normals[f][2]))
+            glNormal3f(GLfloat(normals[f][0]), GLfloat(normals[f][1]),
+                       GLfloat(normals[f][2]))
             for v in range(0, 3):
-                glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
+                glVertex3f(GLfloat(vertices[f][v][0]),
+                           GLfloat(vertices[f][v][1]),
+                           GLfloat(vertices[f][v][2]))
             for v in (0, 2, 3):
-                glVertex3f(GLfloat(vertices[f][v][0]), GLfloat(vertices[f][v][1]), GLfloat(vertices[f][v][2]))
+                glVertex3f(GLfloat(vertices[f][v][0]),
+                           GLfloat(vertices[f][v][1]),
+                           GLfloat(vertices[f][v][2]))
         glEnd()
         glDisable(GL_CULL_FACE)
         scene.box_model.gl_compile_end()

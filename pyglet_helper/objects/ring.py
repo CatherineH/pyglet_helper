@@ -1,3 +1,4 @@
+"""pyglet_helper.ring contains an object for drawing a ring"""
 from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, \
     glEnableClientState, glEndList, glGenLists, glNewList, glNormalPointer, \
     glPopClientAttrib, glPushClientAttrib, glVertexPointer, \

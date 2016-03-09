@@ -1,3 +1,8 @@
+"""
+pyglet_helper.rectangular contains a base class for drawing objects with
+rectangular symmetry
+"""
+
 from pyglet_helper.objects import Primitive
 from pyglet_helper.util import Rgb, Vector
 
@@ -6,7 +11,8 @@ class Rectangular(Primitive):
     """
     A base class for rectangular-like objects (such as the box or pyramid)
     """
-    def __init__(self, other=None, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0, color=Rgb()):
+    def __init__(self, other=None, pos=Vector(0, 0, 0), width=1.0, height=1.0,
+                 length=1.0, color=Rgb()):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -77,5 +83,7 @@ class Rectangular(Primitive):
         :type scene: pyglet_helper.objects.View
         """
         min_scale = max(self.axis.mag(), max(self.height, self.width)) * 1e-6
-        self.size = Vector(max(min_scale, self.axis.mag()), max(min_scale, self.height), max(min_scale, self.width))
+        self.size = Vector(max(min_scale, self.axis.mag()),
+                           max(min_scale, self.height),
+                           max(min_scale, self.width))
         self.model_world_transform(scene.gcf, self.size).gl_mult()

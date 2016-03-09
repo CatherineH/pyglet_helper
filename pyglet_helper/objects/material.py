@@ -1,3 +1,6 @@
+""" pyglet_helper.material contains an object for describing materials which
+can be applied to objects
+"""
 from pyglet_helper.util import ShaderProgram, Texture
 
 
