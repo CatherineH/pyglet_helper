@@ -42,19 +42,23 @@ class Quadric(object):
     Generates a Quadric. Used for cylinders, spheres, and disks.
     """
     def __init__(self):
-        self.q = gluNewQuadric()
-        gluQuadricDrawStyle(self.q, GLU_FILL)
-        gluQuadricNormals(self.q, GLU_SMOOTH)
-        gluQuadricOrientation(self.q, GLU_OUTSIDE)
+        self.quadric = gluNewQuadric()
+        gluQuadricDrawStyle(self.quadric, GLU_FILL)
+        gluQuadricNormals(self.quadric, GLU_SMOOTH)
+        gluQuadricOrientation(self.quadric, GLU_OUTSIDE)
         self._drawing_style = 1
         self._normal_style = 1
         self._orientation = 1
 
     def __del__(self):
-        gluDeleteQuadric(self.q)
+        gluDeleteQuadric(self.quadric)
 
     @property
     def drawing_style(self):
+        """
+        Get the quadric's drawing style
+        :return:
+        """
         return self._drawing_style
 
     @drawing_style.setter
@@ -66,16 +70,20 @@ class Quadric(object):
         """
         self._drawing_style = style
         if style == DrawingStyle.POINT:
-            gluQuadricDrawStyle(self.q, GLU_POINT)
+            gluQuadricDrawStyle(self.quadric, GLU_POINT)
         elif style == DrawingStyle.LINE:
-            gluQuadricDrawStyle(self.q, GLU_LINE)
+            gluQuadricDrawStyle(self.quadric, GLU_LINE)
         elif style == DrawingStyle.FILL:
-            gluQuadricDrawStyle(self.q, GLU_FILL)
+            gluQuadricDrawStyle(self.quadric, GLU_FILL)
         elif style == DrawingStyle.SILHOUETTE:
-            gluQuadricDrawStyle(self.q, GLU_SILHOUETTE)
+            gluQuadricDrawStyle(self.quadric, GLU_SILHOUETTE)
 
     @property
     def normal_style(self):
+        """
+        Get the quadric's normal generation style
+        :return:
+        """
         return self._normal_style
 
     @normal_style.setter
@@ -87,14 +95,18 @@ class Quadric(object):
         """
         self._normal_style = style
         if style == NormalStyle.NONE:
-            gluQuadricNormals(self.q, GLU_NONE)
+            gluQuadricNormals(self.quadric, GLU_NONE)
         elif style == NormalStyle.FLAT:
-            gluQuadricNormals(self.q, GLU_FLAT)
+            gluQuadricNormals(self.quadric, GLU_FLAT)
         elif style == NormalStyle.SMOOTH:
-            gluQuadricNormals(self.q, GLU_SMOOTH)
+            gluQuadricNormals(self.quadric, GLU_SMOOTH)
 
     @property
     def orientation(self):
+        """
+        Get the quadric's current orientation, for rendering
+        :return:
+        """
         return self._orientation
 
     @orientation.setter
@@ -106,9 +118,9 @@ class Quadric(object):
         """
         self._orientation = side
         if side == Orientation.OUTSIDE:
-            gluQuadricOrientation(self.q, GLU_OUTSIDE)
+            gluQuadricOrientation(self.quadric, GLU_OUTSIDE)
         else:
-            gluQuadricOrientation(self.q, GLU_INSIDE)
+            gluQuadricOrientation(self.quadric, GLU_INSIDE)
 
     def render_sphere(self, radius, slices, stacks):
         """ Render a sphere.
@@ -120,7 +132,7 @@ class Quadric(object):
         :param stacks: The number of latitudinal lines
         :type stacks: int
         """
-        gluSphere(self.q, radius, slices, stacks)
+        gluSphere(self.quadric, radius, slices, stacks)
 
     def render_cylinder(self, base_radius, height, slices, stacks,
                         top_radius=None):
@@ -142,10 +154,10 @@ class Quadric(object):
         # convention
         glRotatef(90, 0, 1, 0)
         if top_radius is None:
-            gluCylinder(self.q, base_radius, base_radius, height, slices,
+            gluCylinder(self.quadric, base_radius, base_radius, height, slices,
                         stacks)
         else:
-            gluCylinder(self.q, base_radius, top_radius, height, slices,
+            gluCylinder(self.quadric, base_radius, top_radius, height, slices,
                         stacks)
         glRotatef(-90, 0, 1, 0)
 
@@ -163,5 +175,5 @@ class Quadric(object):
         """
         # rotate the disk so that it is drawn along the VPython axis convention
         glRotatef(90, 0, GLfloat(rotation), 0)
-        gluDisk(self.q, 0.0, radius, slices, rings)
+        gluDisk(self.quadric, 0.0, radius, slices, rings)
         glRotatef(-90, 0, GLfloat(rotation), 0)
