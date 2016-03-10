@@ -106,7 +106,7 @@ def load_tga(fileid):
     :type fileid: str
     :return: image data
     """
-    Lheader = 18 # length of header in targa file
+    header_length = 18 # length of header in targa file
     if isinstance(fileid, str):
         if fileid[-4:] != ".tga":
             fileid += ".tga"
@@ -115,7 +115,7 @@ def load_tga(fileid):
     width = data[12] + 256 * data[13]
     height = data[14] + 256 * data[15]
     _bytes = data[16] >> 3
-    image = data[Lheader:Lheader + width * height * _bytes]
+    image = data[header_length:header_length + width * height * _bytes]
     if 1 <= _bytes <= 2:
         image = image.reshape((height, width, _bytes))
     elif 3 <= _bytes <= 4:
@@ -129,7 +129,7 @@ def load_tga(fileid):
     # Photoshop "save as targa" starts the data in lower left;
     # last byte in header is zero.
     # Visual and POV-Ray start data in upper left; last header byte is nonzero.
-    if data[Lheader - 1] == 0:
+    if data[header_length - 1] == 0:
         image = image[::-1]
     return image
 
@@ -154,13 +154,14 @@ TX_WOOD = RawTexture(data=load_tga(TEXTURE_PATH + "wood"), interpolate=True)
 TX_BRICK = RawTexture(data=load_tga(TEXTURE_PATH + "brickbump"),
                       interpolate=True)
 DATA_R = load_tga(TEXTURE_PATH + "random")
-TX_RANDOM = RawTexture(data=reshape(data_r, (64, 64, 64, 3)), interpolate=True,
+TX_RANDOM = RawTexture(data=reshape(DATA_R, (64, 64, 64, 3)), interpolate=True,
                        mipmap=False)
 
-_library = open("library.txt", "r").readall()
+LIBRARY = open("library.txt", "r").readall()
 
 
-def shader(name, _shader, version, library=_library, **kwargs):
+def shader(name, _shader, version, library=LIBRARY, **kwargs):
+
     if isinstance(version, tuple):
         min_version, max_version = version
     else:
@@ -177,5 +178,5 @@ def shader(name, _shader, version, library=_library, **kwargs):
     return ShaderMaterial(name=name, shader=_shader, **kwargs)
 
 
-materials = [unshaded, emissive, diffuse, plastic, rough, shiny, chrome, ice,
+MATERIALS = [unshaded, emissive, diffuse, plastic, rough, shiny, chrome, ice,
              glass, blazed, silver, wood, marble, earth, BlueMarble, bricks]
