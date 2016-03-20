@@ -32,17 +32,17 @@ class Primitive(Renderable):
     """
      A base class for all geometric shapes.
     """
-    def __init__(self, axis=Vector(1, 0, 0), up=Vector(0, 1, 0),
-                 pos=Vector(0, 0, 0), make_trail=False,
+    def __init__(self, axis=Vector([1, 0, 0]), up_vector=Vector([0, 1, 0]),
+                 pos=Vector([0, 0, 0]), make_trail=False,
                  trail_initialized=False, obj_initialized=False, color=Rgb(),
                  material=Material(), other=None):
         """
 
         :param axis: The orientation to use when drawing.
         :type axis: pyglet_helper.util.Vector
-        :param up: A vector that points to the current up direction in the
-        view.
-        :type up: pyglet_helper.util.Vector
+        :param up_vector: A vector that points to the current up direction in
+        the view.
+        :type up_vector: pyglet_helper.util.Vector
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
         :param make_trail: If True, the position of the primitive object will
@@ -67,6 +67,8 @@ class Primitive(Renderable):
         self._up = None
         self._make_trail = None
         self._primitive_object = None
+        self._width = None
+        self._height = None
 
         self.startup = True
         self.make_trail = make_trail
@@ -75,17 +77,17 @@ class Primitive(Renderable):
 
         if other is None:
             # position must be defined first, before the axis
-            self.up = Vector(up)
+            self.up_vector = Vector(up_vector)
             self.pos = Vector(pos)
             self.axis = Vector(axis)
 
         else:
-            self.up = other.up
+            self.up_vector = other.up_vector
             self.pos = other.pos
             self.axis = other.axis
 
     def model_world_transform(self, world_scale=0.0,
-                              object_scale=Vector(1, 1, 1)):
+                              object_scale=Vector([1, 1, 1])):
         """Performs scale, rotation, translation, and world scale (gcf)
         transforms in that order.
 
@@ -100,16 +102,17 @@ class Primitive(Renderable):
         """
         ret = Tmatrix()
         # A unit vector along the z_axis.
-        z_axis = Vector(0, 0, 1)
-        if abs(self.axis.dot(self.up) / self.up.mag()**2.0) > 0.98:
+        z_axis = Vector([0, 0, 1])
+        if abs(self.axis.dot(self.up_vector) / self.up_vector.mag()**2.0) \
+                > 0.98:
             # Then axis and up are in (nearly) the same direction: therefore,
             # try two other possible directions for the up vector.
-            if abs(self.axis.norm().dot(Vector(-1, 0, 0))) > 0.98:
-                z_axis = self.axis.cross(Vector(0, 0, 1)).norm()
+            if abs(self.axis.norm().dot(Vector([-1, 0, 0]))) > 0.98:
+                z_axis = self.axis.cross(Vector([0, 0, 1])).norm()
             else:
-                z_axis = self.axis.cross(Vector(-1, 0, 0)).norm()
+                z_axis = self.axis.cross(Vector([-1, 0, 0])).norm()
         else:
-            z_axis = self.axis.cross(self.up).norm()
+            z_axis = self.axis.cross(self.up_vector).norm()
 
         y_axis = z_axis.cross(self.axis).norm()
         x_axis = self.axis.norm()
@@ -124,10 +127,6 @@ class Primitive(Renderable):
 
         return ret
 
-    @property
-    def typeid(self):
-        return type(self)
-
     def rotate(self, angle, axis, origin):
         """Rotate the primitive's axis by angle about a specified axis at a
         specified origin.
@@ -139,154 +138,349 @@ class Primitive(Renderable):
         :param origin: The center of the axis of rotation.
         :type origin: pyglet_helper.util.Vector
         """
-        R = rotation(angle, axis, origin)
-        fake_up = self.up
+        rotation_matrix = rotation(angle, axis, origin)
+        fake_up = self.up_vector
         if not self.axis.cross(fake_up):
-            fake_up = Vector(1, 0, 0)
+            fake_up = Vector([1, 0, 0])
             if not self.axis.cross(fake_up):
-                fake_up = Vector(0, 1, 0)
+                fake_up = Vector([0, 1, 0])
         # is this rotation needed at present? Is it already included in the
         # transformation matrix?
         #self.pos = R * self._pos
-        self.up = R.times_v(fake_up)
-        self._axis = R.times_v(self._axis)
+        self.up_vector = rotation_matrix.times_v(fake_up)
+        self._axis = rotation_matrix.times_v(self._axis)
 
     @property
     def center(self):
-        # Used when obtaining the center of the body.
+        """
+        Gets the object's center
+        :return: the object's center, as a vector
+        :rtype: pyglet_helper.util.Vector
+        """
         return self.pos
 
     @property
     def pos(self):
+        """
+        Get the object's current position
+        :return: the object's position
+        :rtype: pyglet_helper.util.Vector
+        """
         return self._pos
 
     @pos.setter
     def pos(self, n_pos):
+        """
+        Set the object's position with a Vector
+        :param n_pos: a vector with the object's new position
+        :type n_pos: pyglet_helper.util.Vector
+        :return:
+        """
         self._pos = Vector(n_pos)
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
 
     @property
-    def x(self):
-        return self.pos.x
-
-    @x.setter
-    def x(self, x):
-        self.pos.x = x
-        if self.trail_initialized and self.make_trail:
-            if self.obj_initialized:
-                trail_update(self.primitive_object)
-
-    @property
-    def y(self):
-        return self.pos.y
-
-    @property
     def length(self):
+        """
+        Get the object's length (for most objects, this is the magnitude of
+        its axis)
+        :return: the object's length
+        :rtype: float
+        """
         return self.axis.mag()
 
     @length.setter
-    def length(self, l):
-        if l < 0:
+    def length(self, new_length):
+        """
+        Set the object's length
+        :param new_length: the new length of the object
+        :type new_length: float
+        :return:
+        """
+        if new_length < 0:
             raise RuntimeError("length cannot be negative")
-        self.axis = self.axis.norm() * l
+        self.axis = self.axis.norm() * new_length
 
-    @y.setter
-    def y(self, y):
-        self.pos.y = y
+    @property
+    def height(self):
+        """
+        Gets the scale of the object along the y axis
+        :return: the object's scale along the y axis
+        :rtype: float
+        """
+        return self._height
+
+    @height.setter
+    def height(self, new_height):
+        """
+        Sets the scale of the object along the y axis
+        :param new_height: the object's scale along the y axis
+        :type new_height: float
+        """
+        if new_height < 0:
+            raise ValueError("height cannot be negative")
+        self._height = new_height
+
+    @property
+    def width(self):
+        """
+        Gets the scale of the object along the z axis
+        :return: the object's scale along the z axis
+        :rtype: float
+        """
+        return self._width
+
+    @width.setter
+    def width(self, new_width):
+        """
+        Sets the scale of the object along the z axis
+        :param new_width: the object's scale along the y axis
+        :type new_width: float
+        """
+        if new_width < 0:
+            raise ValueError("width cannot be negative")
+        self._width = new_width
+
+    @property
+    def size(self):
+        """
+        Gets a vector with the object's scale along the x, y, and z axes
+        :return: a vector with the scales
+        :rtype: pyglet_helper.util.Vector
+        """
+        return Vector([self.axis.mag(), self.height, self.width])
+
+    @size.setter
+    def size(self, new_size):
+        """
+        Sets the object's scale along the x, y, and z axes
+        :param new_size: the new scales, in a vector
+        :type new_size: pyglet_helper.util.Vector
+        """
+        if new_size.x_component < 0:
+            raise ValueError("length cannot be negative")
+        if new_size.y_component < 0:
+            raise ValueError("height cannot be negative")
+        if new_size.z_component < 0:
+            raise ValueError("width cannot be negative")
+        self.axis = self.axis.norm() * new_size.x_component
+        self.height = new_size.y_component
+        self.width = new_size.z_component
+
+
+    @property
+    def x_position(self):
+        """
+        Gets the object's x position
+        :return: the object's x position
+        :rtype: float
+        """
+        return self.pos.x_component
+
+    @x_position.setter
+    def x_position(self, new_x_position):
+        """
+        Sets the object's x position
+        :param new_x_position: the object's new x position
+        :type new_x_position: float
+        """
+        self.pos.x_component = new_x_position
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
 
     @property
-    def z(self):
-        return self.pos.z
+    def y_position(self):
+        """
+        Gets the object's y position
+        :return: the object's y position
+        :rtype: float
+        """
+        return self.pos.y_component
 
-    @z.setter
-    def z(self, z):
-        self.pos.z = z
+    @y_position.setter
+    def y_position(self, new_y_position):
+        """
+        Sets the object's y position
+        :param new_y_position: the object's new y position
+        :type new_y_position: float
+        """
+        self.pos.y_component = new_y_position
+        if self.trail_initialized and self.make_trail:
+            if self.obj_initialized:
+                trail_update(self.primitive_object)
+
+    @property
+    def z_position(self):
+        """
+        Gets the object's z position
+        :return: the object's z position
+        :rtype: float
+        """
+        return self.pos.z_component
+
+    @z_position.setter
+    def z_position(self, new_z_position):
+        """
+        Sets the object's z position
+        :param new_z_position: the object's new z position
+        :type new_z_position: float
+        """
+        self.pos.z_component = new_z_position
         if self.trail_initialized and self.make_trail:
             if self.obj_initialized:
                 trail_update(self.primitive_object)
 
     @property
     def axis(self):
-        try:
-            return self._axis
-        except Exception as e:
-            print("caught exception: "+str(e))
-            return None
+        """
+        Get the object's axis, which defines the orientation and size of the
+        object
+        :return: the object's axis
+        :rtype; pyglet_helper.util.axis
+        """
+        return self._axis
 
     @axis.setter
     def axis(self, n_axis):
+        """
+        Set the object's axis, as a vector
+        :param n_axis: the new axis
+        :type n_axis: pyglet_helper.util.Vector
+        """
         if self.axis is None:
-            self._axis = Vector(1, 0, 0)
+            self._axis = Vector([1, 0, 0])
         if type(n_axis) is not Vector:
             n_axis = Vector(n_axis)
-        a = self.axis.cross(n_axis)
-        if a.mag() == 0.0:
+        _axis = self.axis.cross(n_axis)
+        if _axis.mag() == 0.0:
             self._axis = n_axis
         else:
             angle = n_axis.diff_angle(self._axis)
             self._axis = n_axis.mag() * self._axis.norm()
-            self.rotate(angle, a, self.pos)
+            self.rotate(angle, _axis, self.pos)
 
     @property
-    def up(self):
+    def up_vector(self):
+        """
+        Get the object's up axis
+        :return: the object's up axis
+        :rtype: pyglet_helper.util.Vector
+        """
         return self._up
 
-    @up.setter
-    def up(self, n_up):
+    @up_vector.setter
+    def up_vector(self, n_up):
+        """
+        Set the object's up axis
+        :param n_up: the object's up axis
+        :type n_up: pyglet_helper.util.Vector
+        """
         self._up = n_up
 
     @property
     def red(self):
+        """
+        Gets the red component of the object's color
+        :return: the red value of the object
+        :rtype: float
+        """
         return self.color.red
 
     @red.setter
-    def red(self, x):
-        self.color.red = x
+    def red(self, new_red):
+        """
+        Sets the red component of the object's color
+        :param new_red: the new red value of the object
+        :type new_red: float
+        """
+        self.color.red = new_red
 
     @property
     def green(self):
+        """
+        Gets the green component of the object's color
+        :return: the green value of the object
+        :rtype: float
+        """
         return self.color.green
 
     @green.setter
-    def green(self, x):
-        self.color.green = x
+    def green(self, new_green):
+        """
+        Sets the green component of the object's color
+        :param new_green: the new green value of the object
+        :type new_green: float
+        """
+        self.color.green = new_green
 
     @property
     def blue(self):
+        """
+        Sets the blue component of the object's color
+        :param new_blue: the new blue value of the object
+        :type new_blue: float
+        """
         return self.color.blue
 
     @blue.setter
-    def blue(self, x):
-        self.color.blue = x
+    def blue(self, new_blue):
+        """
+        Gets the blue component of the object's color
+        :return: the blue value of the object
+        :rtype: float
+        """
+        self.color.blue = new_blue
 
     @property
     def make_trail(self):
+        """
+        Get the object's trail, if it exists
+        :return: the object's trail
+        """
         return self._make_trail
 
     @make_trail.setter
-    def make_trail(self, x):
-        if x and not self.obj_initialized:
+    def make_trail(self, trail):
+        """
+        Sets the object's trail
+        :param trail: a trail for the object
+        """
+        if trail and not self.obj_initialized:
             raise RuntimeError("Can't set make_trail=True unless object was "
                                "created with make_trail specified")
         if self.startup:
             self.startup = False
-        self._make_trail = x
+        self._make_trail = trail
         self.trail_initialized = False
 
     @property
     def primitive_object(self):
+        """
+        Gets the primitive object type for the trail
+        :return: the primitive object type of the trail
+        :rtype: pyglet_helper.objects.Primitive
+        """
         return self._primitive_object
 
     @primitive_object.setter
-    def primitive_object(self, x):
-        self._primitive_object = x
+    def primitive_object(self, primitive):
+        """
+        Sets the primitive object of the trail
+        :param primitive: the primitive object of the trail
+        :type primitive: pyglet_helper.object.Primitive
+        """
+        self._primitive_object = primitive
         self.obj_initialized = True
 
     @property
     def is_light(self):
+        """
+        Returns false if the object is not a light. By default,
+        all primitives are not lights
+        :return: whether the object is a light
+        :rtype: bool
+        """
         return False

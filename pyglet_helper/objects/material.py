@@ -28,21 +28,39 @@ class Material(object):
 
     @property
     def textures(self):
+        """
+        Gets the material's texture
+        :return: the texture
+        """
         return self._textures
 
     @textures.setter
-    def textures(self, tex):
-        self._textures = tex
+    def textures(self, new_texture):
+        """
+        Sets the material's texture
+        :param new_texture: the new texture
+        """
+        self._textures = new_texture
 
     @property
     def shader(self):
+        """
+        Gets the shader program, if it exists
+        :return: the shader program
+        :rtype: pyglet_helper.util.ShaderProgram
+        """
         if hasattr(self, '_shader') and type(self._shader) == 'shader_program':
-            return self._shader.source()
+            return self._shader
         else:
             return None
 
     @shader.setter
     def shader(self, source):
+        """
+        Sets the shader source
+        :param source: the source of a new shader program
+        :type source: str
+        """
         if source is not None:
             self._shader = ShaderProgram(source)
         else:
@@ -50,13 +68,26 @@ class Material(object):
 
     @property
     def translucent(self):
+        """
+        Gets the translucence value of the material
+        :return: the translucence value
+        :rtype: float
+        """
         return self._translucent
 
     @translucent.setter
-    def translucent(self, t):
-        self._translucent = t
+    def translucent(self, new_translucent):
+        """
+        Sets the translucence value of the material
+        :param new_translucent: the translucence value
+        :type new_translucent: float
+        """
+        self._translucent = new_translucent
 
     def get_shader_program(self):
+        """
+        Gets the current ShaderProgram
+        """
         if type(self.shader) == ShaderProgram:
             return self.shader.get()
         else:

@@ -38,18 +38,21 @@ class Cylinder(Axial):
         n_stacks = [1, 1, 3, 6, 10, 20]
         for i in range(0, 6):
             scene.cylinder_model[i].gl_compile_begin()
-            q = Quadric()
-            q.render_cylinder(1.0, 1.0, n_faces[i], n_stacks[i])
+            _quadric = Quadric()
+            _quadric.render_cylinder(1.0, 1.0, n_faces[i], n_stacks[i])
             glTranslatef(1.0, 0.0, 0.0)
-            q.render_disk(1.0, n_faces[i], 1, 1)  # left end of cylinder
+            _quadric.render_disk(1.0, n_faces[i], 1, 1)  # left end of cylinder
             glTranslatef(-1.0, 0.0, 0.0)
-            q.render_disk(1.0, n_faces[i], 1, -1)  # right end of
+            _quadric.render_disk(1.0, n_faces[i], 1, -1)  # right end of
             scene.cylinder_model[i].gl_compile_end()
 
     @property
     def degenerate(self):
+        """
+        Returns True if the cylinder is invisible or has length or radius of 0
+        :return:
+        """
         return not self.visible or self.radius == 0.0 or self.axis.mag() == 0.0
-
 
     def render(self, scene):
         """ Add the cylinder to the view.
@@ -65,8 +68,8 @@ class Cylinder(Axial):
         lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
         glPushMatrix()
-        self.model_world_transform(scene.gcf, Vector(self.length, self.radius,
-                                                     self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector([self.length, self.radius,
+                                                      self.radius])).gl_mult()
 
         if self.translucent:
             glEnable(GL_CULL_FACE)

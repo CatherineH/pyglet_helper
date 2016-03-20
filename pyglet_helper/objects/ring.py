@@ -14,7 +14,7 @@ class Ring(Axial):
     A Ring object
     """
     def __init__(self, thickness=0.0, radius=1.0, color=Rgb(),
-                 pos=Vector(0, 0, 0), axis=Vector(1, 0, 0)):
+                 pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0])):
         """
 
         :param thickness: The ring's thickness.
@@ -39,22 +39,42 @@ class Ring(Axial):
 
     @property
     def thickness(self):
+        """
+        Get the ring's thickness (minor radius)
+        :return: the ring's minor radius
+        :rtype: float
+        """
         return self._thickness
 
     @thickness.setter
-    def thickness(self, t):
-        self._thickness = t
+    def thickness(self, new_thickness):
+        """
+        Set the ring's thickness. Will not update until render() is called
+        again
+        :param new_thickness: the new thickness (minor radius)
+        :type new_thickness: float
+        """
+        self._thickness = new_thickness
 
     @property
     def material_matrix(self):
+        """
+        Creates a transformation matrix scaled to the size of the torus
+        :return: the transformation matrix
+        :return: pyglet_helper.util.Tmatrix
+        """
         out = Tmatrix()
-        out.translate(Vector(.5, .5, .5))
-        out.scale(Vector(self.radius, self.radius, self.radius) *
+        out.translate(Vector([.5, .5, .5]))
+        out.scale(Vector([self.radius, self.radius, self.radius]) *
                   (.5 / (self.radius + self.thickness)))
         return out
 
     @property
     def degenerate(self):
+        """
+        True if the Ring's major radius is 0
+        :return:
+        """
         return self.radius == 0.0
 
     def render(self, scene):
@@ -89,30 +109,30 @@ class Ring(Axial):
         vertices = []
         normals = []
 
-        u_step = 2 * pi / (slices - 1)
-        v_step = 2 * pi / (inner_slices - 1)
-        u = 0.
+        outer_angle_step = 2 * pi / (slices - 1)
+        inner_angle_step = 2 * pi / (inner_slices - 1)
+        outer_angle = 0.
         for i in range(slices):
-            cos_u = cos(u)
-            sin_u = sin(u)
-            v = 0.
+            cos_outer_angle = cos(outer_angle)
+            sin_outer_angle = sin(outer_angle)
+            inner_angle = 0.
             for j in range(inner_slices):
-                cos_v = cos(v)
-                sin_v = sin(v)
+                cos_inner_angle = cos(inner_angle)
+                sin_inner_angle = sin(inner_angle)
 
-                d = (radius + inner_radius * cos_v)
-                x = d * cos_u
-                y = d * sin_u
-                z = inner_radius * sin_v
+                diameter = (radius + inner_radius * cos_inner_angle)
+                vertex_x = diameter * cos_outer_angle
+                vertex_y = diameter * sin_outer_angle
+                vertex_z = inner_radius * sin_inner_angle
 
-                nx = cos_u * cos_v
-                ny = sin_u * cos_v
-                nz = sin_v
+                normal_x = cos_outer_angle * cos_inner_angle
+                normal_y = sin_outer_angle * cos_inner_angle
+                normal_z = sin_inner_angle
 
-                vertices.extend([x, y, z])
-                normals.extend([nx, ny, nz])
-                v += v_step
-            u += u_step
+                vertices.extend([vertex_x, vertex_y, vertex_z])
+                normals.extend([normal_x, normal_y, normal_z])
+                inner_angle += inner_angle_step
+            outer_angle += outer_angle_step
 
         # Create ctypes arrays of the lists
         vertices = (GLfloat * len(vertices))(*vertices)
@@ -122,9 +142,10 @@ class Ring(Axial):
         indices = []
         for i in range(slices - 1):
             for j in range(inner_slices - 1):
-                p = i * inner_slices + j
-                indices.extend([p, p + inner_slices, p + inner_slices + 1])
-                indices.extend([p, p + inner_slices + 1, p + 1])
+                pos = i * inner_slices + j
+                indices.extend([pos, pos + inner_slices, pos + inner_slices +
+                                1])
+                indices.extend([pos, pos + inner_slices + 1, pos + 1])
         indices = (GLuint * len(indices))(*indices)
 
         # Compile a display list
@@ -135,8 +156,9 @@ class Ring(Axial):
         glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
         glEnableClientState(GL_VERTEX_ARRAY)
         glEnableClientState(GL_NORMAL_ARRAY)
-        self.model_world_transform(scene.gcf, Vector(self.radius, self.radius,
-                                                     self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf,
+                                   Vector([self.radius, self.radius,
+                                           self.radius])).gl_mult()
 
         glVertexPointer(3, GL_FLOAT, 0, vertices)
         glNormalPointer(GL_FLOAT, 0, normals)

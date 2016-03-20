@@ -39,9 +39,10 @@ class Cone(Axial):
         n_stacks = [1, 2, 4, 7, 10, 14]
         for i in range(0, 6):
             scene.cone_model[i].gl_compile_begin()
-            q = Quadric()
-            q.render_cylinder(1.0, 1.0, n_sides[i], n_stacks[i], top_radius=0.0)
-            q.render_disk(1.0, n_sides[i], n_stacks[i] * 2, -1)
+            _quadric = Quadric()
+            _quadric.render_cylinder(1.0, 1.0, n_sides[i], n_stacks[i],
+                                     top_radius=0.0)
+            _quadric.render_disk(1.0, n_sides[i], n_stacks[i] * 2, -1)
             scene.cone_model[i].gl_compile_end()
 
     def render(self, scene):

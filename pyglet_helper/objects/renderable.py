@@ -8,7 +8,7 @@ from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
     GL_LIGHT7, GL_POSITION, GL_SPECULAR
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
-gl_defined_lights = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
+GL_DEFINED_LIGHTS = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
                      GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
 
 
@@ -16,7 +16,8 @@ class Renderable(object):
     """
     A base class for all geometric shapes and lights.
     """
-    def __init__(self, color=Rgb(), mat=Material(), opacity=1.0, visible=False):
+    def __init__(self, color=Rgb(), mat=Material(), opacity=1.0, 
+                 visible=False):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -27,8 +28,8 @@ class Renderable(object):
         :param visible: If True, the object will be rendered on the screen
         :type visible: bool
         """
-        # The base color of this body.  Ignored by the variable-color composites
-        # (curve, faces, frame).
+        # The base color of this body.  Ignored by the variable-color 
+        # composites (curve, faces, frame).
         self.color = color
         # Fully opaque is 1.0, fully transparent is 0.0:
         self.opacity = opacity
@@ -38,14 +39,29 @@ class Renderable(object):
 
     @property
     def material(self):
+        """
+        Get the renderable's current material
+        :return: the material
+        :rtype: pyglet_helper.util.Matieral
+        """
         return self.mat
 
     @material.setter
-    def material(self, m):
-        self.mat = m
+    def material(self, new_material):
+        """
+        Set the renderable's current material
+        :param new_material: the new material
+        :type: pyglet_helper.util.Matieral
+        """
+        self.mat = new_material
 
     @property
     def translucent(self):
+        """
+        True if the renderable is translucent (either the opacity is less
+        than 1 or the material is translucent)
+        :return:
+        """
         return self.opacity != 1.0 or (self.mat and self.mat.translucent)
 
     def lod_adjust(self, scene, coverage_levels, pos, radius):
@@ -78,24 +94,29 @@ class View(object):
     """
     A class for handling the environment in which all objects are rendered
     """
-    def __init__(self, gcf=1.0, view_width=800, view_height=600, anaglyph=False,
-                 coloranaglyph=False, forward_changed=False, gcf_changed=False,
-                 lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
+    def __init__(self, gcf=1.0, view_width=800, view_height=600, 
+                 anaglyph=False, coloranaglyph=False, forward_changed=False, 
+                 gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True, background_color=Rgb()):
         """
-        :param gcf: The global scaling factor, a coefficient applied to all objects in the view
+        :param gcf: The global scaling factor, a coefficient applied to all 
+        objects in the view
         :type gcf: float
         :param view_width: The width of the viewport in pixels.
         :type view_width: int
         :param view_height: The height of the viewport in pixels.
         :type view_height: int
-        :param anaglyph: If True, the scene will be rendered in anaglyph stereo mode.
+        :param anaglyph: If True, the scene will be rendered in anaglyph stereo
+         mode.
         :type anaglyph: bool
-        :param coloranaglyph: If True, the scene will be rendered in coloranaglyph stereo mode.
+        :param coloranaglyph: If True, the scene will be rendered in 
+        coloranaglyph stereo mode.
         :type coloranaglyph: bool
-        :param forward_changed: True if the forward vector changed since the last rending operation.
+        :param forward_changed: True if the forward vector changed since the 
+        last rending operation.
         :type forward_changed: bool
-        :param gcf_changed: True if the global scaling factor changed since the last render cycle.
+        :param gcf_changed: True if the global scaling factor changed since 
+        the last render cycle.
         :type gcf_changed: bool
         :param lod_adjust: The level-of-detail.
         :type lod_adjust: int
@@ -115,7 +136,7 @@ class View(object):
         # The center of the scene in world space.
         self.center = Vector()
         # The true up direction of the scene in world space.
-        self.up = Vector()
+        self.up_vector = Vector()
         self.view_width = view_width
         self.view_height = view_height
         self.forward_changed = forward_changed
@@ -142,6 +163,7 @@ class View(object):
 
         self.enable_shaders = enable_shaders
         self.screen_objects = []
+        self.is_setup = False
         self.setup()
 
     def setup(self):
@@ -154,6 +176,7 @@ class View(object):
         glEnable(GL_CULL_FACE)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
+        self.is_setup = True
 
     def draw_lights(self):
         """ Render the lights in the scene
@@ -162,12 +185,12 @@ class View(object):
         # add all of the lights to the scene
         for i in range(0, max_lights):
             # enable all of the lights
-            glEnable(gl_defined_lights[i])
-            glLightfv(gl_defined_lights[i], GL_POSITION,
+            glEnable(GL_DEFINED_LIGHTS[i])
+            glLightfv(GL_DEFINED_LIGHTS[i], GL_POSITION,
                       self.lights[i].position)
-            glLightfv(gl_defined_lights[i], GL_SPECULAR,
+            glLightfv(GL_DEFINED_LIGHTS[i], GL_SPECULAR,
                       self.lights[i].specular)
-            glLightfv(gl_defined_lights[i], GL_DIFFUSE, self.lights[i].diffuse)
+            glLightfv(GL_DEFINED_LIGHTS[i], GL_DIFFUSE, self.lights[i].diffuse)
 
     def pixel_coverage(self, pos, radius):
         """ Compute the apparent diameter, in pixels, of a circle that is
@@ -181,9 +204,9 @@ class View(object):
         :return: The diameter in pixels.
         :rtype: float
         """
-        # The distance from the camera to this position, in the direction of the
-        # camera.  This is the distance to the viewing plane that the coverage
-        # circle lies in.
+        # The distance from the camera to this position, in the direction of 
+        # the camera.  This is the distance to the viewing plane that the 
+        # coverage circle lies in.
 
         pos = Vector(pos)
         dist = (pos - self.camera).dot(self.forward)

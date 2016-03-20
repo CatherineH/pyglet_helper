@@ -3,7 +3,6 @@
 from pyglet.gl import GLfloat
 from pyglet_helper.objects import Renderable
 from pyglet_helper.util import Rgb, Vector
-import abc
 
 
 class Light(Renderable):
@@ -34,26 +33,59 @@ class Light(Renderable):
 
     @property
     def rgb(self):
+        """
+        Gets the light's color
+        :return: the light's color
+        :rtype: pyglet_helper.util.rgb
+        """
         return self.color
 
     @rgb.setter
-    def rgb(self, r):
-        self.color = r
+    def rgb(self, new_color):
+        """
+        Sets the light's color
+        :param new_color: the new light color
+        :type new_color: pyglet_helper.util.Rgb
+        :return:
+        """
+        self.color = new_color
 
     @property
     def center(self):
+        """
+        Gets the light's center. Since the light is not a physical object,
+        this will always be an empty vector
+        :return: the light's center
+        :rtype: pyglet_helper.util.Vector
+        """
         return Vector()
 
     @property
     def material(self):
+        """
+        Though the Renderable object that Light inherits from has a
+        material, the Light object does not. Will raise an exception if set
+        or gotten.
+        :return:
+        """
         raise ValueError("light object does not have a material.")
 
     @material.setter
-    def material(self, mat):
+    def material(self, material):
+        """
+        Though the Renderable object that Light inherits from has a
+        material, the Light object does not. Will raise an exception if set
+        or gotten.
+        :return:
+        """
         raise ValueError("light object does not have a material.")
 
     @property
     def is_light(self):
+        """
+        Returns true if the parent object is a light
+        :return: bool
+        """
         return True
 
     def render(self, scene):
@@ -64,6 +96,3 @@ class Light(Renderable):
         scene.lights.append(self)
         scene.draw_lights()
 
-    @abc.abstractmethod
-    def get_vertex(self):
-        return 0

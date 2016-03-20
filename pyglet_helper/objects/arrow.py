@@ -13,7 +13,7 @@ class Arrow(Primitive):
     """
     def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0,
                  shaft_width=0.0, color=Rgb(),
-                 pos=Vector(0, 0, 0), axis=(1, 0, 0)):
+                 pos=Vector([0, 0, 0]), axis=(1, 0, 0)):
         """
 
         :param fixed_width: if True, the arrow's head width and length will not
@@ -60,6 +60,13 @@ class Arrow(Primitive):
 
     @property
     def head_width(self):
+        """
+        Get the width of the arrow's head, if undefined, it returns the
+        default value of 2x the width of the shaft, if the the shaft width
+        is undefined it returns a fifth of the arrow length
+        :return: the arrow's head width
+        :rtype: float
+        """
         if self._head_width:
             return self._head_width
         if self._shaft_width:
@@ -67,11 +74,23 @@ class Arrow(Primitive):
         return 0.2 * self.axis.mag()
 
     @head_width.setter
-    def head_width(self, hw):
-        self._head_width = hw
+    def head_width(self, new_head_width):
+        """
+        Set the value of the head width
+        :param new_head_width: the new value of the head width
+        :type new_head_width: float
+        """
+        self._head_width = new_head_width
 
     @property
     def head_length(self):
+        """
+        Get the length of the arrow's head. If undefined, it returns the
+        default value of 3x the shaft width. If shaft width is also
+        undefined, it returns the default value of 3/10 of the arrow's length.
+        :return: the arrow's head length
+        :rtype: float
+        """
         if self._head_length:
             return self._head_length
         if self._shaft_width:
@@ -79,26 +98,58 @@ class Arrow(Primitive):
         return 0.3 * self.axis.mag()
 
     @head_length.setter
-    def head_length(self, hl):
-        self._head_length = hl
+    def head_length(self, new_head_length):
+        """
+        Set the arrow's head length
+        :param new_head_length: the new head length
+        :type new_head_length: float
+        :return:
+        """
+        self._head_length = new_head_length
 
     @property
     def shaft_width(self):
+        """
+        Get the arrow's shaft width. If undefined, it returns the default
+        value of a tenth of the length of the arrow
+        :return:
+        """
         if self._shaft_width:
             return self._shaft_width
         return 0.1 * self.axis.mag()
 
     @shaft_width.setter
-    def shaft_width(self, sw):
-        self._shaft_width = sw
+    def shaft_width(self, new_shaft_width):
+        """
+        set the arrow's shaft width. Once set, the value fixed_width is set
+        to true, meaning default values will not be calculated on render
+        :param new_shaft_width: the new shaft width
+        :type new_shaft_width: float
+        :return:
+        """
+        self._shaft_width = new_shaft_width
         self._fixed_width = True
 
     @property
     def fixed_width(self):
+        """
+        Returns true if the shaft_width property has been set,
+        false otherwise. If fixed_width is false, default values for the
+        shaft width, head with and head length will be calculated on render.
+        :rtype: bool
+        """
         return self._fixed_width
 
     @fixed_width.setter
     def fixed_width(self, fixed):
+        """
+        Sets the fixed width boolean parameter. If fixed_width is false,
+        default values for the shaft width, head with and head length will be
+        calculated on render.
+        :param fixed: the new value for the fixed width parameter
+        :type fixed: bool
+        :return:
+        """
         self._fixed_width = fixed
 
     @property
@@ -122,7 +173,8 @@ class Arrow(Primitive):
             return
         self.init_model(scene)
         self.color.gl_set(self.opacity)
-        hw, sw, _len, hl = self.effective_geometry(1.0)
+        _head_width, _shaft_width, _len, _head_length = \
+            self.effective_geometry(1.0)
         if self.mat and self.mat.get_shader_program():
             model_material_loc = self.mat.get_shader_program().\
                 get_uniform_location(scene, "model_material")
@@ -131,40 +183,47 @@ class Arrow(Primitive):
         # Render the shaft and the head in back to front order (the shaft is in
         # front of the head if axis points away from the camera)
         shaft = self.axis.dot(scene.camera - (self.pos + self.axis *
-                                              (1 - hl / _len))) < 0
+                                              (1 - _head_length / _len))) < 0
         glPushMatrix()
         self.model_world_transform(scene.gcf).gl_mult()
 
         for part in range(0, 2):
             if part == shaft:
-                glScaled(_len - hl, sw, sw)
+                glScaled(_len - _head_length, _shaft_width, _shaft_width)
                 glTranslated(0.5, 0, 0)
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
-                    s = 1.0 / max(len, hw)
-                    model_mat.translate(Vector((_len - hl) * s * 0.5, 0.5,
-                                               0.5))
-                    model_mat.scale(Vector((_len - hl), sw, sw) * s)
+                    scale = 1.0 / max(_len, _head_width)
+                    _translation_magnitude = (_len - _head_length) * scale *\
+                                             0.5
+                    model_mat.translate(Vector([_translation_magnitude, 0.5,
+                                                0.5]))
+                    model_mat.scale(Vector([(_len - _head_length),
+                                            _shaft_width,
+                                            _shaft_width]) * scale)
                     mat.get_shader_program().\
                         set_uniform_matrix(scene, model_material_loc,
                                            model_mat)
                 scene.box_model.gl_render()
                 glTranslated(-0.5, 0, 0)
-                glScaled(1 / (len - hl), 1 / sw, 1 / sw)
+                glScaled(1 / (_len - _head_length), 1 / _shaft_width,
+                         1 / _shaft_width)
             else:
-                glTranslated(len - hl, 0, 0)
-                glScaled(hl, hw, hw)
+                glTranslated(_len - _head_length, 0, 0)
+                glScaled(_head_length, _head_width, _head_width)
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
-                    s = 1.0 / max(len, hw)
-                    model_mat.translate(Vector((_len - hl) * s, 0.5, 0.5))
-                    model_mat.scale(Vector(hl, hw, hw) * s)
+                    _scale = 1.0 / max(_len, _head_width)
+                    model_mat.translate(Vector([(_len - _head_length) * _scale,
+                                                0.5, 0.5]))
+                    model_mat.scale(Vector([_head_length, _head_width,
+                                            _head_width]) * _scale)
                     mat.get_shader_program().\
                         set_uniform_matrix(scene, model_material_loc,
                                            model_mat)
                 scene.pyramid_model.gl_render()
-                glScaled(1 / hl, 1 / hw, 1 / hw)
-                glTranslated(-len + hl, 0, 0)
+                glScaled(1 / _head_length, 1 / _head_width, 1 / _head_width)
+                glTranslated(-_len + _head_length, 0, 0)
         glPopMatrix()
 
     def init_model(self, scene):
@@ -189,11 +248,9 @@ class Arrow(Primitive):
         :param gcf: The scaling factor
         :type gcf: float
         """
-        """
-        First calculate the actual geometry based on the specs for headwidth,
-        shaftwidth, shaftlength, and fixedwidth.  This geometry is calculated
-        in world space and multiplied
-        """
+        # First calculate the actual geometry based on the specs for headwidth,
+        # shaftwidth, shaftlength, and fixedwidth.  This geometry is calculated
+        # in world space and multiplied
         min_sw = 0.02  # minimum shaftwidth
         def_sw = 0.1  # default shaftwidth
         def_hw = 2.0  # default headwidth multiplier. (x shaftwidth)

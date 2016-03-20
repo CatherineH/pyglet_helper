@@ -12,7 +12,8 @@ class Pyramid(Rectangular):
     """
     A Pyramid Object
     """
-    def __init__(self, pos=Vector(0, 0, 0), width=1.0, height=1.0, length=1.0,
+    def __init__(self, pos=Vector([0, 0, 0]), width=1.0, height=1.0,
+                 length=1.0,
                  color=Rgb()):
         """
         :param color: The object's color.
@@ -60,19 +61,19 @@ class Pyramid(Rectangular):
         glBegin(GL_TRIANGLES)
 
         # Inside
-        for f in range(0, 6):
-            glNormal3f(-normals[f][0], -normals[f][1], -normals[f][2])
-            for v in range(0, 3):
-                vert = [GLfloat(i) for i in vertices[triangle_indices[f]
-                [2 - v]]]
+        for face in range(0, 6):
+            glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
+            for vertex in range(0, 3):
+                vert = [GLfloat(i) for i in
+                        vertices[triangle_indices[face]][2 - vertex]]
                 glVertex3f(*vert)
 
         # Outside
-        for f in range(0, 6):
-            glNormal3fv(*[GLfloat(i) for i in normals[f]])
-            for v in range(0, 3):
-                glVertex3f(*[GLfloat(i) for i in vertices[triangle_indices[f]
-                [v]]])
+        for face in range(0, 6):
+            glNormal3fv(*[GLfloat(i) for i in normals[face]])
+            for vertex in range(0, 3):
+                glVertex3f(*[GLfloat(i) for i in vertices[triangle_indices[
+                    face]][vertex]])
 
         glEnd()
         glDisable(GL_CULL_FACE)
@@ -82,14 +83,26 @@ class Pyramid(Rectangular):
 
     @property
     def center(self):
+        """
+        Gets the object's position
+        :return: the object's position
+        :rtype: pyglet_helper.util.Vector
+        """
         return self.pos + self.axis * 0.33333333333333
 
     @property
     def material_matrix(self):
+        """
+        Creates a transformation matrix for pyramid objects
+        :return: the transformation matrix
+        :rtype: pyglet_helper.util.Tmatrix
+        """
         out = Tmatrix()
-        out.translate(Vector(0, .5, .5))
-        scale = Vector(self.axis.mag(), self.height, self.width)
-        out.scale(self.scale * (1.0 / max(scale.x, max(scale.y, scale.z))))
+        out.translate(Vector([0, .5, .5]))
+        scale = Vector([self.axis.mag(), self.height, self.width])
+        out.scale(self.scale * (1.0 / max(scale.x_component,
+                                          max(scale.y_component,
+                                              scale.z_component))))
         return out
 
     def render(self, scene):

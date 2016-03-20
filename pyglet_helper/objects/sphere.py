@@ -10,7 +10,7 @@ class Sphere(Axial):
     """
     A Sphere object
     """
-    def __init__(self, color=Rgb(), pos=Vector(0, 0, 0), radius=1.0,
+    def __init__(self, color=Rgb(), pos=Vector([0, 0, 0]), radius=1.0,
                  material=Material(), other=None):
         """
         :param radius: The sphere's radius.
@@ -38,14 +38,20 @@ class Sphere(Axial):
         """ Exposed for the benefit of the ellipsoid object, which overrides it.
          The default is to use <radius, radius, radius> for the scale.
         """
-        return Vector(self.radius, self.radius, self.radius)
+        return Vector([self.radius, self.radius, self.radius])
 
     @property
     def material_matrix(self):
+        """
+        Creates a transformation matrix for spherical objects
+        :return: the transformation matrix
+        :rtype: pyglet_helper.util.Tmatrix
+        """
         out = Tmatrix()
-        out.translate(Vector(.5, .5, .5))
+        out.translate(Vector([.5, .5, .5]))
         scale = self.scale
-        out.scale(scale * (.5 / max(scale.x, max(scale.y, scale.z))))
+        out.scale(scale * (.5 / max(scale.x_component, max(scale.y_component,
+                                                           scale.z_component))))
         return out
 
     @property

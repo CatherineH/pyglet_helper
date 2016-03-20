@@ -244,13 +244,13 @@ class Vector(object):
         dot_product = vn1.dot(vn2)
         if dot_product > 0.999:
             dot_product = Vector([vn2.x_component - vn1.x_component,
-                        vn2.y_component - vn1.y_component,
-                        vn2.z_component - vn1.z_component]).mag()
+                                  vn2.y_component - vn1.y_component,
+                                  vn2.z_component - vn1.z_component]).mag()
             return 2.0 * asin(dot_product / 2.0)
         elif dot_product < -0.999:
             dot_product = Vector([vn2.x_component + vn1.x_component,
-                        vn2.y_component + vn1.y_component,
-                        vn2.z_component + vn1.z_component]).mag()
+                                  vn2.y_component + vn1.y_component,
+                                  vn2.z_component + vn1.z_component]).mag()
             return pi - 2.0 * asin(dot_product / 2.0)
 
         return acos(dot_product)
@@ -881,11 +881,11 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        matrix = [[0] * 4] * 4
-        matrix[0] = glGetFloatv(GL_TEXTURE_MATRIX)
+        _matrix = [[0] * 4] * 4
+        _matrix[0] = glGetFloatv(GL_TEXTURE_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
-                self.matrix[i, j] = matrix[i][j]
+                self.matrix[i, j] = _matrix[i][j]
         return self.matrix
 
     def gl_color_get(self):
@@ -921,22 +921,18 @@ class Tmatrix(object):
         :return: the formatted string, four lines long
         :rtype: str
         """
-        output = "| " + str(self.matrix[0, 0]) + " " + str(
-            self.matrix[1, 0]) + " " + \
-                 str(self.matrix[2, 0]) + " " + str(
-            self.matrix[3, 0]) + "|\n"
-        output += "| " + str(self.matrix[0, 1]) + " " + str(
-            self.matrix[1, 1]) + " " + \
-                  str(self.matrix[2, 1]) + " " + str(
-            self.matrix[3, 1]) + "|\n"
-        output += "| " + str(self.matrix[0, 2]) + " " + str(
-            self.matrix[1, 2]) + " " + \
-                  str(self.matrix[2, 2]) + " " + str(
-            self.matrix[3, 2]) + "|\n"
-        output += "| " + str(self.matrix[0, 3]) + " " + str(
-            self.matrix[1, 3]) + " " + \
-                  str(self.matrix[2, 3]) + " " + str(
-            self.matrix[3, 3]) + "|\n"
+        output = "| " + str(self.matrix[0, 0]) + " " +str(self.matrix[1, 0]) \
+                 + " " + str(self.matrix[2, 0]) + " " + str(self.matrix[3, 0])\
+                 + "|\n"
+        output += "| " + str(self.matrix[0, 1]) + " " + str(self.matrix[1, 1])\
+                  + " " + str(self.matrix[2, 1]) + " " + \
+                  str(self.matrix[3, 1]) + "|\n"
+        output += "| " + str(self.matrix[0, 2]) + " " + str(self.matrix[1, 2])\
+                  + " " + str(self.matrix[2, 2]) + " " + \
+                  str(self.matrix[3, 2]) + "|\n"
+        output += "| " + str(self.matrix[0, 3]) + " " + str(self.matrix[1, 3])\
+                  + " " + str(self.matrix[2, 3]) + " " + \
+                  str(self.matrix[3, 3]) + "|\n"
         return output
 
 
