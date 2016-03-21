@@ -1,6 +1,7 @@
 """ pyglet_helper.util.texture contains objects for describing textures to
 apply to objects
 """
+from __future__ import print_function
 from pyglet.gl import glBindTexture, glDeleteTextures, GL_TEXTURE_2D
 
 
@@ -18,10 +19,20 @@ class Texture(object):
 
     @property
     def opacity(self):
+        """
+        Get the texture's opacity
+        :return: the texture's opacity, from 0 to 1
+        :rtype: float
+        """
         return self._have_opacity
 
     @opacity.setter
     def opacity(self, opacity):
+        """
+        Set the texture's opacity
+        :param opacity: the new opacity; a float from 0 to 1
+        :type opacity: float
+        """
         self._have_opacity = opacity
 
     def gl_activate(self):
@@ -48,6 +59,9 @@ class Texture(object):
         # Mutable subclasses must call this function whenever their texture
         # data
 
-    # needs to be reloaded into OpenGL.
     def damage(self):
+        """
+        Damage the texture, indicating that it needs to be re-uploaded to
+        OpenGL
+        """
         self.damaged = True

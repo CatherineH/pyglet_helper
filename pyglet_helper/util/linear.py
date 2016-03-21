@@ -894,11 +894,11 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        matrix = [[0] * 4] * 4
-        matrix[0] = glGetFloatv(GL_COLOR_MATRIX)
+        _matrix = [[0] * 4] * 4
+        _matrix[0] = glGetFloatv(GL_COLOR_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
-                self.matrix[i, j] = matrix[i][j]
+                self.matrix[i, j] = _matrix[i][j]
         return self.matrix
 
     def gl_projection_get(self):

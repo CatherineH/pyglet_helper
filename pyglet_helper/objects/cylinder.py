@@ -11,7 +11,8 @@ class Cylinder(Axial):
     """
      A Cylinder object.
     """
-    def __init__(self, pos=Vector(0, 0, 0), axis=Vector(1, 0, 0), radius=1.0,
+    def __init__(self, pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]),
+                 radius=1.0,
                  color=Rgb(0, 0, 0)):
         """
 

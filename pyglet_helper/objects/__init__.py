@@ -1,7 +1,9 @@
-# pyglet_helper.objects contains renderable objects
-from pyglet_helper.objects.material import Material, unshaded, emissive, \
-    diffuse, plastic, rough, shiny, chrome, ice, glass, blazed, silver, \
-    wood, marble, earth, BlueMarble, bricks
+"""
+pyglet_helper.objects contains renderable objects
+"""
+from pyglet_helper.objects.material import Material, UNSHADED, EMISSIVE, \
+    DIFFUSE, PLASTIC, ROUGH, SHINY, CHROME, ICE, GLASS, BLAZED, SILVER, \
+    WOOD, MARBLE, EARTH, BLUEMARBLE, BRICKS
 from pyglet_helper.objects.renderable import Renderable, View
 from pyglet_helper.objects.primitive import trail_update, Primitive
 from pyglet_helper.objects.rectangular import Rectangular

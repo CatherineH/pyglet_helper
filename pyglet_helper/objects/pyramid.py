@@ -64,8 +64,10 @@ class Pyramid(Rectangular):
         for face in range(0, 6):
             glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
             for vertex in range(0, 3):
+                #print triangle_indices[face]
+                #print vertices[triangle_indices[face]][2 - vertex]
                 vert = [GLfloat(i) for i in
-                        vertices[triangle_indices[face]][2 - vertex]]
+                        vertices[triangle_indices[face][2 - vertex]]]
                 glVertex3f(*vert)
 
         # Outside
@@ -73,7 +75,7 @@ class Pyramid(Rectangular):
             glNormal3fv(*[GLfloat(i) for i in normals[face]])
             for vertex in range(0, 3):
                 glVertex3f(*[GLfloat(i) for i in vertices[triangle_indices[
-                    face]][vertex]])
+                    face][vertex]]])
 
         glEnd()
         glDisable(GL_CULL_FACE)

@@ -78,6 +78,7 @@ class Light(Renderable):
         or gotten.
         :return:
         """
+        _ = material
         raise ValueError("light object does not have a material.")
 
     @property

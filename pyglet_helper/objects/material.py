@@ -94,7 +94,7 @@ class Material(object):
             return None
 
 
-unshaded = Material(shader_program="""
+UNSHADED = Material(shader_program="""
 [vertex]
         void main() {
             gl_Position = ftransform();
@@ -104,7 +104,7 @@ unshaded = Material(shader_program="""
         void main() {
             gl_FragColor = gl_Color;
         }""")
-emissive = Material(shader_program="""
+EMISSIVE = Material(shader_program="""
     [fragment]
     void material_main() {
         float d = dot(normalize(-position), normal);
@@ -113,20 +113,20 @@ emissive = Material(shader_program="""
         material_color = object_color * d;
         material_opacity = object_opacity;
     }""")
-diffuse = Material(shader_program="""
+DIFFUSE = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = lightAt( normalize(normal), normalize(-position), object_color, vec3(0,0,0), 0.0 );
             material_opacity = object_opacity;
         }""")
-plastic = Material(shader_program="""
+PLASTIC = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = lightAt( normalize(normal), normalize(-position), object_color, vec3(.8,.8,.8), 64.0 );
             material_opacity = object_opacity;
         }
         """)
-rough = Material(shader_program="""
+ROUGH = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -145,7 +145,7 @@ rough = Material(shader_program="""
             material_opacity = object_opacity;
         }
         """)
-shiny = Material(shader_program="""
+SHINY = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -164,7 +164,7 @@ shiny = Material(shader_program="""
             material_opacity = object_opacity;
         }
         """)
-chrome = Material(shader_program="""
+CHROME = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -184,7 +184,7 @@ chrome = Material(shader_program="""
         }
         """),
 
-ice = Material(shader_program="""
+ICE = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -204,7 +204,7 @@ ice = Material(shader_program="""
         }
         """)
 
-glass = Material(shader_program="""
+GLASS = Material(shader_program="""
         [varying]
         varying vec3 gln;
         [vertex]
@@ -225,7 +225,7 @@ glass = Material(shader_program="""
         }
         """)
 
-blazed = Material(shader_program="""
+BLAZED = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -244,7 +244,7 @@ blazed = Material(shader_program="""
             material_opacity = 1.0;
         }
         """),
-silver = Material(shader_program="""
+SILVER = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -264,7 +264,7 @@ silver = Material(shader_program="""
         }
         """)
 
-wood = Material(shader_program="""
+WOOD = Material(shader_program="""
         [fragment]
         uniform sampler2D tex0;  // wood cross-section
         uniform sampler3D tex1;  // 3D turbulence
@@ -286,7 +286,7 @@ wood = Material(shader_program="""
             material_opacity = object_opacity;
         }
         """)
-marble = Material(shader_program="""
+MARBLE = Material(shader_program="""
         [fragment]
         uniform sampler3D tex0;
 
@@ -307,8 +307,7 @@ marble = Material(shader_program="""
             material_opacity = object_opacity;
         }
         """),
-# TODO: fancy earth renderer with atmosphere, gloss map, bump map
-earth = Material(shader_program="""
+EARTH = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos * .5;
@@ -322,7 +321,7 @@ earth = Material(shader_program="""
         }
         """)
 # fancy earth renderer with clouds
-BlueMarble = Material(shader_program="""
+BLUEMARBLE = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos * .5;
@@ -335,7 +334,7 @@ BlueMarble = Material(shader_program="""
             material_opacity = object_opacity;
         }
         """)
-bricks = Material(shader_program="""
+BRICKS = Material(shader_program="""
         [fragment]
         void material_main() {
             material_color = mat_pos;

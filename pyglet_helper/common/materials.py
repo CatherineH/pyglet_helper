@@ -52,9 +52,9 @@ import os.path
 import sys
 
 from pyglet_helper.util.texture import Texture
-from pyglet_helper.objects.material import Material, unshaded, emissive, \
-    diffuse, plastic, rough, shiny, chrome, ice, glass, blazed, silver, wood, \
-    marble, earth, BlueMarble, bricks
+from pyglet_helper.objects.material import Material, UNSHADED, EMISSIVE, \
+    DIFFUSE, PLASTIC, ROUGH, SHINY, CHROME, ICE, GLASS, BLAZED, SILVER, \
+    WOOD, MARBLE, EARTH, BLUEMARBLE, BRICKS
 
 
 class RawTexture(Texture):
@@ -157,10 +157,22 @@ DATA_R = load_tga(TEXTURE_PATH + "random")
 TX_RANDOM = RawTexture(data=reshape(DATA_R, (64, 64, 64, 3)), interpolate=True,
                        mipmap=False)
 
-LIBRARY = open("library.txt", "r").readall()
+LIBRARY = open(os.path.join(os.path.dirname(__file__), "library.txt"),
+               "r").read()
 
 
 def shader(name, _shader, version, library=LIBRARY, **kwargs):
+    """
+    Create a shader material by reading in from the library
+    :param name: the name of the shader program in the library to select
+    :type name: str
+    :param _shader: the existing shader to read from, can be empty
+    :type _shader: str
+    :param version:
+    :param library: the library to draw from
+    :param kwargs:
+    :return:
+    """
 
     if isinstance(version, tuple):
         min_version, max_version = version
@@ -178,5 +190,5 @@ def shader(name, _shader, version, library=LIBRARY, **kwargs):
     return ShaderMaterial(name=name, shader=_shader, **kwargs)
 
 
-MATERIALS = [unshaded, emissive, diffuse, plastic, rough, shiny, chrome, ice,
-             glass, blazed, silver, wood, marble, earth, BlueMarble, bricks]
+MATERIALS = [UNSHADED, EMISSIVE, DIFFUSE, PLASTIC, ROUGH, SHINY, CHROME, ICE,
+             GLASS, BLAZED, SILVER, WOOD, MARBLE, EARTH, BLUEMARBLE, BRICKS]

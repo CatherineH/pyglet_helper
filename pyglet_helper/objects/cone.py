@@ -11,8 +11,8 @@ class Cone(Axial):
     """
     A Cone object
     """
-    def __init__(self, radius=1.0, color=Rgb(), pos=Vector(0, 0, 0),
-                 axis=Vector(1, 0, 0)):
+    def __init__(self, radius=1.0, color=Rgb(), pos=Vector([0, 0, 0]),
+                 axis=Vector([1, 0, 0])):
         """
 
         :param radius: The cone's bottom radius.
@@ -61,8 +61,8 @@ class Cone(Axial):
 
         length = self.axis.mag()
         glPushMatrix()
-        self.model_world_transform(scene.gcf, Vector(length, self.radius,
-                                                     self.radius)).gl_mult()
+        self.model_world_transform(scene.gcf, Vector([length, self.radius,
+                                                      self.radius])).gl_mult()
 
         self.color.gl_set(self.opacity)
         if self.translucent:
