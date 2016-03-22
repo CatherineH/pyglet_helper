@@ -294,8 +294,8 @@ class Primitive(Renderable):
         if _axis.mag() == 0.0:
             self._axis = n_axis
         else:
-            angle = n_axis.diff_angle(_axis)
-            self._axis = n_axis.mag() * _axis.norm()
+            angle = n_axis.diff_angle(self._axis)
+            self._axis = n_axis.mag() * self._axis.norm()
             self.rotate(angle, _axis, self.pos)
 
     @property

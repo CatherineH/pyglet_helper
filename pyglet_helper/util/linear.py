@@ -956,13 +956,6 @@ def rotation(angle, axis, origin=None):
         components = [[inverse_cos * axis[i] * axis[j] for i in range(0, 3)]
                       for j in range(0, 3)]
 
-        components[0][0] = inverse_cos * axis.x_component * axis.x_component
-        components[0][1] = inverse_cos * axis.x_component * axis.y_component
-        components[0][2] = inverse_cos * axis.x_component * axis.z_component
-        components[1][1] = inverse_cos * axis.y_component * axis.y_component
-        components[1][2] = inverse_cos * axis.y_component * axis.z_component
-        components[2][2] = inverse_cos * axis.z_component * axis.z_component
-
         ret.x_column([components[0][0] + _cos,
                       components[0][1] + axis.z_component * _sin,
                       components[0][2] - axis.y_component * _sin])
