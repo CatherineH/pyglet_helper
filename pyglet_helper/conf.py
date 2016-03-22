@@ -96,7 +96,7 @@ latex_elements = {}
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [(master_doc, 'PygletHelper.tex',
-                    u'PygletHelper Documentation', u'Catherine Holloway',
+                    'PygletHelper Documentation', 'Catherine Holloway',
                     'manual')]
 
 
@@ -105,7 +105,7 @@ latex_documents = [(master_doc, 'PygletHelper.tex',
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [(master_doc, 'pyglethelper',
-              u'PygletHelper Documentation', [author], 1)]
+              'PygletHelper Documentation', [author], 1)]
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -113,7 +113,7 @@ man_pages = [(master_doc, 'pyglethelper',
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [(master_doc, 'PygletHelper',
-                      u'PygletHelper Documentation', author,
+                      'PygletHelper Documentation', author,
                       'PygletHelper', 'One line description of project.',
                       'Miscellaneous')]
 
