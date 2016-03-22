@@ -135,7 +135,7 @@ class Ring(Axial):
             outer_angle += outer_angle_step
 
         # Create ctypes arrays of the lists
-        vertices = (GLfloat * len(vertices))(*vertices)
+        vertices = (GLfloat *len(vertices))(*vertices)
         normals = (GLfloat * len(normals))(*normals)
 
         # Create a list of triangle indices.

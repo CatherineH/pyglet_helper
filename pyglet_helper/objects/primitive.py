@@ -269,77 +269,13 @@ class Primitive(Renderable):
         self.height = new_size.y_component
         self.width = new_size.z_component
 
-
-    @property
-    def x_position(self):
-        """
-        Gets the object's x position
-        :return: the object's x position
-        :rtype: float
-        """
-        return self.pos.x_component
-
-    @x_position.setter
-    def x_position(self, new_x_position):
-        """
-        Sets the object's x position
-        :param new_x_position: the object's new x position
-        :type new_x_position: float
-        """
-        self.pos.x_component = new_x_position
-        if self.trail_initialized and self.make_trail:
-            if self.obj_initialized:
-                trail_update(self.primitive_object)
-
-    @property
-    def y_position(self):
-        """
-        Gets the object's y position
-        :return: the object's y position
-        :rtype: float
-        """
-        return self.pos.y_component
-
-    @y_position.setter
-    def y_position(self, new_y_position):
-        """
-        Sets the object's y position
-        :param new_y_position: the object's new y position
-        :type new_y_position: float
-        """
-        self.pos.y_component = new_y_position
-        if self.trail_initialized and self.make_trail:
-            if self.obj_initialized:
-                trail_update(self.primitive_object)
-
-    @property
-    def z_position(self):
-        """
-        Gets the object's z position
-        :return: the object's z position
-        :rtype: float
-        """
-        return self.pos.z_component
-
-    @z_position.setter
-    def z_position(self, new_z_position):
-        """
-        Sets the object's z position
-        :param new_z_position: the object's new z position
-        :type new_z_position: float
-        """
-        self.pos.z_component = new_z_position
-        if self.trail_initialized and self.make_trail:
-            if self.obj_initialized:
-                trail_update(self.primitive_object)
-
     @property
     def axis(self):
         """
         Get the object's axis, which defines the orientation and size of the
         object
         :return: the object's axis
-        :rtype; pyglet_helper.util.axis
+        :rtype; pyglet_helper.util.Vector
         """
         return self._axis
 
@@ -358,8 +294,8 @@ class Primitive(Renderable):
         if _axis.mag() == 0.0:
             self._axis = n_axis
         else:
-            angle = n_axis.diff_angle(self._axis)
-            self._axis = n_axis.mag() * self._axis.norm()
+            angle = n_axis.diff_angle(_axis)
+            self._axis = n_axis.mag() * _axis.norm()
             self.rotate(angle, _axis, self.pos)
 
     @property
@@ -379,60 +315,6 @@ class Primitive(Renderable):
         :type n_up: pyglet_helper.util.Vector
         """
         self._up = n_up
-
-    @property
-    def red(self):
-        """
-        Gets the red component of the object's color
-        :return: the red value of the object
-        :rtype: float
-        """
-        return self.color.red
-
-    @red.setter
-    def red(self, new_red):
-        """
-        Sets the red component of the object's color
-        :param new_red: the new red value of the object
-        :type new_red: float
-        """
-        self.color.red = new_red
-
-    @property
-    def green(self):
-        """
-        Gets the green component of the object's color
-        :return: the green value of the object
-        :rtype: float
-        """
-        return self.color.green
-
-    @green.setter
-    def green(self, new_green):
-        """
-        Sets the green component of the object's color
-        :param new_green: the new green value of the object
-        :type new_green: float
-        """
-        self.color.green = new_green
-
-    @property
-    def blue(self):
-        """
-        Sets the blue component of the object's color
-        :param new_blue: the new blue value of the object
-        :type new_blue: float
-        """
-        return self.color.blue
-
-    @blue.setter
-    def blue(self, new_blue):
-        """
-        Gets the blue component of the object's color
-        :return: the blue value of the object
-        :rtype: float
-        """
-        self.color.blue = new_blue
 
     @property
     def make_trail(self):

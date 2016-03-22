@@ -8,6 +8,7 @@ from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
     GL_LIGHT7, GL_POSITION, GL_SPECULAR
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
+
 GL_DEFINED_LIGHTS = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
                      GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
 
@@ -16,7 +17,8 @@ class Renderable(object):
     """
     A base class for all geometric shapes and lights.
     """
-    def __init__(self, color=Rgb(), mat=Material(), opacity=1.0, 
+
+    def __init__(self, color=Rgb(), mat=Material(), opacity=1.0,
                  visible=False):
         """
         :param color: The object's color.
@@ -94,8 +96,9 @@ class View(object):
     """
     A class for handling the environment in which all objects are rendered
     """
-    def __init__(self, gcf=1.0, view_width=800, view_height=600, 
-                 anaglyph=False, coloranaglyph=False, forward_changed=False, 
+
+    def __init__(self, gcf=1.0, view_width=800, view_height=600,
+                 anaglyph=False, coloranaglyph=False, forward_changed=False,
                  gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True, background_color=Rgb()):
         """

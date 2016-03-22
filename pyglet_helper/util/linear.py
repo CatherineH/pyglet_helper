@@ -267,18 +267,6 @@ class Vector(object):
                        self.y_component * vector.y_component,
                        self.z_component * vector.z_component])
 
-    def scale_inv(self, vector):
-        """ Scale this vector to another, by elementwise division
-
-        :param vector: the vector to scale by
-        :type vector: Vector or Vertex
-        :return: the scaled vector
-        :rtype: pyglet_helper.util.Vector
-        """
-        return Vector([self.x_component / vector.x_component,
-                       self.y_component / vector.y_component,
-                       self.z_component / vector.z_component])
-
     def rotate(self, angle, axis=None):
         """ Rotates the vector.
 
@@ -965,20 +953,26 @@ def rotation(angle, axis, origin=None):
         _cos = cos(angle)
         _sin = sin(angle)
         inverse_cos = 1.0 - _cos
-        icxx = inverse_cos * axis.x_component * axis.x_component
-        icxy = inverse_cos * axis.x_component * axis.y_component
-        icxz = inverse_cos * axis.x_component * axis.z_component
-        icyy = inverse_cos * axis.y_component * axis.y_component
-        icyz = inverse_cos * axis.y_component * axis.z_component
-        iczz = inverse_cos * axis.z_component * axis.z_component
+        components = [[inverse_cos * axis[i] * axis[j] for i in range(0, 3)]
+                      for j in range(0, 3)]
 
-        ret.x_column([icxx + _cos, icxy + axis.z_component * _sin, icxz -
-                      axis.y_component * _sin])
-        ret.y_column([icxy - axis.z_component * _sin, icyy + _cos,
-                      icyz + axis.x_component * _sin])
-        ret.z_column([icxz + axis.y_component * _sin,
-                      icyz - axis.x_component * _sin,
-                      iczz + _cos])
+        components[0][0] = inverse_cos * axis.x_component * axis.x_component
+        components[0][1] = inverse_cos * axis.x_component * axis.y_component
+        components[0][2] = inverse_cos * axis.x_component * axis.z_component
+        components[1][1] = inverse_cos * axis.y_component * axis.y_component
+        components[1][2] = inverse_cos * axis.y_component * axis.z_component
+        components[2][2] = inverse_cos * axis.z_component * axis.z_component
+
+        ret.x_column([components[0][0] + _cos,
+                      components[0][1] + axis.z_component * _sin,
+                      components[0][2] - axis.y_component * _sin])
+        ret.y_column([components[1][0] - axis.z_component * _sin,
+                      components[1][1] + _cos,
+                      components[1][2] + axis.x_component * _sin])
+        ret.z_column([components[0][1] + axis.y_component * _sin,
+                      components[1][2] - axis.x_component * _sin,
+                      components[2][2] + _cos])
+
         ret.w_column()
         ret.w_row()
     return ret
