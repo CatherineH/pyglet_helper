@@ -12,5 +12,9 @@ python:
 install: 
  - pip install -r requirements.txt
  - python setup.py install
+ - pip install python-coveralls
+ - pip install coverage
 # command to run tests
 script: nosetests
+after_success:
+ - coveralls
