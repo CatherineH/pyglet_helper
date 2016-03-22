@@ -3,7 +3,7 @@ Pyglet Helper
 
 .. image:: python/doc/examples/all_objects.gif
 
-[![Coverage Status](https://coveralls.io/repos/github/CatherineH/pyglet_helper/badge.svg?branch=master)](https://coveralls.io/github/CatherineH/pyglet_helper?branch=master)
+.. image:: https://coveralls.io/repos/github/CatherineH/pyglet_helper/badge.svg?branch=master :target: https://coveralls.io/github/CatherineH/pyglet_helper?branch=master
 
 The goal of this project is to make pyglet_ usable to people with no OpenGL experience by
 reproducing the functionality of VPython_ for drawing geometric primitives.
