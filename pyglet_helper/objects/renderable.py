@@ -9,6 +9,14 @@ try:
                           GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, \
                           GL_LIGHT6, GL_LIGHT7, GL_POSITION, GL_SPECULAR
 except Exception as error_msg:
+    GL_LIGHT0 = 16384
+    GL_LIGHT1 = 16385
+    GL_LIGHT2 = 16386 
+    GL_LIGHT3 = 16387
+    GL_LIGHT4 = 16388
+    GL_LIGHT5 = 16389
+    GL_LIGHT6 = 16390
+    GL_LIGHT7 = 16391
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
