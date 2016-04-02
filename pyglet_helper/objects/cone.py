@@ -1,8 +1,11 @@
 """
 pyglet_helper.cone contains an object for drawing a cone
 """
-from pyglet.gl import glPushMatrix, glEnable, glCullFace, glPopMatrix, \
-    GL_BACK, GL_CULL_FACE, GL_FRONT
+try:
+    from pyglet.gl import glPushMatrix, glEnable, glCullFace, glPopMatrix, \
+                          GL_BACK, GL_CULL_FACE, GL_FRONT
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 

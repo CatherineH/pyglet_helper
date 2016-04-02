@@ -1,7 +1,10 @@
 """
 pyglet_helper.arrow contains an object for drawing an arrow
 """
-from pyglet.gl import glScaled, glTranslated, glPushMatrix, glPopMatrix
+try:
+    from pyglet.gl import glScaled, glTranslated, glPushMatrix, glPopMatrix
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Box, Material, Primitive, Pyramid
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 

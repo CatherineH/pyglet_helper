@@ -1,11 +1,15 @@
 """
 pyglet_helper.renderable contains objects needed to draw all geometric shapes
 """
-from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
-    glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT, \
-    GL_CULL_FACE, GL_DEPTH_TEST, GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, \
-    GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, \
-    GL_LIGHT7, GL_POSITION, GL_SPECULAR
+try:
+    from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
+                          glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, \
+                          GL_DEPTH_BUFFER_BIT, GL_CULL_FACE, GL_DEPTH_TEST, \
+                          GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, GL_LIGHT1, \
+                          GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, \
+                          GL_LIGHT6, GL_LIGHT7, GL_POSITION, GL_SPECULAR
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 

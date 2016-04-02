@@ -1,9 +1,14 @@
 """pyglet_helper.ring contains an object for drawing a ring"""
-from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, \
-    glEnableClientState, glEndList, glGenLists, glNewList, glNormalPointer, \
-    glPopClientAttrib, glPushClientAttrib, glVertexPointer, \
-    GL_CLIENT_VERTEX_ARRAY_BIT, GL_COMPILE, GL_FLOAT, GL_TRIANGLES, \
-    GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, GL_UNSIGNED_INT
+try:
+    from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, \
+                          glEnableClientState, glEndList, glGenLists, \
+                          glNewList, glNormalPointer, glPopClientAttrib, \
+                          glPushClientAttrib, glVertexPointer, \
+                          GL_CLIENT_VERTEX_ARRAY_BIT, GL_COMPILE, GL_FLOAT, \
+                          GL_TRIANGLES, GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, \
+                          GL_UNSIGNED_INT
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 from math import pi, sin, cos, sqrt

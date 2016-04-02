@@ -1,8 +1,11 @@
 """
 pyglet_helper.box contains an object for drawing a box to the screen
 """
-from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, \
+try:
+    from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, \
     glPopMatrix, glPushMatrix, glVertex3f, GLfloat, GL_CULL_FACE, GL_TRIANGLES
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Vector
 

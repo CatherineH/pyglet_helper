@@ -2,11 +2,16 @@
 quadric-type
 geometric shapes
 """
-from pyglet.gl.glu import gluDeleteQuadric, gluNewQuadric, \
-    gluQuadricDrawStyle, gluQuadricNormals, gluQuadricOrientation, gluSphere, \
-    gluCylinder, gluDisk, GLU_FILL, GLU_POINT, GLU_LINE, GLU_SILHOUETTE, \
-    GLU_NONE, GLU_FLAT, GLU_INSIDE, GLU_SMOOTH, GLU_OUTSIDE
-from pyglet.gl import glRotatef, GLfloat
+try:
+    from pyglet.gl.glu import gluDeleteQuadric, gluNewQuadric, \
+                              gluQuadricDrawStyle, gluQuadricNormals, \
+                              gluQuadricOrientation, gluSphere, \
+                              gluCylinder, gluDisk, GLU_FILL, GLU_POINT, \
+                              GLU_LINE, GLU_SILHOUETTE, GLU_NONE, GLU_FLAT, \
+                              GLU_INSIDE, GLU_SMOOTH, GLU_OUTSIDE
+    from pyglet.gl import glRotatef, GLfloat
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from enum import Enum
 
 

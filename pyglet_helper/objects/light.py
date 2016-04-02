@@ -1,6 +1,9 @@
 """ pyglet_helper.light contains an object for creating lights
 """
-from pyglet.gl import GLfloat
+try:
+    from pyglet.gl import GLfloat
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Renderable
 from pyglet_helper.util import Rgb, Vector
 

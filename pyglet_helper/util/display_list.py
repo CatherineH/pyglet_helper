@@ -2,9 +2,11 @@
 objects to render to the screen
 """
 from __future__ import print_function
-from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
-    glNewList, GL_COMPILE
-
+try:
+    from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
+                          glNewList, GL_COMPILE
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 
 class DisplayList(object):
     """

@@ -1,7 +1,10 @@
 """ pyglet_helper.sphere contains an object for drawing a sphere
 """
-from pyglet.gl import glEnable, glPushMatrix, glCullFace, glPopMatrix, \
-    GL_CULL_FACE, GL_FRONT, GL_BACK
+try:
+    from pyglet.gl import glEnable, glPushMatrix, glCullFace, glPopMatrix, \
+                          GL_CULL_FACE, GL_FRONT, GL_BACK
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Axial, Material
 from pyglet_helper.util import Quadric, Rgb, Tmatrix, Vector
 

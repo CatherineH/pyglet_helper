@@ -2,8 +2,10 @@
 apply to objects
 """
 from __future__ import print_function
-from pyglet.gl import glBindTexture, glDeleteTextures, GL_TEXTURE_2D
-
+try:
+    from pyglet.gl import glBindTexture, glDeleteTextures, GL_TEXTURE_2D
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 
 class Texture(object):
     """

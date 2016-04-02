@@ -1,9 +1,13 @@
 """
 pyglet_helper.pyramid contains an object for drawing a pyramid
 """
-from pyglet.gl import glEnable, glBegin, glDisable, glEnd, glPopMatrix, \
-    glPushMatrix, GL_CULL_FACE, GL_TRIANGLES, glNormal3f, GLfloat, glVertex3f, \
-    glNormal3fv
+try:
+    from pyglet.gl import glEnable, glBegin, glDisable, glEnd, glPopMatrix, \
+                          glPushMatrix, GL_CULL_FACE, GL_TRIANGLES, \
+                          glNormal3f, GLfloat, glVertex3f, \
+                          glNormal3fv
+except Exception as error_msg:
+    print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
