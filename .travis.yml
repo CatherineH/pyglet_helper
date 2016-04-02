@@ -10,6 +10,6 @@ install:
  - pip install python-coveralls
  - pip install coverage
 # command to run tests
-script: nosetests
+script: nosetests --with-coverage -w pyglet_helper
 after_success:
  - coveralls
