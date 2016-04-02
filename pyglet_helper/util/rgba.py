@@ -7,11 +7,12 @@ try:
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 
+
 class Rgba(object):
     """
     Defines a color to be used by OpenGl, including RGB and opacity.
     """
-    def __init__(self, red=1.0, green=1.0, blue=1.0, opacity=1.0, c=None):
+    def __init__(self, red=1.0, green=1.0, blue=1.0, opacity=1.0, color=None):
         """
         :param red: The red value of the color, value between 0 and 1
         :type red: float
@@ -24,12 +25,10 @@ class Rgba(object):
         :param c: A list of values to copy into a new color
         :type c: list
         """
-        if c is not None:
-            if len(c) == 4:
-                self.red = c[0]
-                self.green = c[1]
-                self.blue = c[2]
-                self.opacity = c[3]
+        if color is not None:
+            if len(color) == 4:
+                for i in range(4):
+                    self[i] = color[i]
             else:
                 raise ValueError("RGBA color vector must be of length 4!")
         else:
@@ -37,6 +36,34 @@ class Rgba(object):
             self.green = green
             self.blue = blue
             self.opacity = opacity
+
+    def __getitem__(self, item):
+        if item == 0:
+            return self.red
+        elif item == 1:
+            return self.green
+        elif item == 2:
+            return self.blue
+        elif item == 3:
+            return self.opacity
+        else:
+            raise ValueError("no such component")
+
+    def __setitem__(self, item, value):
+        if item == 0:
+            self.red = value
+        elif item == 1:
+            self.green = value
+        elif item == 2:
+            self.blue = value
+        elif item == 3:
+            self.opacity = value
+        else:
+            raise ValueError("no such component")
+
+    def __str__(self):
+        return "color: r" + str(self.red) + " g" + str(self.green) + " b" + \
+               str(self.blue) + " o"+str(self.opacity)
 
     def desaturate(self):
         """ Return a desaturated version of the color
@@ -85,9 +112,8 @@ class Rgb(object):
         """
         if color is not None:
             if len(color) == 3:
-                self.red = color[0]
-                self.green = color[1]
-                self.blue = color[2]
+                for i in range(3):
+                    self[i] = color[i]
             else:
                 raise ValueError("RGB color vector must be of length 4!")
         else:
@@ -96,8 +122,8 @@ class Rgb(object):
             self.blue = blue
 
     def __str__(self):
-        return "color: r" + str(self.red) + " b" + str(self.blue) + " g" + \
-               str(self.green)
+        return "color: r" + str(self.red) + " g" + str(self.green) \
+               + " b" + str(self.blue)
 
     def __getitem__(self, item):
         if item == 0:
@@ -106,6 +132,16 @@ class Rgb(object):
             return self.green
         elif item == 2:
             return self.blue
+        else:
+            raise ValueError("no such component")
+
+    def __setitem__(self, item, value):
+        if item == 0:
+            self.red = value
+        elif item == 1:
+            self.green = value
+        elif item == 2:
+            self.blue = value
         else:
             raise ValueError("no such component")
 
