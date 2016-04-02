@@ -57,7 +57,7 @@ def test_arrow_effective_geometry():
     assert(blo.effective_geometry(0.2)[0] == 0.2)
     assert(blo.effective_geometry(0.2)[1] == 0.2)
     assert(blo.effective_geometry(0.2)[2] == 0.2)
-    blo = Arrow()
+    blo = Arrow(head_width=0.0, shaft_width=0.0, head_length=0.0)
     assert(blo.effective_geometry(1.0)[0] == 0.2)
     assert(blo.effective_geometry(1.0)[1] == 0.1)
     assert(blo.effective_geometry(1.0)[2] == 1.0)

@@ -1,6 +1,7 @@
 """ pyglet_helper.util.linear contains vector and vertex objects needed for
 transformations and describes linear algebra operations
 """
+from __future__ import division, print_function
 try:
     from pyglet.gl import glNormal3dv, glVertex3d, glVertex4d, GLdouble, \
                           glLoadMatrixd, glMultMatrixd, glGetFloatv, GLfloat, \
@@ -98,10 +99,22 @@ class Vector(object):
 
     def __div__(self, scale):
         """
+        Python 2 and 3 compatibility
+         divide the current vector by a single value
+        :param scale: the factor to divide the vector by
+        :type scale: float
+        :return: the vector divided by scale
+        :rtype: pyglet_helper.util.Vector
+        """
+        return self.__truediv__(scale)
+
+    def __truediv__(self, scale):
+        """
         divide the current vector by a single value
         :param scale: the factor to divide the vector by
         :type scale: float
-        :return:
+        :return: the vector divided by scale
+        :rtype: pyglet_helper.util.Vector
         """
         return Vector([self.x_component / scale, self.y_component / scale,
                        self.z_component / scale])

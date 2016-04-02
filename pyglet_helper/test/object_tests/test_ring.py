@@ -7,7 +7,6 @@ def test_ring_thickness():
 def test_ring_material_matrix():
     from pyglet_helper.objects import Ring
     blo = Ring(thickness=100000.0, radius=0.01)
-    print blo.material_matrix[0, 3]
     assert(abs(blo.material_matrix[0, 0] - 4.9999995e-08) < 1e-7)
     assert(abs(blo.material_matrix[1, 1] - 4.9999995e-08) < 1e-7)
     assert(abs(blo.material_matrix[2, 2] - 4.9999995e-08) < 1e-7)
