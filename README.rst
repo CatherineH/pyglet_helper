@@ -1,7 +1,7 @@
 Pyglet Helper
 =============
 
-.. image:: python/doc/examples/all_objects.gif
+.. image:: doc/examples/all_objects.gif
 
 
 

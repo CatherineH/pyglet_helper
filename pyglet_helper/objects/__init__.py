@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
-pyglet_helper.objects contains renderable objects
+Module containing renderable objects
 """
+from __future__ import absolute_import
+
 from pyglet_helper.objects.material import Material, UNSHADED, EMISSIVE, \
     DIFFUSE, PLASTIC, ROUGH, SHINY, CHROME, ICE, GLASS, BLAZED, SILVER, \
     WOOD, MARBLE, EARTH, BLUEMARBLE, BRICKS

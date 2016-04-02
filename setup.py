@@ -1,63 +1,66 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+Python setup.py file for the pyglet_helper project
+"""
+
+# IMPORTS ####################################################################
+
+import codecs
 import os
-import sys
+import re
 
 from setuptools import setup, find_packages
-from pyglet_helper import __version__
+
+# SETUP VALUES ###############################################################
+
+NAME = "pyglet_helper"
+PACKAGES = find_packages()
+META_PATH = os.path.join("pyglet_helper", "__init__.py")
+INSTALL_REQUIRES = ['enum', 'numpy', 'pyglet']
+
+# HELPER FUNCTONS ############################################################
+
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 
-DESCRIPTION = 'An extension to Pyglet'
+def read(*parts):
+    """
+    Build an absolute path from *parts* and and return the contents of the
+    resulting file.  Assume UTF-8 encoding.
+    """
+    with codecs.open(os.path.join(HERE, *parts), "rb", "utf-8") as f:
+        return f.read()
 
-VISUAL_DIR = os.getcwd()
-SITE_PACKAGES = os.path.join(VISUAL_DIR, 'site-packages')
-excluded = []
-# The source dist comes with batteries included, the wheel can use pip to get the rest
-is_wheel = 'bdist_wheel' in sys.argv
-if is_wheel:
-    excluded.append('extlibs.future')
-
-
-def exclude_package(pkg):
-    for exclude in excluded:
-        if pkg.startswith(exclude):
-            return True
-    return False
+META_FILE = read(META_PATH)
 
 
-def create_package_list(base_package):
-    return ([base_package] +
-            [base_package + '.' + pkg
-             for pkg
-             in find_packages(base_package)
-             if not exclude_package(pkg)])
+def find_meta(meta):
+    """
+    Extract __*meta*__ from META_FILE.
+    """
+    meta_match = re.search(
+        r"^__{meta}__ = ['\"]([^'\"]*)['\"]".format(meta=meta),
+        META_FILE, re.M
+    )
+    if meta_match:
+        return meta_match.group(1)
+    raise RuntimeError("Unable to find __{meta}__ string.".format(meta=meta))
 
+
+# MAIN #######################################################################
 
 def main():
     setup(
-        name='PygletHelper',
-        description=DESCRIPTION,
-        author='Catherine Holloway',
-        author_email='milankie@gmail.com',
-        url='https://github.com/CatherineH/pyglet_helper',
-        platforms=['POSIX', 'MacOS', 'Windows'],
-        license='other',
-        # packages=['vis'],
-        package_dir={
-            'vis': os.path.join(SITE_PACKAGES, 'vis'),
-        },
-        install_requires=[
-            'enum',
-            'numpy',
-            'pyglet',
-            'ttfquery',
-            'fontTools'
-        ],
-        package_data={'pyglet_helper.common': ['BlueMarble.tga', 'brickbump.tga', 'earth.tga', 'random.tga',
-                                               'turbulence3.tga', 'wood.tga']},
-        # Package info
-        packages=create_package_list('pyglet_helper'),
-        version=__version__,
-        zip_safe=False)
+        name=find_meta("title"),
+        version=find_meta("version"),
+        url=find_meta("uri"),
+        author=find_meta("author"),
+        author_email=find_meta("email"),
+        packages=PACKAGES,
+        install_requires=INSTALL_REQUIRES,
+        description=find_meta("description")
+    )
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
