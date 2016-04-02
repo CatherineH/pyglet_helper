@@ -2,6 +2,7 @@
 build
 dist
 .idea/
-PygletHelper.egg-info
+
+pyglet_helper.egg-info
 
 python/doc/examples/screenshot*.png

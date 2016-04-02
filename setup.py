@@ -17,7 +17,7 @@ from setuptools import setup, find_packages
 NAME = "pyglet_helper"
 PACKAGES = find_packages()
 META_PATH = os.path.join("pyglet_helper", "__init__.py")
-INSTALL_REQUIRES = ['enum', 'numpy', 'pyglet']
+INSTALL_REQUIRES = ['enum34', 'numpy', 'pyglet']
 
 # HELPER FUNCTONS ############################################################
 
@@ -58,8 +58,8 @@ def main():
         author=find_meta("author"),
         author_email=find_meta("email"),
         packages=PACKAGES,
-        install_requires=INSTALL_REQUIRES,
-        description=find_meta("description")
+        description=find_meta("description"),
+        install_requires=INSTALL_REQUIRES
     )
 
 if __name__ == "__main__":
