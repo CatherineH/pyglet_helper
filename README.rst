@@ -1,9 +1,9 @@
 Pyglet Helper
 =============
 
-.. image:: doc/examples/all_objects.gif
-
-
+| .. image:: doc/examples/all_objects.gif
+|
+.. image:: https://travis-ci.org/CatherineH/pyglet_helper.svg?branch=master :target: https://travis-ci.org/CatherineH/pyglet_helper
 
 .. image:: https://coveralls.io/repos/github/CatherineH/pyglet_helper/badge.svg?branch=master :target: https://coveralls.io/github/CatherineH/pyglet_helper?branch=master
 
