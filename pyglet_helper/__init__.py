@@ -9,6 +9,7 @@ from __future__ import absolute_import
 from . import objects
 from . import common
 from . import util
+from . import test
 __version__ = "0.0.1"
 __author__ = "cholloway"
 

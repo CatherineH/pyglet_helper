@@ -5,6 +5,7 @@ try:
     from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, \
     glPopMatrix, glPushMatrix, glVertex3f, GLfloat, GL_CULL_FACE, GL_TRIANGLES
 except Exception as error_msg:
+    from pyglet_helper.test import GLfloat, glNormal3f, glVertex3f
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Vector
@@ -32,20 +33,41 @@ class Box(Rectangular):
         super(Box, self).__init__(width=width, height=height, color=color,
                                   length=length, pos=pos)
         self.initialized = False
+        self.skip_right_face = False
 
-    def init_model(self, scene, skip_right_face=False):
+    def init_model(self, scene):
         """ Add the Vertexes and Normals to the compile list.
 
         :param scene: The view to render the model to.
         :type scene: pyglet_helper.objects.View
-        :param skip_right_face: If True, the right face will not be rendered.
-        :type skip_right_face: bool
         """
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
         glEnable(GL_CULL_FACE)
         glBegin(GL_TRIANGLES)
+        self.generate_model()
+        glEnd()
+        glDisable(GL_CULL_FACE)
+        scene.box_model.gl_compile_end()
+        self.initialized = True
 
+    def render(self, scene):
+        """Render the box in the view
+
+        :param scene: The view to render the model into
+        :type scene: pyglet_helper.objects.View
+        """
+        if not scene.box_model.compiled:
+            self.init_model(scene)
+        self.color.gl_set(self.opacity)
+        glPushMatrix()
+        self.apply_transform(scene)
+        scene.box_model.gl_render()
+        glPopMatrix()
+
+    def generate_model(self):
+        """ Generate the vertices and normals.
+        """
         corner = 0.5
         vertices = [
             [[+corner, +corner, +corner], [+corner, -corner, +corner],
@@ -70,7 +92,7 @@ class Box(Rectangular):
         normals = [[+1, 0, 0], [-1, 0, 0], [0, -1, 0],
                    [0, +1, 0], [0, 0, +1], [0, 0, -1]]
         # Draw inside (reverse winding and normals)
-        for face in range(skip_right_face, 6):
+        for face in range(self.skip_right_face, 6):
             glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
             for vertex in range(0, 3):
                 glVertex3f(GLfloat(vertices[face][3 - vertex][0]),
@@ -81,7 +103,7 @@ class Box(Rectangular):
                            GLfloat(vertices[face][3 - vertex][1]),
                            GLfloat(vertices[face][3 - vertex][2]))
         # Draw outside
-        for face in range(skip_right_face, 6):
+        for face in range(self.skip_right_face, 6):
             glNormal3f(GLfloat(normals[face][0]), GLfloat(normals[face][1]),
                        GLfloat(normals[face][2]))
             for vertex in range(0, 3):
@@ -92,21 +114,3 @@ class Box(Rectangular):
                 glVertex3f(GLfloat(vertices[face][vertex][0]),
                            GLfloat(vertices[face][vertex][1]),
                            GLfloat(vertices[face][vertex][2]))
-        glEnd()
-        glDisable(GL_CULL_FACE)
-        scene.box_model.gl_compile_end()
-        self.initialized = True
-
-    def render(self, scene):
-        """Render the box in the view
-
-        :param scene: The view to render the model into
-        :type scene: pyglet_helper.objects.View
-        """
-        if not scene.box_model.compiled:
-            self.init_model(scene, False)
-        self.color.gl_set(self.opacity)
-        glPushMatrix()
-        self.apply_transform(scene)
-        scene.box_model.gl_render()
-        glPopMatrix()
