@@ -28,8 +28,14 @@ def glVertex3f(a, b, c):
 def glGenLists(handle):
     return handle
 
+
 def glEnable(lighting):
     pass
 
+
 def glClearColor(a, b, c, d):
+    pass
+
+
+def glColor3f(a, b, c):
     pass
