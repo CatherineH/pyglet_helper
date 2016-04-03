@@ -91,24 +91,26 @@ class Box(Rectangular):
                    [0, +1, 0], [0, 0, +1], [0, 0, -1]]
         # Draw inside (reverse winding and normals)
         for face in range(self.skip_right_face, 6):
-            glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
+            pyglet.gl.glNormal3f(-normals[face][0], -normals[face][1],
+                                 -normals[face][2])
             for vertex in range(0, 3):
-                glVertex3f(GLfloat(vertices[face][3 - vertex][0]),
-                           GLfloat(vertices[face][3 - vertex][1]),
-                           GLfloat(vertices[face][3 - vertex][2]))
+                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][3 - vertex][0]),
+                           pyglet.gl.GLfloat(vertices[face][3 - vertex][1]),
+                           pyglet.gl.GLfloat(vertices[face][3 - vertex][2]))
             for vertex in (0, 2, 3):
-                glVertex3f(GLfloat(vertices[face][3 - vertex][0]),
-                           GLfloat(vertices[face][3 - vertex][1]),
-                           GLfloat(vertices[face][3 - vertex][2]))
+                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][3 - vertex][0]),
+                           pyglet.gl.GLfloat(vertices[face][3 - vertex][1]),
+                           pyglet.gl.GLfloat(vertices[face][3 - vertex][2]))
         # Draw outside
         for face in range(self.skip_right_face, 6):
-            glNormal3f(GLfloat(normals[face][0]), GLfloat(normals[face][1]),
-                       GLfloat(normals[face][2]))
+            pyglet.gl.glNormal3f(pyglet.gl.GLfloat(normals[face][0]),
+                                 pyglet.gl.GLfloat(normals[face][1]),
+                       pyglet.gl.GLfloat(normals[face][2]))
             for vertex in range(0, 3):
-                glVertex3f(GLfloat(vertices[face][vertex][0]),
-                           GLfloat(vertices[face][vertex][1]),
-                           GLfloat(vertices[face][vertex][2]))
+                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][vertex][0]),
+                           pyglet.gl.GLfloat(vertices[face][vertex][1]),
+                           pyglet.gl.GLfloat(vertices[face][vertex][2]))
             for vertex in (0, 2, 3):
-                glVertex3f(GLfloat(vertices[face][vertex][0]),
-                           GLfloat(vertices[face][vertex][1]),
-                           GLfloat(vertices[face][vertex][2]))
+                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][vertex][0]),
+                           pyglet.gl.GLfloat(vertices[face][vertex][1]),
+                           pyglet.gl.GLfloat(vertices[face][vertex][2]))
