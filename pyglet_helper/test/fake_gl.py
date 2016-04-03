@@ -6,7 +6,9 @@ from ctypes import c_float
 
 
 GLfloat = c_float
+GL_COLOR_BUFFER_BIT = 16384
 GL_CULL_FACE = 2884
+GL_DEPTH_BUFFER_BIT = 256
 GL_DEPTH_TEST = 2929
 GL_LIGHTING = 2896
 GL_LIGHT0 = 16384
