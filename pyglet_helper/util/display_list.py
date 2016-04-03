@@ -3,10 +3,8 @@ objects to render to the screen
 """
 from __future__ import print_function
 try:
-    from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
-                          glNewList, GL_COMPILE
+    import pyglet.gl
 except Exception as error_msg:
-    from pyglet_helper.test import glGenLists
     print("Pyglet import error: "+str(error_msg))
 
 
@@ -20,25 +18,25 @@ class DisplayList(object):
         :type built: bool
         """
         self.built = built
-        self.handle = glGenLists(1)
+        self.handle = pyglet.gl.glGenLists(1)
 
     def gl_compile_begin(self):
         """ Generates the beginning of the list.
         """
-        glNewList(self.handle, GL_COMPILE)
+        pyglet.gl.glNewList(self.handle, pyglet.gl.GL_COMPILE)
 
     def gl_compile_end(self):
         """ Generates the end of the list.
         """
-        glEndList(self.handle)
+        pyglet.gl.glEndList(self.handle)
         self.built = True
 
     def gl_render(self):
         """ Call all of the commands in the current list.
         """
         try:
-            glCallList(self.handle)
-        except GLException as e_msg:
+            pyglet.gl.glCallList(self.handle)
+        except pyglet.gl.GLException as e_msg:
             print("Got GL Exception on call list: " + str(e_msg))
         self.built = True
 

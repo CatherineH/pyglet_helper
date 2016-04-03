@@ -2,22 +2,17 @@
 pyglet_helper.renderable contains objects needed to draw all geometric shapes
 """
 try:
-    from pyglet.gl import glClear, glClearColor, glColor3f, glEnable, \
-        glLoadIdentity, glLightfv, GL_COLOR_BUFFER_BIT, GL_DEPTH_BUFFER_BIT,\
-        GL_CULL_FACE, GL_DEPTH_TEST, GL_DIFFUSE, GL_LIGHTING, GL_LIGHT0, \
-        GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, \
-        GL_LIGHT7, GL_POSITION, GL_SPECULAR
-except Exception as error_msg:
-    from pyglet_helper.test import GL_COLOR_BUFFER_BIT, GL_CULL_FACE, \
-        GL_DEPTH_BUFFER_BIT, GL_DEPTH_TEST, GL_LIGHTING, GL_LIGHT0, \
-        GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, GL_LIGHT5, GL_LIGHT6, \
-        GL_LIGHT7, glEnable, glClear, glColor3f, glClearColor, glLoadIdentity
-    print("Pyglet import error: "+str(error_msg))
+    import pyglet.gl
+except Exception as err_msg:
+    print("Exception loading pyglet: "+str(err_msg))
+
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
-GL_DEFINED_LIGHTS = [GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
-                     GL_LIGHT5, GL_LIGHT6, GL_LIGHT7]
+GL_DEFINED_LIGHTS = [pyglet.gl.GL_LIGHT0, pyglet.gl.GL_LIGHT1,
+                     pyglet.gl.GL_LIGHT2, pyglet.gl.GL_LIGHT3,
+                     pyglet.gl.GL_LIGHT4, pyglet.gl.GL_LIGHT5,
+                     pyglet.gl.GL_LIGHT6, pyglet.gl.GL_LIGHT7]
 
 
 class Renderable(object):
@@ -181,13 +176,13 @@ class View(object):
     def setup(self):
         """ Does some one-time OpenGL setup.
         """
-        glEnable(GL_LIGHTING)
-        glClearColor(1, 1, 1, 1)
-        glColor3f(1, 0, 0)
-        glEnable(GL_DEPTH_TEST)
-        glEnable(GL_CULL_FACE)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glLoadIdentity()
+        pyglet.gl.glEnable(pyglet.gl.GL_LIGHTING)
+        pyglet.gl.glClearColor(1, 1, 1, 1)
+        pyglet.gl.glColor3f(1, 0, 0)
+        pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
+        pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
+        pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT | pyglet.gl.GL_DEPTH_BUFFER_BIT)
+        pyglet.gl.glLoadIdentity()
         self.is_setup = True
 
     def draw_lights(self):
@@ -197,12 +192,13 @@ class View(object):
         # add all of the lights to the scene
         for i in range(0, max_lights):
             # enable all of the lights
-            glEnable(GL_DEFINED_LIGHTS[i])
-            glLightfv(GL_DEFINED_LIGHTS[i], GL_POSITION,
+            pyglet.gl.glEnable(GL_DEFINED_LIGHTS[i])
+            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_POSITION,
                       self.lights[i].position)
-            glLightfv(GL_DEFINED_LIGHTS[i], GL_SPECULAR,
+            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_SPECULAR,
                       self.lights[i].specular)
-            glLightfv(GL_DEFINED_LIGHTS[i], GL_DIFFUSE, self.lights[i].diffuse)
+            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_DIFFUSE,
+                                self.lights[i].diffuse)
 
     def pixel_coverage(self, pos, radius):
         """ Compute the apparent diameter, in pixels, of a circle that is

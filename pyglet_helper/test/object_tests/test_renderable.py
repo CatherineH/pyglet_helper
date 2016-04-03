@@ -1,6 +1,9 @@
 from __future__ import print_function
+from mock import patch
+import pyglet_helper.test
 
 
+@patch('pyglet.gl', pyglet_helper.test)
 def test_renderable_material():
     from pyglet_helper.objects import Renderable
     from pyglet_helper.objects import Material
@@ -9,7 +12,7 @@ def test_renderable_material():
     blo.material = mat
     assert(blo.material.translucent)
 
-
+@patch('pyglet.gl', pyglet_helper.test)
 def test_renderable_lod():
     from pyglet_helper.objects import Renderable, View
     from pyglet_helper.util import Vector
@@ -19,7 +22,7 @@ def test_renderable_lod():
                          radius=0)
     assert(lod==2)
 
-
+@patch('pyglet.gl', pyglet_helper.test)
 def test_view_pixel_coverage():
     from pyglet_helper.objects import View
     from pyglet_helper.util import Vector

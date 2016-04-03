@@ -1,11 +1,8 @@
 """
 pyglet_helper.cylinder contains an object for drawing a cylinder
 """
-try:
-    from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace,\
-                          glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
-except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace,\
+                      glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 

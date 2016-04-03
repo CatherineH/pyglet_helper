@@ -2,9 +2,9 @@
 describe how the light treats the object
 """
 try:
-    from pyglet.gl import glDeleteObjectARB, GL_VERTEX_SHADER_ARB, \
-    GL_FRAGMENT_SHADER_ARB, GL_OBJECT_LINK_STATUS_ARB, \
-    GL_OBJECT_INFO_LOG_LENGTH_ARB
+    from pyglet.gl import glDeleteObjectARB, glUseProgramObjectARB, \
+        GL_VERTEX_SHADER_ARB, GL_FRAGMENT_SHADER_ARB, \
+        GL_OBJECT_LINK_STATUS_ARB, GL_OBJECT_INFO_LOG_LENGTH_ARB
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 
@@ -174,7 +174,7 @@ class UseShaderProgram(object):
     def __exit__(self, _type, value, traceback):
         if self.old_program < 0 or not self.view.glext.ARB_shader_objects:
             return
-        self.view.glext.glUseProgramObjectARB(self.old_program)
+        glUseProgramObjectARB(self.old_program)
 
     @property
     def invoked(self):
