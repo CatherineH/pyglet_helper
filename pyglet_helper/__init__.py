@@ -6,10 +6,17 @@ package.
 """
 
 from __future__ import absolute_import
+try:
+    import pyglet
+except Exception as err_msg:
+    pyglet = None
 
 from . import objects
 from . import common
 from . import util
+from . import test
+
+
 
 __version__ = "0.0.1"
 __author__ = "cholloway"
