@@ -28,8 +28,8 @@ class Cylinder(Axial):
         :param axis: The cone points from the base to the point along the axis.
         :type axis: pyglet_helper.util.Vector
         """
-        super(Cylinder, self).__init__(pos=pos, radius=radius, color=color)
-        self.axis = Vector(axis)
+        super(Cylinder, self).__init__(pos=pos, radius=radius, color=color,
+                                       axis=axis)
 
     def init_model(self, scene):
         """ Add the cylinder quadrics to the view.

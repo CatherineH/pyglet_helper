@@ -76,12 +76,14 @@ class Renderable(object):
     def lod_adjust(self, scene, coverage_levels, pos, radius):
         """
         Calculate the level of detail required when rendering a glu object
+        :param scene: the scene the the object is rendered into
+        :type scene: pyglet_helper.objects.View
+        :param coverage_levels: list with coverage comparison levels
+        :type coverage_levels: list of int
         :param pos: the object's position within the scene
         :type pos: Vector
         :param radius: the object's size within the scene
         :type radius: float
-        :param coverage_levels: list with coverage comparison levels
-        :type coverage_levels: list of int
         :return: level of detail (lod)
         :rtype: int
         """
