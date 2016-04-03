@@ -9,10 +9,11 @@ except Exception as err_msg:
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
-GL_DEFINED_LIGHTS = [pyglet.gl.GL_LIGHT0, pyglet.gl.GL_LIGHT1,
-                     pyglet.gl.GL_LIGHT2, pyglet.gl.GL_LIGHT3,
-                     pyglet.gl.GL_LIGHT4, pyglet.gl.GL_LIGHT5,
-                     pyglet.gl.GL_LIGHT6, pyglet.gl.GL_LIGHT7]
+if pyglet.gl is not None:
+    GL_DEFINED_LIGHTS = [pyglet.gl.GL_LIGHT0, pyglet.gl.GL_LIGHT1,
+                         pyglet.gl.GL_LIGHT2, pyglet.gl.GL_LIGHT3,
+                         pyglet.gl.GL_LIGHT4, pyglet.gl.GL_LIGHT5,
+                         pyglet.gl.GL_LIGHT6, pyglet.gl.GL_LIGHT7]
 
 
 class Renderable(object):
