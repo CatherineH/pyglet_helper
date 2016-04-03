@@ -7,9 +7,9 @@ package.
 
 from __future__ import absolute_import
 try:
-    import pyglet.gl
+    import pyglet
 except Exception as err_msg:
-    pyglet.gl = None
+    pyglet = None
 
 from . import objects
 from . import common
