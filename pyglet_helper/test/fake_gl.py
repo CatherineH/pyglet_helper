@@ -22,7 +22,7 @@ GL_LIGHT7 = 16391
 
 
 def glNormal3f(a, b, c):
-    pass
+    print("hello from fakegl")
 
 
 def glVertex3f(a, b, c):
