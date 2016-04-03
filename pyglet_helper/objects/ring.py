@@ -1,12 +1,6 @@
 """pyglet_helper.ring contains an object for drawing a ring"""
 try:
-    from pyglet.gl import GLfloat, GLuint, glCallList, glDrawElements, \
-                          glEnableClientState, glEndList, glGenLists, \
-                          glNewList, glNormalPointer, glPopClientAttrib, \
-                          glPushClientAttrib, glVertexPointer, \
-                          GL_CLIENT_VERTEX_ARRAY_BIT, GL_COMPILE, GL_FLOAT, \
-                          GL_TRIANGLES, GL_VERTEX_ARRAY, GL_NORMAL_ARRAY, \
-                          GL_UNSIGNED_INT
+    import pyglet.gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Axial
@@ -140,8 +134,8 @@ class Ring(Axial):
             outer_angle += outer_angle_step
 
         # Create ctypes arrays of the lists
-        vertices = (GLfloat *len(vertices))(*vertices)
-        normals = (GLfloat * len(normals))(*normals)
+        vertices = (pyglet.gl.GLfloat *len(vertices))(*vertices)
+        normals = (pyglet.gl.GLfloat * len(normals))(*normals)
 
         # Create a list of triangle indices.
         indices = []
@@ -151,27 +145,28 @@ class Ring(Axial):
                 indices.extend([pos, pos + inner_slices, pos + inner_slices +
                                 1])
                 indices.extend([pos, pos + inner_slices + 1, pos + 1])
-        indices = (GLuint * len(indices))(*indices)
+        indices = (pyglet.gl.GLuint * len(indices))(*indices)
 
         # Compile a display list
-        self.list = glGenLists(1)
-        glNewList(self.list, GL_COMPILE)
+        self.list = pyglet.gl.glGenLists(1)
+        pyglet.gl.glNewList(self.list, pyglet.gl.GL_COMPILE)
         self.color.gl_set(self.opacity)
 
-        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_NORMAL_ARRAY)
+        pyglet.gl.glPushClientAttrib(pyglet.gl.GL_CLIENT_VERTEX_ARRAY_BIT)
+        pyglet.gl.glEnableClientState(pyglet.gl.GL_VERTEX_ARRAY)
+        pyglet.gl.glEnableClientState(pyglet.gl.GL_NORMAL_ARRAY)
         self.model_world_transform(scene.gcf,
                                    Vector([self.radius, self.radius,
                                            self.radius])).gl_mult()
 
-        glVertexPointer(3, GL_FLOAT, 0, vertices)
-        glNormalPointer(GL_FLOAT, 0, normals)
-        glDrawElements(GL_TRIANGLES, len(indices), GL_UNSIGNED_INT, indices)
-        glPopClientAttrib()
+        pyglet.gl.glVertexPointer(3, pyglet.gl.GL_FLOAT, 0, vertices)
+        pyglet.gl.glNormalPointer(pyglet.gl.GL_FLOAT, 0, normals)
+        pyglet.gl.glDrawElements(pyglet.gl.GL_TRIANGLES, len(indices),
+                                 pyglet.gl.GL_UNSIGNED_INT, indices)
+        pyglet.gl.glPopClientAttrib()
 
-        glEndList()
-        glCallList(self.list)
+        pyglet.gl.glEndList()
+        pyglet.gl.glCallList(self.list)
 
 
 def clamp(lower, value, upper):

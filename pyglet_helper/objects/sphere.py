@@ -1,8 +1,7 @@
 """ pyglet_helper.sphere contains an object for drawing a sphere
 """
 try:
-    from pyglet.gl import glEnable, glPushMatrix, glCullFace, glPopMatrix, \
-                          GL_CULL_FACE, GL_FRONT, GL_BACK
+    import pyglet.gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Axial, Material
@@ -110,23 +109,23 @@ class Sphere(Axial):
 
         coverage_levels = [30, 100, 500, 5000]
         lod = self.lod_adjust(geometry, coverage_levels, self.pos, self.radius)
-        glPushMatrix()
+        pyglet.gl.glPushMatrix()
 
         self.model_world_transform(geometry.gcf, self.scale).gl_mult()
         self.color.gl_set(self.opacity)
 
         if self.translucent:
             # Spheres are convex, so we don't need to sort
-            glEnable(GL_CULL_FACE)
+            pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
 
             # Render the back half (inside)
-            glCullFace(GL_FRONT)
+            pyglet.gl.glCullFace(pyglet.gl.GL_FRONT)
             geometry.sphere_model[lod].gl_render()
 
             # Render the front half (outside)
-            glCullFace(GL_BACK)
+            pyglet.gl.glCullFace(pyglet.gl.GL_BACK)
             geometry.sphere_model[lod].gl_render()
         else:
             # Render a simple sphere.
             geometry.sphere_model[lod].gl_render()
-        glPopMatrix()
+        pyglet.gl.glPopMatrix()

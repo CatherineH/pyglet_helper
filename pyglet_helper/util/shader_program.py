@@ -2,9 +2,7 @@
 describe how the light treats the object
 """
 try:
-    from pyglet.gl import glDeleteObjectARB, glUseProgramObjectARB, \
-        GL_VERTEX_SHADER_ARB, GL_FRAGMENT_SHADER_ARB, \
-        GL_OBJECT_LINK_STATUS_ARB, GL_OBJECT_INFO_LOG_LENGTH_ARB
+    import pyglet.gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 
@@ -69,21 +67,21 @@ class ShaderProgram(object):
 
         self.program = view.glext.glCreateProgramObjectARB()
 
-        self.compile(view, GL_VERTEX_SHADER_ARB)
-        self.compile(view, GL_FRAGMENT_SHADER_ARB)
+        self.compile(view, pyglet.gl.GL_VERTEX_SHADER_ARB)
+        self.compile(view, pyglet.gl.GL_FRAGMENT_SHADER_ARB)
 
         view.glext.glLinkProgramARB(self.program)
 
         # Check if linking succeeded
         link_ok = view.glext.\
-            glGetObjectParameterivARB(self.program, GL_OBJECT_LINK_STATUS_ARB)
+            glGetObjectParameterivARB(self.program, pyglet.gl.GL_OBJECT_LINK_STATUS_ARB)
 
         if not link_ok:
             # Some drivers (incorrectly?) set the GL error in
             # glLinkProgramARB() in this situation
             length = view.glext.\
                 glGetObjectParameterivARB(self.program,
-                                          GL_OBJECT_INFO_LOG_LENGTH_ARB)
+                                          pyglet.gl.GL_OBJECT_INFO_LOG_LENGTH_ARB)
             temp = ['a'] * (length + 2)
             length, temp[0] = view.glext.glGetInfoLogARB(self.program,
                                                          length + 1)
@@ -126,7 +124,7 @@ class ShaderProgram(object):
         """
         Remove the current program from memory
         """
-        glDeleteObjectARB(self.program)
+        pyglet.gl.glDeleteObjectARB(self.program)
 
     def get_section(self, name):
         """
@@ -174,7 +172,7 @@ class UseShaderProgram(object):
     def __exit__(self, _type, value, traceback):
         if self.old_program < 0 or not self.view.glext.ARB_shader_objects:
             return
-        glUseProgramObjectARB(self.old_program)
+        pyglet.gl.glUseProgramObjectARB(self.old_program)
 
     @property
     def invoked(self):

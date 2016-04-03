@@ -2,8 +2,7 @@
 pyglet_helper.util.rgba contains object to describe colors
 """
 try:
-    from pyglet.gl import GLfloat, glMaterialfv, glMaterialf, GL_FRONT_AND_BACK, \
-                          GL_AMBIENT_AND_DIFFUSE, GL_SPECULAR, GL_SHININESS
+    import pyglet.gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 
@@ -89,10 +88,13 @@ class Rgba(object):
         """
         Set this color to the current material in OpenGL.
         """
-        color = (GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
+        color = (pyglet.gl.GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
+        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
+                               pyglet.gl.GL_AMBIENT_AND_DIFFUSE, color)
+        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
+                               pyglet.gl.GL_SPECULAR, color)
+        pyglet.gl.glMaterialf(pyglet.gl.GL_FRONT_AND_BACK,
+                              pyglet.gl.GL_SHININESS, 50)
 
 
 class Rgb(object):
@@ -270,7 +272,10 @@ class Rgb(object):
         :param opacity: the opacity value of the color
         :type opacity: float
         """
-        color = (GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color)
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color)
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
+        color = (pyglet.gl.GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
+        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
+                               pyglet.gl.GL_AMBIENT_AND_DIFFUSE, color)
+        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
+                               pyglet.gl.GL_SPECULAR, color)
+        pyglet.gl.glMaterialf(pyglet.gl.GL_FRONT_AND_BACK,
+                              pyglet.gl.GL_SHININESS, 50)

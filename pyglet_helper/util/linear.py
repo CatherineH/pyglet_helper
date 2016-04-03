@@ -3,10 +3,7 @@ transformations and describes linear algebra operations
 """
 from __future__ import division, print_function
 try:
-    from pyglet.gl import glNormal3dv, glVertex3d, glVertex4d, GLdouble, \
-                          glLoadMatrixd, glMultMatrixd, glGetFloatv, GLfloat, \
-                          GL_MODELVIEW_MATRIX, GL_TEXTURE_MATRIX, \
-                          GL_COLOR_MATRIX, GL_PROJECTION_MATRIX
+    import pyglet.gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 from numpy import matrix, identity, nditer
@@ -410,15 +407,16 @@ class Vector(object):
         Add the current vector as an OpenGL Vertex
         :return:
         """
-        glVertex3d(GLdouble(self.x_component), GLdouble(self.y_component),
-                   GLdouble(self.z_component))
+        pyglet.gl.glVertex3d(pyglet.gl.GLdouble(self.x_component),
+                             pyglet.gl.GLdouble(self.y_component),
+                             pyglet.gl.GLdouble(self.z_component))
 
     def gl_normal(self):
         """
         Add the current vector as an OpenGL Normal
         :return:
         """
-        glNormal3dv(self.x_component)
+        pyglet.gl.glNormal3dv(self.x_component)
 
     def sum(self):
         """
@@ -482,8 +480,8 @@ class Vertex(object):
         """
         Send the vertex to OpenGl
         """
-        glVertex4d(self.x_component, self.y_component, self.z_component,
-                   self.w_component)
+        pyglet.gl.glVertex4d(self.x_component, self.y_component,
+                             self.z_component, self.w_component)
 
     @property
     def x_component(self):
@@ -854,17 +852,17 @@ class Tmatrix(object):
         """
         Overwrites the currently active matrix in OpenGL with this one.
         """
-        ctypes_matrix = (GLdouble * 16)(*[float(value) for value in
+        ctypes_matrix = (pyglet.gl.GLdouble * 16)(*[float(value) for value in
                                           nditer(self.matrix)])
-        glLoadMatrixd(ctypes_matrix)
+        pyglet.gl.glLoadMatrixd(ctypes_matrix)
 
     def gl_mult(self):
         """
         Multiplies the active OpenGL by this one.
         """
-        ctype_matrix = (GLdouble * 16)(*[float(value) for value in
+        ctype_matrix = (pyglet.gl.GLdouble * 16)(*[float(value) for value in
                                          nditer(self.matrix)])
-        glMultMatrixd(ctype_matrix)
+        pyglet.gl.glMultMatrixd(ctype_matrix)
 
     def gl_modelview_get(self):
         """ Initialize the matrix with the contents of the OpenGL modelview
@@ -872,9 +870,9 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        ctypes_matrix = (GLfloat * 16)()
+        ctypes_matrix = (pyglet.gl.GLfloat * 16)()
 
-        glGetFloatv(GL_MODELVIEW_MATRIX, ctypes_matrix)
+        pyglet.gl.glGetFloatv(pyglet.gl.GL_MODELVIEW_MATRIX, ctypes_matrix)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = ctypes_matrix[i + 4 * j]
@@ -887,7 +885,7 @@ class Tmatrix(object):
         :rtype: matrix
         """
         _matrix = [[0] * 4] * 4
-        _matrix[0] = glGetFloatv(GL_TEXTURE_MATRIX)
+        _matrix[0] = pyglet.gl.glGetFloatv(pyglet.gl.GL_TEXTURE_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = _matrix[i][j]
@@ -900,7 +898,7 @@ class Tmatrix(object):
         :rtype: matrix
         """
         _matrix = [[0] * 4] * 4
-        _matrix[0] = glGetFloatv(GL_COLOR_MATRIX)
+        _matrix[0] = pyglet.gl.glGetFloatv(pyglet.gl.GL_COLOR_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = _matrix[i][j]
@@ -913,8 +911,8 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        ctypes_matrix = (GLfloat * 16)()
-        glGetFloatv(GL_PROJECTION_MATRIX, ctypes_matrix)
+        ctypes_matrix = (pyglet.gl.GLfloat * 16)()
+        pyglet.gl.glGetFloatv(pyglet.gl.GL_PROJECTION_MATRIX, ctypes_matrix)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = ctypes_matrix[i + 4 * j]

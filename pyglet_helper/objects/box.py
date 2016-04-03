@@ -2,10 +2,8 @@
 pyglet_helper.box contains an object for drawing a box to the screen
 """
 try:
-    from pyglet.gl import glBegin, glDisable, glEnable, glEnd, glNormal3f, \
-    glPopMatrix, glPushMatrix, glVertex3f, GLfloat, GL_CULL_FACE, GL_TRIANGLES
+    import pyglet.gl
 except Exception as error_msg:
-    from pyglet_helper.test import GLfloat, glNormal3f, glVertex3f
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Vector
@@ -43,11 +41,11 @@ class Box(Rectangular):
         """
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
-        glEnable(GL_CULL_FACE)
-        glBegin(GL_TRIANGLES)
+        pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
+        pyglet.gl.glBegin(pyglet.gl.GL_TRIANGLES)
         self.generate_model()
-        glEnd()
-        glDisable(GL_CULL_FACE)
+        pyglet.gl.glEnd()
+        pyglet.gl.glDisable(pyglet.gl.GL_CULL_FACE)
         scene.box_model.gl_compile_end()
         self.initialized = True
 
@@ -60,10 +58,10 @@ class Box(Rectangular):
         if not scene.box_model.compiled:
             self.init_model(scene)
         self.color.gl_set(self.opacity)
-        glPushMatrix()
+        pyglet.gl.glPushMatrix()
         self.apply_transform(scene)
         scene.box_model.gl_render()
-        glPopMatrix()
+        pyglet.gl.glPopMatrix()
 
     def generate_model(self):
         """ Generate the vertices and normals.
