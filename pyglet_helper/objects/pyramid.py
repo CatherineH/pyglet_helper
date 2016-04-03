@@ -16,9 +16,8 @@ class Pyramid(Rectangular):
     """
     A Pyramid Object
     """
-    def __init__(self, pos=Vector([0, 0, 0]), width=1.0, height=1.0,
-                 length=1.0,
-                 color=Rgb()):
+    def __init__(self, axis=Vector([1, 0, 0]), pos=Vector([0, 0, 0]),
+                 width=1.0, height=1.0, length=1.0, color=Rgb()):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -32,8 +31,9 @@ class Pyramid(Rectangular):
         :type length: float
         :return:
         """
-        super(Pyramid, self).__init__(pos=pos, color=color, width=width,
-                                      height=height, length=length)
+        super(Pyramid, self).__init__(axis=axis, pos=pos, color=color,
+                                      width=width, height=height,
+                                      length=length)
         self.compiled = False
 
     def init_model(self, scene):
@@ -94,7 +94,7 @@ class Pyramid(Rectangular):
         :return: the object's position
         :rtype: pyglet_helper.util.Vector
         """
-        return self.pos + self.axis * 0.33333333333333
+        return self.pos + self.height*self.axis/3.0
 
     @property
     def material_matrix(self):
@@ -106,8 +106,8 @@ class Pyramid(Rectangular):
         out = Tmatrix()
         out.translate(Vector([0, .5, .5]))
         scale = Vector([self.axis.mag(), self.height, self.width])
-        out.scale(self.scale * (1.0 / max(scale.x_component,
-                                          max(scale.y_component,
+        out.scale(Vector([self.scale,self.scale,self.scale]) *
+                  (1.0 /max(scale.x_component, max(scale.y_component,
                                               scale.z_component))))
         return out
 
