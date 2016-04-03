@@ -1,11 +1,10 @@
 """
 pyglet_helper.box contains an object for drawing a box to the screen
-
 """
 try:
-    import pyglet.gl
-except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    import pyglet.gl as gl
+except ImportError:
+    gl = None
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Vector
 
@@ -34,7 +33,6 @@ class Box(Rectangular):
         self.initialized = False
         self.skip_right_face = False
 
-
     def init_model(self, scene):
         """ Add the Vertexes and Normals to the compile list.
 
@@ -43,11 +41,11 @@ class Box(Rectangular):
         """
         # Note that this model is also used by arrow!
         scene.box_model.gl_compile_begin()
-        pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
-        pyglet.gl.glBegin(pyglet.gl.GL_TRIANGLES)
+        gl.glEnable(gl.GL_CULL_FACE)
+        gl.glBegin(gl.GL_TRIANGLES)
         self.generate_model()
-        pyglet.gl.glEnd()
-        pyglet.gl.glDisable(pyglet.gl.GL_CULL_FACE)
+        gl.glEnd()
+        gl.glDisable(gl.GL_CULL_FACE)
         scene.box_model.gl_compile_end()
         self.initialized = True
 
@@ -60,10 +58,10 @@ class Box(Rectangular):
         if not scene.box_model.compiled:
             self.init_model(scene)
         self.color.gl_set(self.opacity)
-        pyglet.gl.glPushMatrix()
+        gl.glPushMatrix()
         self.apply_transform(scene)
         scene.box_model.gl_render()
-        pyglet.gl.glPopMatrix()
+        gl.glPopMatrix()
 
     def generate_model(self):
         """ Generate the vertices and normals.
@@ -93,26 +91,26 @@ class Box(Rectangular):
                    [0, +1, 0], [0, 0, +1], [0, 0, -1]]
         # Draw inside (reverse winding and normals)
         for face in range(self.skip_right_face, 6):
-            pyglet.gl.glNormal3f(-normals[face][0], -normals[face][1],
+            gl.glNormal3f(-normals[face][0], -normals[face][1],
                                  -normals[face][2])
             for vertex in range(0, 3):
-                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][3 - vertex][0]),
-                           pyglet.gl.GLfloat(vertices[face][3 - vertex][1]),
-                           pyglet.gl.GLfloat(vertices[face][3 - vertex][2]))
+                gl.glVertex3f(gl.GLfloat(vertices[face][3 - vertex][0]),
+                           gl.GLfloat(vertices[face][3 - vertex][1]),
+                           gl.GLfloat(vertices[face][3 - vertex][2]))
             for vertex in (0, 2, 3):
-                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][3 - vertex][0]),
-                           pyglet.gl.GLfloat(vertices[face][3 - vertex][1]),
-                           pyglet.gl.GLfloat(vertices[face][3 - vertex][2]))
+                gl.glVertex3f(gl.GLfloat(vertices[face][3 - vertex][0]),
+                           gl.GLfloat(vertices[face][3 - vertex][1]),
+                           gl.GLfloat(vertices[face][3 - vertex][2]))
         # Draw outside
         for face in range(self.skip_right_face, 6):
-            pyglet.gl.glNormal3f(pyglet.gl.GLfloat(normals[face][0]),
-                                 pyglet.gl.GLfloat(normals[face][1]),
-                       pyglet.gl.GLfloat(normals[face][2]))
+            gl.glNormal3f(gl.GLfloat(normals[face][0]),
+                                 gl.GLfloat(normals[face][1]),
+                       gl.GLfloat(normals[face][2]))
             for vertex in range(0, 3):
-                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][vertex][0]),
-                           pyglet.gl.GLfloat(vertices[face][vertex][1]),
-                           pyglet.gl.GLfloat(vertices[face][vertex][2]))
+                gl.glVertex3f(gl.GLfloat(vertices[face][vertex][0]),
+                           gl.GLfloat(vertices[face][vertex][1]),
+                           gl.GLfloat(vertices[face][vertex][2]))
             for vertex in (0, 2, 3):
-                pyglet.gl.glVertex3f(pyglet.gl.GLfloat(vertices[face][vertex][0]),
-                           pyglet.gl.GLfloat(vertices[face][vertex][1]),
-                           pyglet.gl.GLfloat(vertices[face][vertex][2]))
+                gl.glVertex3f(gl.GLfloat(vertices[face][vertex][0]),
+                           gl.GLfloat(vertices[face][vertex][1]),
+                           gl.GLfloat(vertices[face][vertex][2]))

@@ -2,18 +2,18 @@
 pyglet_helper.renderable contains objects needed to draw all geometric shapes
 """
 try:
-    import pyglet.gl
-except Exception as err_msg:
-    print("Exception loading pyglet: "+str(err_msg))
+    import pyglet.gl as gl
+except ImportError:
+    gl = None
 
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
 try:
-    GL_DEFINED_LIGHTS = [pyglet.gl.GL_LIGHT0, pyglet.gl.GL_LIGHT1,
-                         pyglet.gl.GL_LIGHT2, pyglet.gl.GL_LIGHT3,
-                         pyglet.gl.GL_LIGHT4, pyglet.gl.GL_LIGHT5,
-                         pyglet.gl.GL_LIGHT6, pyglet.gl.GL_LIGHT7]
+    GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
+                         gl.GL_LIGHT2, gl.GL_LIGHT3,
+                         gl.GL_LIGHT4, gl.GL_LIGHT5,
+                         gl.GL_LIGHT6, gl.GL_LIGHT7]
 except Exception as err_msg:
     print("Exception loading pyglet: "+str(err_msg))
 
@@ -179,13 +179,13 @@ class View(object):
     def setup(self):
         """ Does some one-time OpenGL setup.
         """
-        pyglet.gl.glEnable(pyglet.gl.GL_LIGHTING)
-        pyglet.gl.glClearColor(1, 1, 1, 1)
-        pyglet.gl.glColor3f(1, 0, 0)
-        pyglet.gl.glEnable(pyglet.gl.GL_DEPTH_TEST)
-        pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
-        pyglet.gl.glClear(pyglet.gl.GL_COLOR_BUFFER_BIT | pyglet.gl.GL_DEPTH_BUFFER_BIT)
-        pyglet.gl.glLoadIdentity()
+        gl.glEnable(gl.GL_LIGHTING)
+        gl.glClearColor(1, 1, 1, 1)
+        gl.glColor3f(1, 0, 0)
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        gl.glEnable(gl.GL_CULL_FACE)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glLoadIdentity()
         self.is_setup = True
 
     def draw_lights(self):
@@ -195,12 +195,12 @@ class View(object):
         # add all of the lights to the scene
         for i in range(0, max_lights):
             # enable all of the lights
-            pyglet.gl.glEnable(GL_DEFINED_LIGHTS[i])
-            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_POSITION,
+            gl.glEnable(GL_DEFINED_LIGHTS[i])
+            gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_POSITION,
                       self.lights[i].position)
-            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_SPECULAR,
+            gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_SPECULAR,
                       self.lights[i].specular)
-            pyglet.gl.glLightfv(GL_DEFINED_LIGHTS[i], pyglet.gl.GL_DIFFUSE,
+            gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_DIFFUSE,
                                 self.lights[i].diffuse)
 
     def pixel_coverage(self, pos, radius):

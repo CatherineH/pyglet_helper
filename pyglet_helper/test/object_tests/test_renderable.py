@@ -1,17 +1,15 @@
 from __future__ import print_function
 from mock import patch
+import sys
+import os
 
-from pyglet_helper.test import fake_gl
+test_filename = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(test_filename)
+import fake_gl
 
-import_base_renderable = "pyglet_helper.objects.renderable.pyglet.gl"
-import_base_displaylist = "pyglet_helper.util.display_list.pyglet.gl"
 
-fake_gl1 = fake_gl
-fake_gl2 = fake_gl
-
-@patch(import_base_renderable)
-@patch(import_base_displaylist)
-def test_renderable_material(fake_gl1, fake_gl2):
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
+def test_renderable_material():
     from pyglet_helper.objects import Renderable
     from pyglet_helper.objects import Material
     mat = Material(translucent=True)
@@ -20,7 +18,8 @@ def test_renderable_material(fake_gl1, fake_gl2):
     assert(blo.material.translucent)
 
 
-@patch('pyglet.gl', fake_gl)
+@patch('pyglet_helper.util.display_list.gl', new=fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
 def test_renderable_lod():
     from pyglet_helper.objects import Renderable, View
     from pyglet_helper.util import Vector
@@ -31,7 +30,8 @@ def test_renderable_lod():
     assert(lod==2)
 
 
-@patch('pyglet.gl', fake_gl)
+@patch('pyglet_helper.util.display_list.gl', new=fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
 def test_view_pixel_coverage():
     from pyglet_helper.objects import View
     from pyglet_helper.util import Vector
