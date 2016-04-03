@@ -1,15 +1,17 @@
 from __future__ import print_function
 from mock import patch
-import sys
-import os
 
-test_filename = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(test_filename)
-import fake_gl
+from pyglet_helper.test import fake_gl
 
+import_base_renderable = "pyglet_helper.objects.renderable.pyglet.gl"
+import_base_displaylist = "pyglet_helper.util.display_list.pyglet.gl"
 
-@patch('pyglet.gl', fake_gl)
-def test_renderable_material():
+fake_gl1 = fake_gl
+fake_gl2 = fake_gl
+
+@patch(import_base_renderable)
+@patch(import_base_displaylist)
+def test_renderable_material(fake_gl1, fake_gl2):
     from pyglet_helper.objects import Renderable
     from pyglet_helper.objects import Material
     mat = Material(translucent=True)

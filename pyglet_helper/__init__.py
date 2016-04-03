@@ -14,6 +14,7 @@ except Exception as err_msg:
 from . import objects
 from . import common
 from . import util
+from . import test
 
 
 
