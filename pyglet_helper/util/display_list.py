@@ -7,6 +7,8 @@ try:
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
 
+print("loaded displaylist")
+
 
 class DisplayList(object):
     """
