@@ -6,7 +6,9 @@ try:
     from pyglet.gl import glEndList, GLException, glCallList, glGenLists, \
                           glNewList, GL_COMPILE
 except Exception as error_msg:
+    from pyglet_helper.test import glGenLists
     print("Pyglet import error: "+str(error_msg))
+
 
 class DisplayList(object):
     """

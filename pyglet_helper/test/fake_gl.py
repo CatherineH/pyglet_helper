@@ -22,3 +22,7 @@ def glNormal3f(a, b, c):
 
 def glVertex3f(a, b, c):
     pass
+
+
+def glGenLists(handle):
+    return handle
