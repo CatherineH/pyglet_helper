@@ -44,5 +44,10 @@ def glClearColor(a, b, c, d):
 def glColor3f(a, b, c):
     pass
 
+
 def glClear(a):
+    pass
+
+
+def glLoadIdentity():
     pass
