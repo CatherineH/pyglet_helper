@@ -8,7 +8,7 @@ sys.path.append(test_filename)
 import fake_gl
 
 
-@patch('pyglet.gl', fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
 def test_renderable_material():
     from pyglet_helper.objects import Renderable
     from pyglet_helper.objects import Material
@@ -18,7 +18,8 @@ def test_renderable_material():
     assert(blo.material.translucent)
 
 
-@patch('pyglet.gl', fake_gl)
+@patch('pyglet_helper.util.display_list.gl', new=fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
 def test_renderable_lod():
     from pyglet_helper.objects import Renderable, View
     from pyglet_helper.util import Vector
@@ -29,7 +30,8 @@ def test_renderable_lod():
     assert(lod==2)
 
 
-@patch('pyglet.gl', fake_gl)
+@patch('pyglet_helper.util.display_list.gl', new=fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=fake_gl)
 def test_view_pixel_coverage():
     from pyglet_helper.objects import View
     from pyglet_helper.util import Vector
