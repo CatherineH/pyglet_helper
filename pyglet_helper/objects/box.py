@@ -1,6 +1,5 @@
 """
 pyglet_helper.box contains an object for drawing a box to the screen
-
 """
 try:
     import pyglet.gl as gl
@@ -33,7 +32,6 @@ class Box(Rectangular):
                                   length=length, pos=pos)
         self.initialized = False
         self.skip_right_face = False
-
 
     def init_model(self, scene):
         """ Add the Vertexes and Normals to the compile list.
