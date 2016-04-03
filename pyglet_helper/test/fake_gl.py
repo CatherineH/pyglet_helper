@@ -30,3 +30,6 @@ def glGenLists(handle):
 
 def glEnable(lighting):
     pass
+
+def glClearColor(a, b, c, d):
+    pass

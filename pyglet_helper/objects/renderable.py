@@ -11,7 +11,8 @@ try:
 except Exception as error_msg:
     from pyglet_helper.test import GL_LIGHTING, GL_LIGHT0, GL_LIGHT1, \
                                    GL_LIGHT2, GL_LIGHT3, GL_LIGHT4, \
-                                   GL_LIGHT5, GL_LIGHT6, GL_LIGHT7, glEnable
+                                   GL_LIGHT5, GL_LIGHT6, GL_LIGHT7, \
+                                   glEnable, glClearColor
     print("Pyglet import error: "+str(error_msg))
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
