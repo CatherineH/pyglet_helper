@@ -1,8 +1,10 @@
 """
 pyglet_helper.cylinder contains an object for drawing a cylinder
 """
-from pyglet.gl import glTranslatef, glPushMatrix, glEnable, glCullFace,\
-                      glPopMatrix, GL_CULL_FACE, GL_FRONT, GL_BACK
+try:
+    import pyglet.gl
+except Exception as err_msg:
+    print("Exception loading pyglet: "+str(err_msg))
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 
@@ -41,9 +43,9 @@ class Cylinder(Axial):
             scene.cylinder_model[i].gl_compile_begin()
             _quadric = Quadric()
             _quadric.render_cylinder(1.0, 1.0, n_faces[i], n_stacks[i])
-            glTranslatef(1.0, 0.0, 0.0)
+            pyglet.gl.glTranslatef(1.0, 0.0, 0.0)
             _quadric.render_disk(1.0, n_faces[i], 1, 1)  # left end of cylinder
-            glTranslatef(-1.0, 0.0, 0.0)
+            pyglet.gl.glTranslatef(-1.0, 0.0, 0.0)
             _quadric.render_disk(1.0, n_faces[i], 1, -1)  # right end of
             scene.cylinder_model[i].gl_compile_end()
 
@@ -68,25 +70,25 @@ class Cylinder(Axial):
         coverage_levels = [10, 25, 50, 196, 400]
         lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
-        glPushMatrix()
+        pyglet.gl.glPushMatrix()
         self.model_world_transform(scene.gcf, Vector([self.length, self.radius,
                                                       self.radius])).gl_mult()
 
         if self.translucent:
-            glEnable(GL_CULL_FACE)
+            pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
             self.color.gl_set(self.opacity)
 
             # Render the back half.
-            glCullFace(GL_FRONT)
+            pyglet.gl.glCullFace(pyglet.gl.GL_FRONT)
             scene.cylinder_model[lod].gl_render()
 
             # Render the front half.
-            glCullFace(GL_BACK)
+            pyglet.gl.glCullFace(pyglet.gl.GL_BACK)
             scene.cylinder_model[lod].gl_render()
         else:
             self.color.gl_set(self.opacity)
             scene.cylinder_model[lod].gl_render()
-        glPopMatrix()
+        pyglet.gl.glPopMatrix()
 
     @property
     def center(self):

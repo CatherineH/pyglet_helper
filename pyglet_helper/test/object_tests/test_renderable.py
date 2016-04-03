@@ -12,6 +12,7 @@ def test_renderable_material():
     blo.material = mat
     assert(blo.material.translucent)
 
+
 @patch('pyglet.gl', pyglet_helper.test)
 def test_renderable_lod():
     from pyglet_helper.objects import Renderable, View
@@ -21,6 +22,7 @@ def test_renderable_lod():
     lod = blo.lod_adjust(scene, coverage_levels=[1, 1], pos=Vector([0, 0, 0]),
                          radius=0)
     assert(lod==2)
+
 
 @patch('pyglet.gl', pyglet_helper.test)
 def test_view_pixel_coverage():
