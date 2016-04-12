@@ -127,34 +127,6 @@ class ShaderProgram(object):
         """
         gl.glext_arb.glDeleteObjectARB(self.program)
 
-    def get_section(self, name):
-        """
-        Extract section beginning with \n[name]\n and ending with \n[
-        e.g.
-        [vertex]
-        void main() {}
-        [fragment]
-        void main() {}
-        :param name: the name of the section to extract
-        :type name: str
-        :returns: the section of interest
-        :rtype: str
-        """
-        header = "\n[" + name + "]\n"
-        _source = "\n" + self.source
-
-        section = ""
-        pos = _source.find(header)
-        while pos < len(_source):
-            pos += len(header)
-            end = self.source.find("\n[", pos)
-            section += self.source[pos:(end - pos)]
-            pos = end
-            pos = _source.find(header, pos)
-            print pos
-
-        return section
-
 
 class UseShaderProgram(object):
     """

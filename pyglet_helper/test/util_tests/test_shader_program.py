@@ -39,9 +39,3 @@ def test_shader_program_gl_free():
     blo = ShaderProgram()
     blo.gl_free()
 
-
-def test_shader_program_get_section():
-    from pyglet_helper.util.shader_program import ShaderProgram
-    blo = ShaderProgram(source="[test]\nbloop\n")
-    print(blo.get_section("test"))
-    assert blo.get_section("test") == "bloop"
