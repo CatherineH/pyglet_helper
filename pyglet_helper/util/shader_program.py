@@ -3,8 +3,8 @@ describe how the light treats the object
 """
 try:
     import pyglet.gl as gl
-except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+except ImportError:
+    gl = None
 
 
 class ShaderProgram(object):
