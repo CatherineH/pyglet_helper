@@ -59,7 +59,8 @@ def main():
         author_email=find_meta("email"),
         packages=PACKAGES,
         description=find_meta("description"),
-        install_requires=INSTALL_REQUIRES
+        install_requires=INSTALL_REQUIRES,
+        package_data = {"pyglet_helper": ['common/library.txt']}
     )
 
 if __name__ == "__main__":

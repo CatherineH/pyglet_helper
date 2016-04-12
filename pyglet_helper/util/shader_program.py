@@ -2,9 +2,10 @@
 describe how the light treats the object
 """
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
     print("Pyglet import error: "+str(error_msg))
+
 
 class ShaderProgram(object):
     """
@@ -14,7 +15,7 @@ class ShaderProgram(object):
         self._source = None
         self.source = source
         self.program = 0
-        self.uniforms = ['', 0]
+        self.uniforms = {'': 0}
 
     @property
     def source(self):
@@ -34,7 +35,7 @@ class ShaderProgram(object):
         """
         self._source = source
 
-    def uniform_location(self, view, name):
+    def uniform_location(self, name):
         """
         Get the location of the shader by name in the view.
         :param view: the view to inspect
@@ -43,11 +44,11 @@ class ShaderProgram(object):
         :type name: pyglet_helper.objects.view
         :return:
         """
-        if self.program <= 0 or not view.glext.ARB_shader_objects:
+        if self.program <= 0 or not gl.glext_arb.GL_ARB_shader_objects:
             return -1
         cache = self.uniforms[name]
         if cache == 0:
-            cache = 2 + view.glext.glGetUniformLocationARB(self.program, name)
+            cache = 2 + gl.glext_arb.glGetUniformLocationARB(self.program, name)
         return cache - 2
 
     def realize(self, view):
@@ -62,28 +63,28 @@ class ShaderProgram(object):
         if not view.enable_shaders:
             return
 
-        if not view.glext.ARB_shader_objects:
+        if not gl.glext_arb.GL_ARB_shader_objects:
             return
 
-        self.program = view.glext.glCreateProgramObjectARB()
+        self.program = gl.glext_arb.glCreateProgramObjectARB()
 
-        self.compile(view, pyglet.gl.GL_VERTEX_SHADER_ARB)
-        self.compile(view, pyglet.gl.GL_FRAGMENT_SHADER_ARB)
+        self.compile(gl.GL_VERTEX_SHADER_ARB)
+        self.compile(gl.GL_FRAGMENT_SHADER_ARB)
 
-        view.glext.glLinkProgramARB(self.program)
+        gl.glext_arb.glLinkProgramARB(self.program)
 
         # Check if linking succeeded
-        link_ok = view.glext.\
-            glGetObjectParameterivARB(self.program, pyglet.gl.GL_OBJECT_LINK_STATUS_ARB)
+        link_ok = gl.glext_arb.glGetObjectParameterivARB\
+            (self.program, gl.GL_OBJECT_LINK_STATUS_ARB)
 
         if not link_ok:
             # Some drivers (incorrectly?) set the GL error in
             # glLinkProgramARB() in this situation
-            length = view.glext.\
+            length = gl.glext_arb.\
                 glGetObjectParameterivARB(self.program,
-                                          pyglet.gl.GL_OBJECT_INFO_LOG_LENGTH_ARB)
+                                          gl.GL_OBJECT_INFO_LOG_LENGTH_ARB)
             temp = ['a'] * (length + 2)
-            length, temp[0] = view.glext.glGetInfoLogARB(self.program,
+            length, temp[0] = gl.glext_arb.glGetInfoLogARB(self.program,
                                                          length + 1)
 
             print("VPython WARNING: errors in shader program:\n" + str(temp)
@@ -93,11 +94,11 @@ class ShaderProgram(object):
             # GL errors.  We set program to 0 instead of -1 so that binding it
             # will revert to the fixed function pipeline, and realize() won't
             # be called again.
-            view.glext.glDeleteObjectARB(self.program)
+            gl.glext_arb.glDeleteObjectARB(self.program)
             self.program = 0
             return
 
-    def compile(self, view, shader_type):
+    def compile(self, shader_type):
         """
         Compiles and attaches the current shader
         :param view: the view to render the shader program to
@@ -106,11 +107,11 @@ class ShaderProgram(object):
         GL_GEOMETRY_SHADER
         :type shader_type: valid opengl shader type
         """
-        shader = view.glext.glCreateShaderObjectARB(shader_type)
-        view.glext.glShaderSourceARB(shader, 1)
-        view.glext.glCompileShaderARB(shader)
-        view.glext.glAttachObjectARB(self.program, shader)
-        view.glext.glDeleteObjectARB(shader)
+        shader = gl.glext_arb.glCreateShaderObjectARB(shader_type)
+        gl.glext_arb.glShaderSourceARB(shader, 1)
+        gl.glext_arb.glCompileShaderARB(shader)
+        gl.glext_arb.glAttachObjectARB(self.program, shader)
+        gl.glext_arb.glDeleteObjectARB(shader)
 
     def get(self):
         """
@@ -124,7 +125,7 @@ class ShaderProgram(object):
         """
         Remove the current program from memory
         """
-        pyglet.gl.glDeleteObjectARB(self.program)
+        gl.glext_arb.glDeleteObjectARB(self.program)
 
     def get_section(self, name):
         """
@@ -147,12 +148,10 @@ class ShaderProgram(object):
         while pos < len(_source):
             pos += len(header)
             end = self.source.find("\n[", pos)
-            if end == self.source.npos:
-                end = self.source.size()
-
-            section += self.source.substr(pos, end - pos)
+            section += self.source[pos:(end - pos)]
             pos = end
             pos = _source.find(header, pos)
+            print pos
 
         return section
 
@@ -172,7 +171,7 @@ class UseShaderProgram(object):
     def __exit__(self, _type, value, traceback):
         if self.old_program < 0 or not self.view.glext.ARB_shader_objects:
             return
-        pyglet.gl.glUseProgramObjectARB(self.old_program)
+        gl.glUseProgramObjectARB(self.old_program)
 
     @property
     def invoked(self):

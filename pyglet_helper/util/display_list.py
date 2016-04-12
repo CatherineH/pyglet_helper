@@ -7,9 +7,6 @@ try:
 except ImportError:
     gl = None
 
-print("loaded displaylist")
-
-
 class DisplayList(object):
     """
     A class for storing the OpenGl commands for rendering an object.

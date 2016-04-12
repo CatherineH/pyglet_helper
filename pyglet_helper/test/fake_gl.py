@@ -51,3 +51,25 @@ def glClear(a):
 
 def glLoadIdentity():
     pass
+
+
+class glext_arb(object):
+    GL_ARB_shader_objects = 1
+
+    def glGetUniformLocationARB(program, name):
+        return 0
+
+    def glCreateShaderObjectARB(shader_type):
+        return 1
+
+    def glShaderSourceARB(shader, handle):
+        pass
+
+    def glCompileShaderARB(shader):
+        pass
+
+    def glAttachObjectARB(program, shader):
+        pass
+
+    def glDeleteObjectARB(shader):
+        pass
