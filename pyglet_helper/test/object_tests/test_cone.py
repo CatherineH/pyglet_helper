@@ -6,6 +6,7 @@ import pyglet_helper.test.fake_gl
 @patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.quadric.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
 def test_cone_render():
     from pyglet_helper.objects import Cone
     from pyglet_helper.objects import View
