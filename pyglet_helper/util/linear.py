@@ -197,8 +197,6 @@ class Vector(object):
         :return: The dot product
         :rtype: float
         """
-        if type(vector) is not Vector:
-            vector = Vector(vector)
         return vector.x_component * self.x_component + \
                vector.y_component * self.y_component + \
                vector.z_component * self.z_component
@@ -211,9 +209,6 @@ class Vector(object):
         :return: The cross product of self and v
         :rtype: pyglet_helper.util.Vector
         """
-        if type(vector) is not Vector:
-            vector = Vector(vector)
-
         x_component = self.y_component * vector.z_component - \
                       self.z_component * vector.y_component
         y_component = self.z_component * vector.x_component \
@@ -550,6 +545,34 @@ class Vertex(object):
         :return:
         """
         self._w_component = new_value
+
+    def __getitem__(self, i):
+        """
+        get the component of the vertex by an integer address
+        :param i: the integer, with a value from -4 to 3
+        :type i: int
+        :return:
+        """
+        if i == 0 or i == -4:
+            return self.x_component
+        if i == 1 or i == -3:
+            return self.y_component
+        if i == 2 or i == -2:
+            return self.z_component
+        if i == 3 or i == -1:
+            return self.w_component
+        if i > 3 or i < -4:
+            raise IndexError("index not available")
+
+    def __repr__(self):
+        """
+        Format the vertex into a string
+        :return:
+        """
+        return "Vertex(" + str(self.x_component) + "," + \
+               str(self.y_component) + "," + str(self.z_component) + "," + \
+               str(self.w_component) + ")"
+
 
 
 class Tmatrix(object):
