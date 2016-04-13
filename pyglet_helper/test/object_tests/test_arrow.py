@@ -86,6 +86,7 @@ def test_arrow_effective_geometry():
 @patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.arrow.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.box.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.pyramid.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.box.gl', new=pyglet_helper.test.fake_gl)
