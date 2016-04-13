@@ -20,6 +20,17 @@ GL_LIGHT5 = 16389
 GL_LIGHT6 = 16390
 GL_LIGHT7 = 16391
 
+GL_COMPILE = 0
+GL_FRONT = 0
+GL_BACK = 0
+
+
+class GLException(Exception):
+   def __init__(self, value):
+        self.value = value
+   def __str__(self):
+        return repr(self.value)
+
 
 def glNormal3f(a, b, c):
     pass
@@ -53,6 +64,34 @@ def glLoadIdentity():
     pass
 
 
+def glRotatef(x, y, z, w):
+    pass
+
+
+def glNewList(handle, compile):
+    pass
+
+
+def glEndList(handle):
+    pass
+
+
+def glPushMatrix():
+    pass
+
+
+def glCullFace(front):
+    pass
+
+
+def glCallList(handle):
+    pass
+
+
+def glPopMatrix():
+    pass
+
+
 class glext_arb(object):
     GL_ARB_shader_objects = 1
 
@@ -78,4 +117,55 @@ class glext_arb(object):
 
     @staticmethod
     def glDeleteObjectARB(shader):
+        pass
+
+
+class glu(object):
+    GLU_FILL = 1
+    GLU_SMOOTH = 1
+    GLU_OUTSIDE = 1
+    GLU_INSIDE = 1
+    GLU_POINT = 1
+    GLU_LINE = 1
+    GLU_FILL = 1
+    GLU_SILHOUETTE = 1
+
+    @staticmethod
+    def gluDisk(quadric, thickness, radius, slices, rings):
+        pass
+
+    @staticmethod
+    def gluCylinder(quadric, base_radius, top_radius, height, slices, stacks):
+        pass
+
+    @staticmethod
+    def gluNewQuadric():
+        return -1
+
+    @staticmethod
+    def gluQuadricDrawStyle(quadric, fill):
+        pass
+
+    @staticmethod
+    def gluQuadricNormals(quadric, smooth):
+        pass
+
+    @staticmethod
+    def gluQuadricOrientation(quadric, outside):
+        pass
+
+    @staticmethod
+    def gluQuadricDrawStyle(quadric, point):
+        pass
+
+    @staticmethod
+    def gluQuadricNormals(quadric, style):
+        pass
+
+    @staticmethod
+    def gluSphere(quadric, radius, slices, stacks):
+        pass
+
+    @staticmethod
+    def gluDeleteQuadric(quadric):
         pass

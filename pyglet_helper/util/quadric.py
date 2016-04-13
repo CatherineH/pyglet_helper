@@ -3,9 +3,9 @@ quadric-type
 geometric shapes
 """
 try:
-    import pyglet.gl
-except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    import pyglet.gl as gl
+except ImportError:
+    gl = None
 from enum import Enum
 
 
@@ -41,17 +41,16 @@ class Quadric(object):
     Generates a Quadric. Used for cylinders, spheres, and disks.
     """
     def __init__(self):
-        self.quadric = pyglet.gl.glu.gluNewQuadric()
-        pyglet.gl.glu.gluQuadricDrawStyle(self.quadric, pyglet.gl.glu.GLU_FILL)
-        pyglet.gl.glu.gluQuadricNormals(self.quadric, pyglet.gl.glu.GLU_SMOOTH)
-        pyglet.gl.glu.gluQuadricOrientation(self.quadric,
-                                            pyglet.gl.glu.GLU_OUTSIDE)
+        self.quadric = gl.glu.gluNewQuadric()
+        gl.glu.gluQuadricDrawStyle(self.quadric, gl.glu.GLU_FILL)
+        gl.glu.gluQuadricNormals(self.quadric, gl.glu.GLU_SMOOTH)
+        gl.glu.gluQuadricOrientation(self.quadric, gl.glu.GLU_OUTSIDE)
         self._drawing_style = 1
         self._normal_style = 1
         self._orientation = 1
 
     def __del__(self):
-        pyglet.gl.glu.gluDeleteQuadric(self.quadric)
+        gl.glu.gluDeleteQuadric(self.quadric)
 
     @property
     def drawing_style(self):
@@ -70,17 +69,13 @@ class Quadric(object):
         """
         self._drawing_style = style
         if style == DrawingStyle.POINT:
-            pyglet.gl.glu.gluQuadricDrawStyle(self.quadric,
-                                              pyglet.gl.glu.GLU_POINT)
+            gl.glu.gluQuadricDrawStyle(self.quadric, gl.glu.GLU_POINT)
         elif style == DrawingStyle.LINE:
-            pyglet.gl.glu.gluQuadricDrawStyle(self.quadric,
-                                              pyglet.gl.glu.GLU_LINE)
+            gl.glu.gluQuadricDrawStyle(self.quadric, gl.glu.GLU_LINE)
         elif style == DrawingStyle.FILL:
-            pyglet.gl.glu.gluQuadricDrawStyle(self.quadric,
-                                              pyglet.gl.glu.GLU_FILL)
+            gl.glu.gluQuadricDrawStyle(self.quadric, gl.glu.GLU_FILL)
         elif style == DrawingStyle.SILHOUETTE:
-            pyglet.gl.glu.gluQuadricDrawStyle(self.quadric,
-                                              pyglet.gl.glu.GLU_SILHOUETTE)
+            gl.glu.gluQuadricDrawStyle(self.quadric, gl.glu.GLU_SILHOUETTE)
 
     @property
     def normal_style(self):
@@ -99,14 +94,11 @@ class Quadric(object):
         """
         self._normal_style = style
         if style == NormalStyle.NONE:
-            pyglet.gl.glu.gluQuadricNormals(self.quadric,
-                                            pyglet.gl.glu.GLU_NONE)
+            gl.glu.gluQuadricNormals(self.quadric, gl.glu.GLU_NONE)
         elif style == NormalStyle.FLAT:
-            pyglet.gl.glu.gluQuadricNormals(self.quadric,
-                                            pyglet.gl.glu.GLU_FLAT)
+            gl.glu.gluQuadricNormals(self.quadric, gl.glu.GLU_FLAT)
         elif style == NormalStyle.SMOOTH:
-            pyglet.gl.glu.gluQuadricNormals(self.quadric,
-                                            pyglet.gl.glu.GLU_SMOOTH)
+            gl.glu.gluQuadricNormals(self.quadric, gl.glu.GLU_SMOOTH)
 
     @property
     def orientation(self):
@@ -125,11 +117,9 @@ class Quadric(object):
         """
         self._orientation = side
         if side == Orientation.OUTSIDE:
-            pyglet.gl.glu.gluQuadricOrientation(self.quadric,
-                                                pyglet.gl.glu.GLU_OUTSIDE)
+            gl.glu.gluQuadricOrientation(self.quadric, gl.glu.GLU_OUTSIDE)
         else:
-            pyglet.gl.glu.gluQuadricOrientation(self.quadric,
-                                                pyglet.gl.glu.GLU_INSIDE)
+            gl.glu.gluQuadricOrientation(self.quadric, gl.glu.GLU_INSIDE)
 
     def render_sphere(self, radius, slices, stacks):
         """ Render a sphere.
@@ -141,7 +131,7 @@ class Quadric(object):
         :param stacks: The number of latitudinal lines
         :type stacks: int
         """
-        pyglet.gl.glu.gluSphere(self.quadric, radius, slices, stacks)
+        gl.glu.gluSphere(self.quadric, radius, slices, stacks)
 
     def render_cylinder(self, base_radius, height, slices, stacks,
                         top_radius=None):
@@ -161,14 +151,14 @@ class Quadric(object):
         """
         # rotate the cylinder so that it is drawn along the VPython axis
         # convention
-        pyglet.gl.glRotatef(90, 0, 1, 0)
+        gl.glRotatef(90, 0, 1, 0)
         if top_radius is None:
-            pyglet.gl.glu.gluCylinder(self.quadric, base_radius, base_radius,
-                                      height, slices, stacks)
+            gl.glu.gluCylinder(self.quadric, base_radius, base_radius,
+                               height, slices, stacks)
         else:
-            pyglet.gl.glu.gluCylinder(self.quadric, base_radius, top_radius,
-                                      height, slices, stacks)
-        pyglet.gl.glRotatef(-90, 0, 1, 0)
+            gl.glu.gluCylinder(self.quadric, base_radius, top_radius,
+                               height, slices, stacks)
+        gl.glRotatef(-90, 0, 1, 0)
 
     def render_disk(self, radius, slices, rings, rotation):
         """ Generate the polygons for a disk
@@ -183,6 +173,6 @@ class Quadric(object):
         :type rotation: float
         """
         # rotate the disk so that it is drawn along the VPython axis convention
-        pyglet.gl.glRotatef(90, 0, pyglet.gl.GLfloat(rotation), 0)
-        pyglet.gl.glu.gluDisk(self.quadric, 0.0, radius, slices, rings)
-        pyglet.gl.glRotatef(-90, 0, pyglet.gl.GLfloat(rotation), 0)
+        gl.glRotatef(90, 0, gl.GLfloat(rotation), 0)
+        gl.glu.gluDisk(self.quadric, 0.0, radius, slices, rings)
+        gl.glRotatef(-90, 0, gl.GLfloat(rotation), 0)

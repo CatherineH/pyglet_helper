@@ -2,9 +2,9 @@
 pyglet_helper.cone contains an object for drawing a cone
 """
 try:
-   import pyglet.gl
+   import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Quadric, Rgb, Vector
 
@@ -62,24 +62,24 @@ class Cone(Axial):
         lod = self.lod_adjust(scene, coverage_levels, self.pos, self.radius)
 
         length = self.axis.mag()
-        pyglet.gl.glPushMatrix()
+        gl.glPushMatrix()
         self.model_world_transform(scene.gcf, Vector([length, self.radius,
                                                       self.radius])).gl_mult()
 
         self.color.gl_set(self.opacity)
         if self.translucent:
-            pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
+            gl.glEnable(gl.GL_CULL_FACE)
 
             # Render the back half.
-            pyglet.gl.glCullFace(pyglet.gl.GL_FRONT)
+            gl.glCullFace(gl.GL_FRONT)
             scene.cone_model[lod].gl_render()
 
             # Render the front half.
-            pyglet.gl.glCullFace(pyglet.gl.GL_BACK)
+            gl.glCullFace(gl.GL_BACK)
             scene.cone_model[lod].gl_render()
         else:
             scene.cone_model[lod].gl_render()
-        pyglet.gl.glPopMatrix()
+        gl.glPopMatrix()
 
     @property
     def center(self):
