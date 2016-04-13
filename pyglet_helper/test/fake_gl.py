@@ -28,6 +28,11 @@ GL_MODELVIEW_MATRIX = 0
 GL_TEXTURE_MATRIX = 0
 GL_COLOR_MATRIX = 0
 GL_PROJECTION_MATRIX = 0
+GL_FRONT_AND_BACK = 0
+GL_AMBIENT_AND_DIFFUSE = 0
+GL_SPECULAR = 0
+GL_SHININESS = 0
+
 
 class GLException(Exception):
    def __init__(self, value):
@@ -118,6 +123,14 @@ def glMultMatrixd(ctype_matrix):
 
 def glGetFloatv(matrix, ctypes_matrix):
     return [-1.0, -1.0, -1.0, -1.0]
+
+
+def glMaterialf(front_and_back, shininess, val):
+    pass
+
+
+def glMaterialfv(front_and_back, shininess, val):
+    pass
 
 
 class glext_arb(object):

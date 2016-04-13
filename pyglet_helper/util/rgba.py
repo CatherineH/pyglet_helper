@@ -2,9 +2,9 @@
 pyglet_helper.util.rgba contains object to describe colors
 """
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 
 
 class Rgba(object):
@@ -88,13 +88,10 @@ class Rgba(object):
         """
         Set this color to the current material in OpenGL.
         """
-        color = (pyglet.gl.GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
-        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
-                               pyglet.gl.GL_AMBIENT_AND_DIFFUSE, color)
-        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
-                               pyglet.gl.GL_SPECULAR, color)
-        pyglet.gl.glMaterialf(pyglet.gl.GL_FRONT_AND_BACK,
-                              pyglet.gl.GL_SHININESS, 50)
+        color = (gl.GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
+        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_AMBIENT_AND_DIFFUSE, color)
+        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_SPECULAR, color)
+        gl.glMaterialf(gl.GL_FRONT_AND_BACK, gl.GL_SHININESS, 50)
 
 
 class Rgb(object):
@@ -272,10 +269,7 @@ class Rgb(object):
         :param opacity: the opacity value of the color
         :type opacity: float
         """
-        color = (pyglet.gl.GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
-        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
-                               pyglet.gl.GL_AMBIENT_AND_DIFFUSE, color)
-        pyglet.gl.glMaterialfv(pyglet.gl.GL_FRONT_AND_BACK,
-                               pyglet.gl.GL_SPECULAR, color)
-        pyglet.gl.glMaterialf(pyglet.gl.GL_FRONT_AND_BACK,
-                              pyglet.gl.GL_SHININESS, 50)
+        color = (gl.GLfloat * 4)(*[self.red, self.green, self.blue, opacity])
+        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_AMBIENT_AND_DIFFUSE, color)
+        gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_SPECULAR, color)
+        gl.glMaterialf(gl.GL_FRONT_AND_BACK, gl.GL_SHININESS, 50)
