@@ -30,6 +30,7 @@ def test_sphere_degenerate():
 @patch('pyglet_helper.objects.sphere.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.quadric.gl', new=pyglet_helper.test.fake_gl)
 def test_sphere_render():
     from pyglet_helper.objects import Sphere
     from pyglet_helper.objects import View

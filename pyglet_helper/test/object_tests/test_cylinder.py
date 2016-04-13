@@ -23,6 +23,7 @@ def test_cylinder_center():
 @patch('pyglet_helper.objects.cylinder.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.quadric.gl', new=pyglet_helper.test.fake_gl)
 def test_cylinder_render():
     from pyglet_helper.objects import Cylinder
     from pyglet_helper.objects import View

@@ -87,7 +87,8 @@ def test_arrow_effective_geometry():
 @patch('pyglet_helper.objects.arrow.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
-def test_sphere_render():
+@patch('pyglet_helper.util.box.gl', new=pyglet_helper.test.fake_gl)
+def test_arrow_render():
     from pyglet_helper.objects import Arrow
     from pyglet_helper.objects import View
     _arrow = Arrow()
