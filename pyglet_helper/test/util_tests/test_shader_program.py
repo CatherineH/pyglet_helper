@@ -19,6 +19,7 @@ def test_shader_program_uniform_location():
 
 
 @patch('pyglet_helper.util.shader_program.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.renderable.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
 def test_shader_program_realize():
     from pyglet_helper.util.shader_program import ShaderProgram
