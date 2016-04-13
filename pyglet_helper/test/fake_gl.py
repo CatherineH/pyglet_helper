@@ -29,9 +29,6 @@ GL_TEXTURE_MATRIX = 0
 GL_COLOR_MATRIX = 0
 GL_PROJECTION_MATRIX = 0
 
-def GLdouble(component):
-    return component
-
 class GLException(Exception):
    def __init__(self, value):
         self.value = value
