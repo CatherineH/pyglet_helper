@@ -29,6 +29,7 @@ def test_ring_degenerate():
 @patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.ring.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
 def test_ring_render():
     from pyglet_helper.objects import Ring
     from pyglet_helper.objects import View
