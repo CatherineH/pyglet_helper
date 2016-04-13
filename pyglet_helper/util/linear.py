@@ -3,9 +3,9 @@ transformations and describes linear algebra operations
 """
 from __future__ import division, print_function
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from numpy import matrix, identity, nditer
 from numpy.linalg import inv
 from math import sqrt, acos, asin, pi
@@ -407,16 +407,16 @@ class Vector(object):
         Add the current vector as an OpenGL Vertex
         :return:
         """
-        pyglet.gl.glVertex3d(pyglet.gl.GLdouble(self.x_component),
-                             pyglet.gl.GLdouble(self.y_component),
-                             pyglet.gl.GLdouble(self.z_component))
+        gl.glVertex3d(gl.GLdouble(self.x_component),
+                             gl.GLdouble(self.y_component),
+                             gl.GLdouble(self.z_component))
 
     def gl_normal(self):
         """
         Add the current vector as an OpenGL Normal
         :return:
         """
-        pyglet.gl.glNormal3dv(self.x_component)
+        gl.glNormal3dv(self.x_component)
 
     def sum(self):
         """
@@ -480,7 +480,7 @@ class Vertex(object):
         """
         Send the vertex to OpenGl
         """
-        pyglet.gl.glVertex4d(self.x_component, self.y_component,
+        gl.glVertex4d(self.x_component, self.y_component,
                              self.z_component, self.w_component)
 
     @property
@@ -852,17 +852,17 @@ class Tmatrix(object):
         """
         Overwrites the currently active matrix in OpenGL with this one.
         """
-        ctypes_matrix = (pyglet.gl.GLdouble * 16)(*[float(value) for value in
+        ctypes_matrix = (gl.GLdouble * 16)(*[float(value) for value in
                                           nditer(self.matrix)])
-        pyglet.gl.glLoadMatrixd(ctypes_matrix)
+        gl.glLoadMatrixd(ctypes_matrix)
 
     def gl_mult(self):
         """
         Multiplies the active OpenGL by this one.
         """
-        ctype_matrix = (pyglet.gl.GLdouble * 16)(*[float(value) for value in
+        ctype_matrix = (gl.GLdouble * 16)(*[float(value) for value in
                                          nditer(self.matrix)])
-        pyglet.gl.glMultMatrixd(ctype_matrix)
+        gl.glMultMatrixd(ctype_matrix)
 
     def gl_modelview_get(self):
         """ Initialize the matrix with the contents of the OpenGL modelview
@@ -870,9 +870,9 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        ctypes_matrix = (pyglet.gl.GLfloat * 16)()
+        ctypes_matrix = (gl.GLfloat * 16)()
 
-        pyglet.gl.glGetFloatv(pyglet.gl.GL_MODELVIEW_MATRIX, ctypes_matrix)
+        gl.glGetFloatv(gl.GL_MODELVIEW_MATRIX, ctypes_matrix)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = ctypes_matrix[i + 4 * j]
@@ -885,7 +885,7 @@ class Tmatrix(object):
         :rtype: matrix
         """
         _matrix = [[0] * 4] * 4
-        _matrix[0] = pyglet.gl.glGetFloatv(pyglet.gl.GL_TEXTURE_MATRIX)
+        _matrix[0] = gl.glGetFloatv(gl.GL_TEXTURE_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = _matrix[i][j]
@@ -898,7 +898,7 @@ class Tmatrix(object):
         :rtype: matrix
         """
         _matrix = [[0] * 4] * 4
-        _matrix[0] = pyglet.gl.glGetFloatv(pyglet.gl.GL_COLOR_MATRIX)
+        _matrix[0] = gl.glGetFloatv(gl.GL_COLOR_MATRIX)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = _matrix[i][j]
@@ -911,8 +911,8 @@ class Tmatrix(object):
         :return: the current matrix
         :rtype: matrix
         """
-        ctypes_matrix = (pyglet.gl.GLfloat * 16)()
-        pyglet.gl.glGetFloatv(pyglet.gl.GL_PROJECTION_MATRIX, ctypes_matrix)
+        ctypes_matrix = (gl.GLfloat * 16)()
+        gl.glGetFloatv(gl.GL_PROJECTION_MATRIX, ctypes_matrix)
         for i in range(0, 4):
             for j in range(0, 4):
                 self.matrix[i, j] = ctypes_matrix[i + 4 * j]

@@ -2,10 +2,11 @@
 The following file contains definitions for GL functions when pyglet can't
 be used, such as on testing on continuous integration systems.
 """
-from ctypes import c_float
+from ctypes import c_float, c_double
 
 
 GLfloat = c_float
+GLdouble = c_double
 GL_COLOR_BUFFER_BIT = 16384
 GL_CULL_FACE = 2884
 GL_DEPTH_BUFFER_BIT = 256
@@ -23,7 +24,13 @@ GL_LIGHT7 = 16391
 GL_COMPILE = 0
 GL_FRONT = 0
 GL_BACK = 0
+GL_MODELVIEW_MATRIX = 0
+GL_TEXTURE_MATRIX = 0
+GL_COLOR_MATRIX = 0
+GL_PROJECTION_MATRIX = 0
 
+def GLdouble(component):
+    return component
 
 class GLException(Exception):
    def __init__(self, value):
@@ -37,6 +44,18 @@ def glNormal3f(a, b, c):
 
 
 def glVertex3f(a, b, c):
+    pass
+
+
+def glNormal3dv(component):
+    pass
+
+
+def glVertex3d(a, b, c):
+    pass
+
+
+def glVertex4d(a, b, c, d):
     pass
 
 
@@ -90,6 +109,18 @@ def glCallList(handle):
 
 def glPopMatrix():
     pass
+
+
+def glLoadMatrixd(ctypes_matrix):
+    pass
+
+
+def glMultMatrixd(ctype_matrix):
+    pass
+
+
+def glGetFloatv(matrix, ctypes_matrix):
+    return [-1.0, -1.0, -1.0, -1.0]
 
 
 class glext_arb(object):
