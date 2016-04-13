@@ -27,6 +27,8 @@ def test_shader_program_realize():
     shader = ShaderProgram()
     view = View()
     shader.realize(view)
+    shader.program = -1
+    shader.realize(view)
 
 
 def test_shader_program_get():

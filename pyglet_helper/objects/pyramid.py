@@ -2,9 +2,9 @@
 pyglet_helper.pyramid contains an object for drawing a pyramid
 """
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Rectangular
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
@@ -58,28 +58,28 @@ class Pyramid(Rectangular):
         normals = [[1, 2, 0], [1, -2, 0], [1, 0, 2], [1, 0, -2], [-1, 0, 0],
                    [-1, 0, 0]]
 
-        pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
-        pyglet.gl.glBegin(pyglet.gl.GL_TRIANGLES)
+        gl.glEnable(gl.GL_CULL_FACE)
+        gl.glBegin(gl.GL_TRIANGLES)
 
         # Inside
         for face in range(0, 6):
-            pyglet.gl.glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
+            gl.glNormal3f(-normals[face][0], -normals[face][1], -normals[face][2])
             for vertex in range(0, 3):
                 #print triangle_indices[face]
                 #print vertices[triangle_indices[face]][2 - vertex]
-                vert = [pyglet.gl.GLfloat(i) for i in
+                vert = [gl.GLfloat(i) for i in
                         vertices[triangle_indices[face][2 - vertex]]]
-                pyglet.gl.glVertex3f(*vert)
+                gl.glVertex3f(*vert)
 
         # Outside
         for face in range(0, 6):
-            pyglet.gl.glNormal3fv(*[pyglet.gl.GLfloat(i) for i in normals[face]])
+            gl.glNormal3fv(*[gl.GLfloat(i) for i in normals[face]])
             for vertex in range(0, 3):
-                pyglet.gl.glVertex3f(*[pyglet.gl.GLfloat(i) for i in vertices[triangle_indices[
-                    face][vertex]]])
+                gl.glVertex3f(*[gl.GLfloat(i) for i in vertices[triangle_indices[
+                                face][vertex]]])
 
-        pyglet.gl.glEnd()
-        pyglet.gl.glDisable(pyglet.gl.GL_CULL_FACE)
+        gl.glEnd()
+        gl.glDisable(gl.GL_CULL_FACE)
         self.compiled = True
 
         scene.pyramid_model.gl_compile_end()
@@ -118,7 +118,7 @@ class Pyramid(Rectangular):
             self.init_model(scene)
 
         self.color.gl_set(self.opacity)
-        pyglet.gl.glPushMatrix()
+        gl.glPushMatrix()
         self.apply_transform(scene)
         scene.pyramid_model.gl_render()
-        pyglet.gl.glPopMatrix()
+        gl.glPopMatrix()

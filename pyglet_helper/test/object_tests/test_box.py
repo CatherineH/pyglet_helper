@@ -1,13 +1,22 @@
 from mock import patch
-import sys
-import os
+import pyglet_helper
 
-test_filename = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(test_filename)
-import fake_gl
 
-@patch('pyglet_helper.objects.box.gl', new=fake_gl)
+@patch('pyglet_helper.objects.box.gl', new=pyglet_helper.test.fake_gl)
 def test_box_generate_model():
     from pyglet_helper.objects import Box
     box = Box()
     box.generate_model()
+
+
+@patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.box.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_sphere_render():
+    from pyglet_helper.objects import Box
+    from pyglet_helper.objects import View
+    _box = Box()
+    _view = View()
+    _box.render(_view)

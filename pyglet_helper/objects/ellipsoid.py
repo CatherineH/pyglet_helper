@@ -10,7 +10,7 @@ class Ellipsoid(Sphere):
     An Ellipsoid object
     """
     def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(),
-                 pos=Vector([0, 0, 0])):
+                 pos=Vector([0, 0, 0]), axis=Vector([1.0, 0.0, 0.0])):
         """
 
         :param width: The ellipsoid's width.
@@ -24,7 +24,7 @@ class Ellipsoid(Sphere):
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
         """
-        super(Ellipsoid, self).__init__(color=color, pos=pos)
+        super(Ellipsoid, self).__init__(color=color, pos=pos, axis=axis)
         self._height = None
         self._width = None
         self.height = height
@@ -41,6 +41,7 @@ class Ellipsoid(Sphere):
         """
         return Vector([self.axis.mag(), self.height, self.width]) * 0.5
 
+    @property
     def degenerate(self):
         """
         True if the scale in any dimension is zero, or if the object is not

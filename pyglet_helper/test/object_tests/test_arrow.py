@@ -1,3 +1,7 @@
+from __future__ import print_function
+from mock import patch
+import pyglet_helper.test.fake_gl
+
 def test_arrow_degenerate():
     from pyglet_helper.objects import Arrow
     from pyglet_helper.util import Vector
@@ -76,3 +80,16 @@ def test_arrow_effective_geometry():
     assert(blo.effective_geometry(1.0)[0] == 0.0001)
     assert(blo.effective_geometry(1.0)[1] == 5e-5)
     assert(blo.effective_geometry(1.0)[2] == 1.0)
+
+
+@patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.arrow.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_sphere_render():
+    from pyglet_helper.objects import Arrow
+    from pyglet_helper.objects import View
+    _arrow = Arrow()
+    _view = View()
+    _arrow.render(_view)

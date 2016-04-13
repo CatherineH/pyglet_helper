@@ -39,6 +39,10 @@ GL_VERTEX_ARRAY = 0
 GL_NORMAL_ARRAY = 0
 GL_TRIANGLES = 0
 GL_UNSIGNED_INT = 0
+GL_VERTEX_SHADER_ARB = 0
+GL_FRAGMENT_SHADER_ARB = 0
+GL_OBJECT_LINK_STATUS_ARB = 0
+GL_OBJECT_INFO_LOG_LENGTH_ARB = 0
 
 class GLException(Exception):
    def __init__(self, value):
@@ -162,6 +166,34 @@ def glPopClientAttrib():
     pass
 
 
+def glBegin(triangles):
+    pass
+
+
+def glNormal3fv(a, b, c):
+    pass
+
+
+def glEnd():
+    pass
+
+
+def glDisable(cull_face):
+    pass
+
+
+def glTranslatef(a, b, c):
+    pass
+
+
+def glTranslated(x, y, z):
+    pass
+
+
+def glScaled(x, y, z):
+    pass
+
+
 class glext_arb(object):
     GL_ARB_shader_objects = 1
 
@@ -189,6 +221,21 @@ class glext_arb(object):
     def glDeleteObjectARB(shader):
         pass
 
+    @staticmethod
+    def glCreateProgramObjectARB():
+        pass
+
+    @staticmethod
+    def glLinkProgramARB(program):
+        pass
+
+    @staticmethod
+    def glGetObjectParameterivARB(program, link_status):
+        return False
+
+    @staticmethod
+    def glGetInfoLogARB(program, length):
+        return (0.0, 0.0)
 
 class glu(object):
     GLU_FILL = 1
@@ -239,3 +286,4 @@ class glu(object):
     @staticmethod
     def gluDeleteQuadric(quadric):
         pass
+

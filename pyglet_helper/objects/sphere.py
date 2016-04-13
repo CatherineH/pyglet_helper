@@ -1,9 +1,9 @@
 """ pyglet_helper.sphere contains an object for drawing a sphere
 """
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Axial, Material
 from pyglet_helper.util import Quadric, Rgb, Tmatrix, Vector
 
@@ -12,7 +12,8 @@ class Sphere(Axial):
     """
     A Sphere object
     """
-    def __init__(self, color=Rgb(), pos=Vector([0, 0, 0]), radius=1.0,
+    def __init__(self, color=Rgb(), pos=Vector([0, 0, 0]),
+                 axis=Vector([1.0, 0.0, 0.0]), radius=1.0,
                  material=Material(), other=None):
         """
         :param radius: The sphere's radius.
@@ -29,7 +30,7 @@ class Sphere(Axial):
         :type other: pyglet_helper.objects.Sphere
         """
         super(Sphere, self).__init__(color=color, pos=pos, radius=radius,
-                                     material=material)
+                                     material=material, axis=axis)
         # Construct a unit sphere at the origin.
         if other is not None:
             self.axial = other
@@ -109,23 +110,23 @@ class Sphere(Axial):
 
         coverage_levels = [30, 100, 500, 5000]
         lod = self.lod_adjust(geometry, coverage_levels, self.pos, self.radius)
-        pyglet.gl.glPushMatrix()
+        gl.glPushMatrix()
 
         self.model_world_transform(geometry.gcf, self.scale).gl_mult()
         self.color.gl_set(self.opacity)
 
         if self.translucent:
             # Spheres are convex, so we don't need to sort
-            pyglet.gl.glEnable(pyglet.gl.GL_CULL_FACE)
+            gl.glEnable(gl.GL_CULL_FACE)
 
             # Render the back half (inside)
-            pyglet.gl.glCullFace(pyglet.gl.GL_FRONT)
+            gl.glCullFace(gl.GL_FRONT)
             geometry.sphere_model[lod].gl_render()
 
             # Render the front half (outside)
-            pyglet.gl.glCullFace(pyglet.gl.GL_BACK)
+            gl.glCullFace(gl.GL_BACK)
             geometry.sphere_model[lod].gl_render()
         else:
             # Render a simple sphere.
             geometry.sphere_model[lod].gl_render()
-        pyglet.gl.glPopMatrix()
+        gl.glPopMatrix()

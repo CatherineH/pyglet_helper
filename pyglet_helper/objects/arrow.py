@@ -2,9 +2,9 @@
 pyglet_helper.arrow contains an object for drawing an arrow
 """
 try:
-    from pyglet.gl import glScaled, glTranslated, glPushMatrix, glPopMatrix
+    from pyglet.gl import gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Box, Material, Primitive, Pyramid
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 
@@ -187,13 +187,13 @@ class Arrow(Primitive):
         # front of the head if axis points away from the camera)
         shaft = self.axis.dot(scene.camera - (self.pos + self.axis *
                                               (1 - _head_length / _len))) < 0
-        glPushMatrix()
+        gl.glPushMatrix()
         self.model_world_transform(scene.gcf).gl_mult()
 
         for part in range(0, 2):
             if part == shaft:
-                glScaled(_len - _head_length, _shaft_width, _shaft_width)
-                glTranslated(0.5, 0, 0)
+                gl.glScaled(_len - _head_length, _shaft_width, _shaft_width)
+                gl.glTranslated(0.5, 0, 0)
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
                     scale = 1.0 / max(_len, _head_width)
@@ -208,12 +208,12 @@ class Arrow(Primitive):
                         set_uniform_matrix(scene, model_material_loc,
                                            model_mat)
                 scene.box_model.gl_render()
-                glTranslated(-0.5, 0, 0)
-                glScaled(1 / (_len - _head_length), 1 / _shaft_width,
+                gl.glTranslated(-0.5, 0, 0)
+                gl.glScaled(1 / (_len - _head_length), 1 / _shaft_width,
                          1 / _shaft_width)
             else:
-                glTranslated(_len - _head_length, 0, 0)
-                glScaled(_head_length, _head_width, _head_width)
+                gl.glTranslated(_len - _head_length, 0, 0)
+                gl.glScaled(_head_length, _head_width, _head_width)
                 if model_material_loc >= 0:
                     model_mat = Tmatrix()
                     _scale = 1.0 / max(_len, _head_width)
@@ -225,9 +225,9 @@ class Arrow(Primitive):
                         set_uniform_matrix(scene, model_material_loc,
                                            model_mat)
                 scene.pyramid_model.gl_render()
-                glScaled(1 / _head_length, 1 / _head_width, 1 / _head_width)
-                glTranslated(-_len + _head_length, 0, 0)
-        glPopMatrix()
+                gl.glScaled(1 / _head_length, 1 / _head_width, 1 / _head_width)
+                gl.glTranslated(-_len + _head_length, 0, 0)
+        gl.glPopMatrix()
 
     def init_model(self, scene):
         """Add the arrow head and shaft to the scene.

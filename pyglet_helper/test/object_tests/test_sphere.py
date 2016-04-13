@@ -1,5 +1,6 @@
 from __future__ import print_function
-
+from mock import patch
+import pyglet_helper.test.fake_gl
 
 def test_sphere_scale():
     from pyglet_helper.objects import Sphere
@@ -22,3 +23,16 @@ def test_sphere_degenerate():
     from pyglet_helper.objects import Sphere
     blo = Sphere(radius=0.1)
     assert( not blo.degenerate)
+
+
+@patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.sphere.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.rgba.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_sphere_render():
+    from pyglet_helper.objects import Sphere
+    from pyglet_helper.objects import View
+    _sphere = Sphere()
+    _view = View()
+    _sphere.render(_view)
