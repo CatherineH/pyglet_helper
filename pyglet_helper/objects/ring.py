@@ -1,8 +1,8 @@
 """pyglet_helper.ring contains an object for drawing a ring"""
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Axial
 from pyglet_helper.util import Rgb, Tmatrix, Vector
 from math import pi, sin, cos, sqrt
@@ -134,8 +134,8 @@ class Ring(Axial):
             outer_angle += outer_angle_step
 
         # Create ctypes arrays of the lists
-        vertices = (pyglet.gl.GLfloat *len(vertices))(*vertices)
-        normals = (pyglet.gl.GLfloat * len(normals))(*normals)
+        vertices = (gl.GLfloat *len(vertices))(*vertices)
+        normals = (gl.GLfloat * len(normals))(*normals)
 
         # Create a list of triangle indices.
         indices = []
@@ -145,28 +145,28 @@ class Ring(Axial):
                 indices.extend([pos, pos + inner_slices, pos + inner_slices +
                                 1])
                 indices.extend([pos, pos + inner_slices + 1, pos + 1])
-        indices = (pyglet.gl.GLuint * len(indices))(*indices)
+        indices = (gl.GLuint * len(indices))(*indices)
 
         # Compile a display list
-        self.list = pyglet.gl.glGenLists(1)
-        pyglet.gl.glNewList(self.list, pyglet.gl.GL_COMPILE)
+        self.list = gl.glGenLists(1)
+        gl.glNewList(self.list, gl.GL_COMPILE)
         self.color.gl_set(self.opacity)
 
-        pyglet.gl.glPushClientAttrib(pyglet.gl.GL_CLIENT_VERTEX_ARRAY_BIT)
-        pyglet.gl.glEnableClientState(pyglet.gl.GL_VERTEX_ARRAY)
-        pyglet.gl.glEnableClientState(pyglet.gl.GL_NORMAL_ARRAY)
+        gl.glPushClientAttrib(gl.GL_CLIENT_VERTEX_ARRAY_BIT)
+        gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+        gl.glEnableClientState(gl.GL_NORMAL_ARRAY)
         self.model_world_transform(scene.gcf,
                                    Vector([self.radius, self.radius,
                                            self.radius])).gl_mult()
 
-        pyglet.gl.glVertexPointer(3, pyglet.gl.GL_FLOAT, 0, vertices)
-        pyglet.gl.glNormalPointer(pyglet.gl.GL_FLOAT, 0, normals)
-        pyglet.gl.glDrawElements(pyglet.gl.GL_TRIANGLES, len(indices),
-                                 pyglet.gl.GL_UNSIGNED_INT, indices)
-        pyglet.gl.glPopClientAttrib()
+        gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
+        gl.glNormalPointer(gl.GL_FLOAT, 0, normals)
+        gl.glDrawElements(gl.GL_TRIANGLES, len(indices), gl.GL_UNSIGNED_INT,
+                          indices)
+        gl.glPopClientAttrib()
 
-        pyglet.gl.glEndList()
-        pyglet.gl.glCallList(self.list)
+        gl.glEndList()
+        gl.glCallList(self.list)
 
 
 def clamp(lower, value, upper):

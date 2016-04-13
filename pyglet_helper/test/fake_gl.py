@@ -2,11 +2,12 @@
 The following file contains definitions for GL functions when pyglet can't
 be used, such as on testing on continuous integration systems.
 """
-from ctypes import c_float, c_double
+from ctypes import c_float, c_double, c_uint
 
 
 GLfloat = c_float
 GLdouble = c_double
+GLuint = c_uint
 GL_COLOR_BUFFER_BIT = 16384
 GL_CULL_FACE = 2884
 GL_DEPTH_BUFFER_BIT = 256
@@ -24,6 +25,7 @@ GL_LIGHT7 = 16391
 GL_COMPILE = 0
 GL_FRONT = 0
 GL_BACK = 0
+GL_FLOAT = 0
 GL_MODELVIEW_MATRIX = 0
 GL_TEXTURE_MATRIX = 0
 GL_COLOR_MATRIX = 0
@@ -32,7 +34,11 @@ GL_FRONT_AND_BACK = 0
 GL_AMBIENT_AND_DIFFUSE = 0
 GL_SPECULAR = 0
 GL_SHININESS = 0
-
+GL_CLIENT_VERTEX_ARRAY_BIT = 0
+GL_VERTEX_ARRAY = 0
+GL_NORMAL_ARRAY = 0
+GL_TRIANGLES = 0
+GL_UNSIGNED_INT = 0
 
 class GLException(Exception):
    def __init__(self, value):
@@ -93,7 +99,7 @@ def glNewList(handle, compile):
     pass
 
 
-def glEndList(handle):
+def glEndList(handle=None):
     pass
 
 
@@ -130,6 +136,29 @@ def glMaterialf(front_and_back, shininess, val):
 
 
 def glMaterialfv(front_and_back, shininess, val):
+    pass
+
+
+def glPushClientAttrib(array_bit):
+    pass
+
+
+def glEnableClientState(array):
+    pass
+
+
+def glVertexPointer(pointer, type, index, vertices):
+    pass
+
+
+def glNormalPointer(type, index, normals):
+    pass
+
+def glDrawElements(triangles, indices_leng, type, indices):
+    pass
+
+
+def glPopClientAttrib():
     pass
 
 
