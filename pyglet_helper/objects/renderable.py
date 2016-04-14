@@ -9,12 +9,6 @@ except ImportError:
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
-GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
-                         gl.GL_LIGHT2, gl.GL_LIGHT3,
-                         gl.GL_LIGHT4, gl.GL_LIGHT5,
-                         gl.GL_LIGHT6, gl.GL_LIGHT7]
-
-
 class Renderable(object):
     """
     A base class for all geometric shapes and lights.
@@ -188,6 +182,10 @@ class View(object):
     def draw_lights(self):
         """ Render the lights in the scene
         """
+        GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
+                         gl.GL_LIGHT2, gl.GL_LIGHT3,
+                         gl.GL_LIGHT4, gl.GL_LIGHT5,
+                         gl.GL_LIGHT6, gl.GL_LIGHT7]
         max_lights = min(len(self.lights), 8)
         # add all of the lights to the scene
         for i in range(0, max_lights):
