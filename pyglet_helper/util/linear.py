@@ -85,14 +85,8 @@ class Vector(object):
         :return: resulting vector
         :rtype: Vector
         """
-        if type(vector) == type(self):
-            return Vector([vector.x_component * self.x_component,
-                           vector.y_component * self.y_component,
-                           vector.z_component * self.z_component])
-        else:
-            return Vector([vector * self.x_component, vector *
-                           self.y_component,
-                           vector * self.z_component])
+        return Vector([vector * self.x_component, vector * self.y_component,
+                       vector * self.z_component])
 
     def __div__(self, scale):
         """

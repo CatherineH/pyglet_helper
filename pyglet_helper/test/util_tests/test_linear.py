@@ -130,7 +130,7 @@ def test_vector_fabs():
     assert vec1.x_component == 1.0
     assert vec1.z_component == 2.0
 
-    
+
 def test_vector_sum():
     from pyglet_helper.util import Vector
     vec1 = Vector([-1.0, 0, -2.0])

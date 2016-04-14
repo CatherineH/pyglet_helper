@@ -6,36 +6,14 @@ from pyglet_helper.objects import Material, Renderable
 from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 
 
-def trail_update(obj):
-    """A function for keeping track of the change in a primitive object's
-    position.
-
-    :param obj: the primitive object to track.
-    :type obj: pyglet_helper.objects.Primitive
-    """
-    # trail_update does not detect changes such as ball.pos.x += 1
-    # which are detected in create_display/_Interact which looks at trail_list
-    if obj.interval == 0:
-        return
-    obj.updated = True
-    obj.interval_count += 1
-    if len(obj.trail_object.pos) == 0:
-        obj.trail_object.append(pos=obj.pos)
-        obj.interval_count -= 1
-    if obj.interval_count == obj.interval:
-        if obj.pos != obj.trail_object.pos[-1]:
-            obj.trail_object.append(pos=obj.pos, retain=obj.retain)
-        obj.interval_count = 0
-
 
 class Primitive(Renderable):
     """
      A base class for all geometric shapes.
     """
     def __init__(self, axis=Vector([1, 0, 0]), up_vector=Vector([0, 1, 0]),
-                 pos=Vector([0, 0, 0]), make_trail=False,
-                 trail_initialized=False, obj_initialized=False, color=Rgb(),
-                 material=Material(), other=None):
+                 pos=Vector([0, 0, 0]), obj_initialized=False, color=Rgb(),
+                 material=Material()):
         """
 
         :param axis: The orientation to use when drawing.
@@ -45,46 +23,27 @@ class Primitive(Renderable):
         :type up_vector: pyglet_helper.util.Vector
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
-        :param make_trail: If True, the position of the primitive object will
-        be tracked over time.
-        :type make_trail: bool
-        :param trail_initialized: If True, the trail, meaning the list of
-        tracked positions over time, has been
-         initialized
-        :type trail_initialized: bool
         :param obj_initialized: If True, the object has been initialized
         :type obj_initialized: bool
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
         :param material: The object's material
         :type material: pyglet_helper.util.Material
-        :param other: another object to copy properties from (optional)
-        :type other: pyglet_helper.objects.Primitive
         """
         super(Primitive, self).__init__(color=color, mat=material)
         self._axis = None
         self._pos = None
         self._up = None
-        self._make_trail = None
-        self._primitive_object = None
         self._width = None
         self._height = None
 
         self.startup = True
-        self.make_trail = make_trail
-        self.trail_initialized = trail_initialized
         self.obj_initialized = obj_initialized
 
-        if other is None:
-            # position must be defined first, before the axis
-            self.up_vector = Vector(up_vector)
-            self.pos = Vector(pos)
-            self.axis = Vector(axis)
-
-        else:
-            self.up_vector = other.up_vector
-            self.pos = other.pos
-            self.axis = other.axis
+        # position must be defined first, before the axis
+        self.up_vector = Vector(up_vector)
+        self.pos = Vector(pos)
+        self.axis = Vector(axis)
 
     def model_world_transform(self, world_scale=0.0,
                               object_scale=Vector([1, 1, 1])):
@@ -177,9 +136,6 @@ class Primitive(Renderable):
         :return:
         """
         self._pos = Vector(n_pos)
-        if self.trail_initialized and self.make_trail:
-            if self.obj_initialized:
-                trail_update(self.primitive_object)
 
     @property
     def length(self):
@@ -200,7 +156,7 @@ class Primitive(Renderable):
         :return:
         """
         if new_length < 0:
-            raise RuntimeError("length cannot be negative")
+            raise ValueError("length cannot be negative")
         self.axis = self.axis.norm() * new_length
 
     @property
@@ -288,8 +244,6 @@ class Primitive(Renderable):
         """
         if self.axis is None:
             self._axis = Vector([1, 0, 0])
-        if type(n_axis) is not Vector:
-            n_axis = Vector(n_axis)
         _axis = self.axis.cross(n_axis)
         if _axis.mag() == 0.0:
             self._axis = n_axis
@@ -315,47 +269,6 @@ class Primitive(Renderable):
         :type n_up: pyglet_helper.util.Vector
         """
         self._up = n_up
-
-    @property
-    def make_trail(self):
-        """
-        Get the object's trail, if it exists
-        :return: the object's trail
-        """
-        return self._make_trail
-
-    @make_trail.setter
-    def make_trail(self, trail):
-        """
-        Sets the object's trail
-        :param trail: a trail for the object
-        """
-        if trail and not self.obj_initialized:
-            raise RuntimeError("Can't set make_trail=True unless object was "
-                               "created with make_trail specified")
-        if self.startup:
-            self.startup = False
-        self._make_trail = trail
-        self.trail_initialized = False
-
-    @property
-    def primitive_object(self):
-        """
-        Gets the primitive object type for the trail
-        :return: the primitive object type of the trail
-        :rtype: pyglet_helper.objects.Primitive
-        """
-        return self._primitive_object
-
-    @primitive_object.setter
-    def primitive_object(self, primitive):
-        """
-        Sets the primitive object of the trail
-        :param primitive: the primitive object of the trail
-        :type primitive: pyglet_helper.object.Primitive
-        """
-        self._primitive_object = primitive
-        self.obj_initialized = True
 
     @property
     def is_light(self):
