@@ -558,6 +558,27 @@ class Vertex(object):
         if i > 3 or i < -4:
             raise IndexError("index not available")
 
+    def __setitem__(self, i, value):
+        """
+        set the component of the vertex by an integer address
+        :param i: the integer, with a value from -4 to 3
+        :type i: int
+        :param value: the new value to set the component to
+        :type value: float
+        :return:
+        """
+        if i == 0 or i == -4:
+            self.x_component = value
+        if i == 1 or i == -3:
+            self.y_component = value
+        if i == 2 or i == -2:
+            self.z_component = value
+        if i == 3 or i == -1:
+            self.w_component = value
+        if i > 3 or i < -4:
+            raise IndexError("index not available")
+
+
     def __repr__(self):
         """
         Format the vertex into a string
@@ -614,7 +635,20 @@ class Tmatrix(object):
             out_vect = self.project(input_data)
             return out_vect
         else:
-            return self.matrix * input_data
+            tmp = Tmatrix()
+            tmp.matrix = self.matrix * input_data
+            return tmp
+
+    def __rmul__(self, input_data):
+        """
+        Multiply the data in the input by the current matrix
+        :param input_data: the data to be multiplied
+        :type input_data: float or int
+        :return: self.matrix*input_data
+        """
+        tmp = Tmatrix()
+        tmp.matrix = self.matrix * input_data
+        return tmp
 
     def inverse(self):
         """
@@ -830,8 +864,6 @@ class Tmatrix(object):
         tuple or list
         """
         if vector is not None:
-            if type(vector) is not Vector and type(vector) is not Vertex:
-                vector = Vector(vector)
             self.matrix[3, 0] = vector.x_component
             self.matrix[3, 1] = vector.y_component
             self.matrix[3, 2] = vector.z_component

@@ -185,3 +185,185 @@ def test_vertex_init():
     assert ver1[0] == 0.0
     assert ver1[1] == 1.0
     assert ver1[2] == 2.0
+
+
+def test_vertex_project():
+    from pyglet_helper.util import Vertex
+    ver1 = Vertex([-1.0, 0, -2.0, .50])
+    ver2 = ver1.project()
+    assert ver2[0] == -2.0
+    assert ver2[1] == 0.0
+    assert ver2[2] == -4.0
+
+
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_vertex_render():
+    from pyglet_helper.util import Vertex
+    vec1 = Vertex([1.0, 0, 2.0])
+    vec1.gl_render()
+
+
+@raises(IndexError)
+def test_vertex_get_error():
+    from pyglet_helper.util import Vertex
+    vec1 = Vertex()
+    vec1[4]
+
+
+@raises(IndexError)
+def test_vertex_set_error():
+    from pyglet_helper.util import Vertex
+    vec1 = Vertex()
+    vec1[4] = 2
+
+
+def test_vertex_str():
+    from pyglet_helper.util import Vertex
+    vec1 = Vertex([0.0, 1.0, -1.0, 0.5])
+    _str = str(vec1)
+    assert _str == "Vertex(0.0,1.0,-1.0,0.5)"
+
+
+def test_tmatrix_init():
+    from pyglet_helper.util import Tmatrix
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[2, 3] = 1.0
+    _tmatrix2 = Tmatrix(_tmatrix1)
+    assert _tmatrix2.matrix[2, 3] == 1.0
+
+
+def test_tmatrix_mult():
+    from pyglet_helper.util import Tmatrix, Vertex
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 1] = 1.0
+    _tmatrix1.matrix[1, 0] = 1.0
+    _tmatrix1.matrix[0, 0] = 0.0
+    _tmatrix1.matrix[1, 1] = 0.0
+    _result = _tmatrix1*_tmatrix1
+    assert _result.matrix[0, 0] == 1.0
+    assert _result.matrix[1, 1] == 1.0
+    assert _result.matrix[0, 1] == 0.0
+    assert _result.matrix[1, 0] == 0.0
+    _result = 2.0*_tmatrix1
+    assert _result.matrix[0, 0] == 0.0
+    assert _result.matrix[1, 1] == 0.0
+    assert _result.matrix[0, 1] == 2.0
+    assert _result.matrix[1, 0] == 2.0
+    _result = _tmatrix1*2.0
+    assert _result.matrix[0, 0] == 0.0
+    assert _result.matrix[1, 1] == 0.0
+    assert _result.matrix[0, 1] == 2.0
+    assert _result.matrix[1, 0] == 2.0
+    _vert = Vertex([0, 1.0, 0, 1])
+    _result = _tmatrix1*_vert
+    assert _result[0] == 1.0
+    assert _result[1] == 0.0
+
+
+def test_tmatrix_inverse():
+    from pyglet_helper.util import Tmatrix
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 1] = 1.0
+    _tmatrix1.matrix[1, 0] = 0.0
+    _tmatrix1.matrix[0, 0] = 0.50
+    _tmatrix1.matrix[1, 1] = -0.50
+    _tmatrix1.inverse()
+    assert _tmatrix1.matrix[0, 1] == 4.0
+    assert _tmatrix1.matrix[0, 0] == 2.0
+    assert _tmatrix1.matrix[1, 0] == 0.0
+    assert _tmatrix1.matrix[1, 1] == -2.0
+
+
+def test_tmatrix_project():
+    from pyglet_helper.util import Tmatrix, Vertex
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 0] = 0.0
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 1.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _vert = Vertex([0, 1.0, 0, 0.5])
+    _outvert = _tmatrix1.project(_vert)
+    assert _outvert[0] == 1.0
+    assert _outvert[1] == 0.0
+
+
+def test_tmatrix_scale():
+    from pyglet_helper.util import Tmatrix, Vertex
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 0] = 0.0
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 1.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _vert = Vertex([0, 1.0, 0, 0.5])
+    _tmatrix1.scale(_vert)
+    assert _tmatrix1.matrix[0, 0] == 0.0
+    assert _tmatrix1.matrix[1, 1] == 0.0
+    assert _tmatrix1.matrix[0, 1] == 0.0
+    assert _tmatrix1.matrix[3, 3] == 0.5
+
+
+def test_tmatrix_times_inv():
+    from pyglet_helper.util import Tmatrix, Vertex, Vector
+    # test with a vector
+    _tmatrix1 = Tmatrix()
+    _vect = Vector([0.0, 1.0, 0.0])
+    _tmatrix1.matrix[0, 0] = 0.0
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 1.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _outvect = _tmatrix1.times_inv(_vect)
+    assert _outvect[0] == 1.0
+    assert _outvect[1] == 0.0
+    # test with a vertex
+    _vert = Vertex([0, 1.0, 0, 0.5])
+    _outvect = _tmatrix1.times_inv(_vert)
+    assert _outvect[0] == 1.0
+    assert _outvect[1] == 0.0
+
+
+def test_tmatrix_times_v():
+    from pyglet_helper.util import Tmatrix, Vertex, Vector
+    # test with a vector
+    _tmatrix1 = Tmatrix()
+    _vect = Vector([0.0, 1.0, 0.0])
+    _tmatrix1.matrix[0, 0] = 0.0
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 1.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _outvect = _tmatrix1.times_v(_vect)
+    assert _outvect[0] == 1.0
+    assert _outvect[1] == 0.0
+    # test with a vertex
+    _vert = Vertex([0, 1.0, 0, 0.5])
+    _outvect = _tmatrix1.times_v(_vert)
+    assert _outvect[0] == 1.0
+    assert _outvect[1] == 0.0
+
+
+def test_tmatrix_origin():
+    from pyglet_helper.util import Tmatrix
+    # test with a vector
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 0] = 0.50
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 2.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _tmatrix1.matrix[3, 0] = 1.0
+    _outvect = _tmatrix1.origin()
+    assert _outvect[0] == 1.0
+    assert _outvect[1] == 0.0
+    assert _outvect[2] == 0.0
+
+
+def test_tmatrix_str():
+    from pyglet_helper.util import Tmatrix
+    # test with a vector
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.matrix[0, 0] = 0.50
+    _tmatrix1.matrix[1, 1] = 0.0
+    _tmatrix1.matrix[1, 0] = 2.0
+    _tmatrix1.matrix[0, 1] = 1.0
+    _tmatrix1.matrix[3, 0] = 1.0
+    _out_str = str(_tmatrix1)
+    assert _out_str == "| 0.5 2.0 0.0 1.0|\n| 1.0 0.0 0.0 0.0|\n| 0.0 0.0 " \
+                       "1.0 0.0|\n| 0.0 0.0 0.0 1.0|\n"
