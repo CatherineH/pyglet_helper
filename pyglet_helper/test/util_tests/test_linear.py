@@ -171,3 +171,17 @@ def test_vector_sum():
     from pyglet_helper.util import Vector
     vec1 = Vector([-1.0, 0, -2.0])
     assert vec1.sum() == -3.0
+
+
+def test_vertex_init():
+    from pyglet_helper.util import Vector, Vertex
+    vec1 = Vector([-1.0, 0, -2.0])
+    ver1 = Vertex(vec1)
+    assert ver1[0] == -1.0
+    assert ver1[1] == 0
+    assert ver1[2] == -2.0
+    ver2 = Vertex([0.0, 1.0, 2.0, 3.0])
+    ver1 = Vertex(ver2)
+    assert ver1[0] == 0.0
+    assert ver1[1] == 1.0
+    assert ver1[2] == 2.0
