@@ -66,7 +66,7 @@ class RawTexture(Texture):
         Texture.__init__(self)
         for key, value in kwargs.items():
             if key == 'data' and value is None:
-                raise RuntimeError("Cannot nullify a texture by assigning its "
+                raise ValueError("Cannot nullify a texture by assigning its "
                                    "data to None")
             else:
                 self.__setattr__(key, value)
