@@ -14,7 +14,7 @@ def test_primitive_is_light():
     from pyglet_helper.objects import Primitive
     _primitive = Primitive()
     assert not _primitive.is_light
-    
+
 
 @raises(ValueError)
 def test_primitive_length_error():

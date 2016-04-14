@@ -196,8 +196,8 @@ class View(object):
         for i in range(0, max_lights):
             # enable all of the lights
             gl.glEnable(GL_DEFINED_LIGHTS[i])
-            gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_POSITION,
-                      self.lights[i].position)
+            gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_POSITION, self.lights[
+                i].position)
             gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_SPECULAR,
                       self.lights[i].specular)
             gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_DIFFUSE,

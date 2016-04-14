@@ -1,9 +1,9 @@
 """ pyglet_helper.light contains an object for creating lights
 """
 try:
-    import pyglet.gl
+    import pyglet.gl as gl
 except Exception as error_msg:
-    print("Pyglet import error: "+str(error_msg))
+    gl = None
 from pyglet_helper.objects import Renderable
 from pyglet_helper.util import Rgb, Vector
 
@@ -30,9 +30,9 @@ class Light(Renderable):
         super(Light, self).__init__(color=color)
         self.color = None
         self.rgb = color
-        self.specular = (pyglet.gl.GLfloat * 4)(*specular)
-        self.diffuse = (pyglet.gl.GLfloat * 4)(*diffuse)
-        self.position = (pyglet.gl.GLfloat * 4)(*position)
+        self.specular = (gl.GLfloat * 4)(*specular)
+        self.diffuse = (gl.GLfloat * 4)(*diffuse)
+        self.position = (gl.GLfloat * 4)(*position)
 
     @property
     def rgb(self):

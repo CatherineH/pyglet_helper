@@ -43,6 +43,8 @@ GL_VERTEX_SHADER_ARB = 0
 GL_FRAGMENT_SHADER_ARB = 0
 GL_OBJECT_LINK_STATUS_ARB = 0
 GL_OBJECT_INFO_LOG_LENGTH_ARB = 0
+GL_POSITION = 0
+GL_DIFFUSE = 0
 
 class GLException(Exception):
    def __init__(self, value):
@@ -191,6 +193,10 @@ def glTranslated(x, y, z):
 
 
 def glScaled(x, y, z):
+    pass
+
+
+def glLightfv(defined_light, position, light_position):
     pass
 
 
