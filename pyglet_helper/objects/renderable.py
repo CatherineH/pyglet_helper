@@ -9,13 +9,10 @@ except ImportError:
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
-try:
-    GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
+GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
                          gl.GL_LIGHT2, gl.GL_LIGHT3,
                          gl.GL_LIGHT4, gl.GL_LIGHT5,
                          gl.GL_LIGHT6, gl.GL_LIGHT7]
-except Exception as err_msg:
-    print("Exception loading pyglet: "+str(err_msg))
 
 
 class Renderable(object):
