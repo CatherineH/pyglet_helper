@@ -88,7 +88,8 @@ class Rgba(object):
         """
         Set this color to the current material in OpenGL.
         """
-        color = (gl.GLfloat * 4)([self.red, self.green, self.blue, self.opacity])
+        color = (gl.GLfloat * 4)(*[self.red, self.green, self.blue,
+                                   self.opacity])
         gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_AMBIENT_AND_DIFFUSE, color)
         gl.glMaterialfv(gl.GL_FRONT_AND_BACK, gl.GL_SPECULAR, color)
         gl.glMaterialf(gl.GL_FRONT_AND_BACK, gl.GL_SHININESS, 50)
