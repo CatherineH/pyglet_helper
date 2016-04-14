@@ -1,4 +1,6 @@
 from nose.tools import raises
+from mock import patch
+import pyglet_helper.test.fake_gl
 
 def test_rotation_with_origin():
     from pyglet_helper.util import rotation, Vector
@@ -27,6 +29,13 @@ def test_vector_eq():
     vec1 = Vector([1.0, 0, 2.0])
     vec2 = Vector([0, 1.0, 0.5])
     assert not vec1 == vec2
+
+
+def test_vector_neq():
+    from pyglet_helper.util import Vector
+    vec1 = Vector([1.0, 0, 2.0])
+    vec2 = Vector([0, 1.0, 0.5])
+    assert vec1 != vec2
 
 
 def test_vector_nonzero():
@@ -68,6 +77,27 @@ def test_vector_comp():
     assert vec3 == 0
 
 
+def test_vector_proj():
+    from pyglet_helper.util import Vector
+    vec1 = Vector([1.0, 0, 2.0])
+    vec2 = Vector([0, 1.0, 0])
+    result = vec1.proj(vec2)
+    assert result == Vector([0.0, 0.0, 0.0])
+
+def test_vector_diff_angle():
+    from pyglet_helper.util import Vector
+    vec1 = Vector([1.0, 1.0, 1.0])
+    vec2 = Vector([1.0, 1.0, 1.0])
+    result = vec1.diff_angle(vec2)
+    print(result)
+    assert result == 0.0
+    vec1 = Vector([1.0, 1.0, 1.0])
+    vec2 = Vector([-1.0, -1.0, -1.0])
+    result = vec1.diff_angle(vec2)
+    print(result)
+    assert result == 3.141592653589793
+
+
 def test_vector_scale():
     from pyglet_helper.util import Vector
     vec1 = Vector([1.0, 0, 2.0])
@@ -76,7 +106,6 @@ def test_vector_scale():
     print(vec3)
     assert vec3[0] == 0
     assert vec3[2] == 2.0
-
 
 def test_vector_rotate():
     from pyglet_helper.util import Vector
@@ -88,6 +117,13 @@ def test_vector_rotate():
     vec3 = vec1.rotate(angle=1.0)
     assert vec3[2] == 3.0
     assert vec3[3] == 1.0
+
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_vector_render():
+    from pyglet_helper.util import Vector
+    vec1 = Vector([1.0, 0, 2.0])
+    vec1.gl_normal()
+    vec1.gl_render()
 
 def test_vector_clear():
     from pyglet_helper.util import Vector
