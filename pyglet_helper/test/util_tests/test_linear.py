@@ -217,6 +217,19 @@ def test_vertex_set_error():
     vec1[4] = 2
 
 
+def test_vertex_set_test():
+    from pyglet_helper.util import Vertex
+    vec1 = Vertex()
+    vec1[0] = 1.0
+    vec1[1] = 1.0
+    vec1[2] = 1.0
+    vec1[3] = 1.0
+    assert vec1[0] == 1.0
+    assert vec1[1] == 1.0
+    assert vec1[2] == 1.0
+    assert vec1[3] == 1.0
+
+
 def test_vertex_str():
     from pyglet_helper.util import Vertex
     vec1 = Vertex([0.0, 1.0, -1.0, 0.5])
@@ -367,3 +380,22 @@ def test_tmatrix_str():
     _out_str = str(_tmatrix1)
     assert _out_str == "| 0.5 2.0 0.0 1.0|\n| 1.0 0.0 0.0 0.0|\n| 0.0 0.0 " \
                        "1.0 0.0|\n| 0.0 0.0 0.0 1.0|\n"
+
+
+@patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
+def test_tmatrix_gl_calls():
+    from pyglet_helper.util import Tmatrix
+    from numpy import zeros, identity
+    # test with a vector
+    _tmatrix1 = Tmatrix()
+    _tmatrix1.gl_load()
+    _tmatrix1.gl_mult()
+    _out_mat = _tmatrix1.gl_modelview_get()
+    assert (_tmatrix1.matrix == _out_mat).all()
+    _out_mat = _tmatrix1.gl_modelview_get()
+    assert (_tmatrix1.matrix == _out_mat).all()
+    _out_mat = _tmatrix1.gl_texture_get()
+    assert (zeros([4, 4]) == _out_mat).all()
+    _out_mat = _tmatrix1.gl_color_get()
+    assert (zeros(4) == _out_mat).all()
+
