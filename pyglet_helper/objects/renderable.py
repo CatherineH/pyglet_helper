@@ -5,6 +5,16 @@ try:
     import pyglet.gl as gl
 except ImportError:
     gl = None
+try:
+    import pyglet.window as window
+except ImportError:
+    window = None
+
+try:
+    import pyglet.event as event
+except ImportError:
+    event = None
+
 
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
@@ -225,3 +235,23 @@ class View(object):
             coverage_fraction = radius / apparent_hwidth
         # Convert from fraction to pixels.
         return coverage_fraction * self.view_width
+
+
+class Window(window.Window):
+    def __init__(self):
+        super(Window, self).__init__()
+
+    @self.event
+    def on_resize(width, height):
+        gl.glViewport(0, 0, width, height)
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glLoadIdentity()
+        gl.gluPerspective(45, width / float(height), .1, 1000)
+
+        gl.gluLookAt(
+            0, 6, 12,  # eye
+            0, 0, 0,  # target
+            0, 1, 0  # up
+        )
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+        return event.EVENT_HANDLED

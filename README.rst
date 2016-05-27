@@ -67,3 +67,9 @@ Documentation
 The documentation is available on my `github page`_.
 
 .. _github page: http://catherineh.github.io/pyglet_helper/
+
+TODO
+----
+
+- replicating all examples from the original vpython
+- The Scene object should handle all calls to pyglet.
