@@ -19,6 +19,7 @@ except ImportError:
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
 from pyglet_helper.objects import Material
 
+
 class Renderable(object):
     """
     A base class for all geometric shapes and lights.
@@ -140,14 +141,17 @@ class View(object):
         :param background_color: The scene's background color
         :type background_color: pyglet_helper.util.Rgb
         """
+        # The default camera assumes that the object of interest is at 0,0,0, and the observer is standing in front of
+        # it like a person over a table
         # The position of the camera in world space.
-        self.camera = Vector()
+        self.camera = Vector([0, 6, 12])
+        # The center of the scene in world space.
+        self.center = Vector([0, 0, 0])
+        # The true up direction of the scene in world space.
+        self.up_vector = Vector([0, 1, 0])
         # The direction the camera is pointing - a unit vector.
         self.forward = Vector()
-        # The center of the scene in world space.
-        self.center = Vector()
-        # The true up direction of the scene in world space.
-        self.up_vector = Vector()
+
         self.view_width = view_width
         self.view_height = view_height
         self.forward_changed = forward_changed
@@ -180,6 +184,7 @@ class View(object):
     def setup(self):
         """ Does some one-time OpenGL setup.
         """
+        #print("doing setup")
         gl.glEnable(gl.GL_LIGHTING)
         gl.glClearColor(1, 1, 1, 1)
         gl.glColor3f(1, 0, 0)
@@ -187,11 +192,30 @@ class View(object):
         gl.glEnable(gl.GL_CULL_FACE)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
         gl.glLoadIdentity()
+        for object in self.screen_objects:
+            object.render(self)
+        self.draw_lights()
+
+        for light in self.lights:
+            light.render(self)
         self.is_setup = True
 
+    def resize(self):
+        gl.glViewport(0, 0, self.view_width, self.view_height)
+        gl.glMatrixMode(gl.GL_PROJECTION)
+        gl.glLoadIdentity()
+        gl.gluPerspective(45, self.view_width / float(self.view_height), .1, 1000)
+        gl.gluLookAt(
+            self.camera[0], self.camera[1], self.camera[2],
+            self.center[0], self.center[1], self.center[2],
+            self.up_vector[0], self.up_vector[1], self.up_vector[2]
+        )
+        gl.glMatrixMode(gl.GL_MODELVIEW)
+        return event.EVENT_HANDLED
+
     def draw_lights(self):
-        """ Render the lights in the scene
-        """
+        """ Render the lights in the scene """
+
         GL_DEFINED_LIGHTS = [gl.GL_LIGHT0, gl.GL_LIGHT1,
                          gl.GL_LIGHT2, gl.GL_LIGHT3,
                          gl.GL_LIGHT4, gl.GL_LIGHT5,
@@ -207,6 +231,8 @@ class View(object):
                       self.lights[i].specular)
             gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_DIFFUSE,
                                 self.lights[i].diffuse)
+
+
 
     def pixel_coverage(self, pos, radius):
         """ Compute the apparent diameter, in pixels, of a circle that is
@@ -237,21 +263,3 @@ class View(object):
         return coverage_fraction * self.view_width
 
 
-class Window(window.Window):
-    def __init__(self):
-        super(Window, self).__init__()
-
-    @self.event
-    def on_resize(width, height):
-        gl.glViewport(0, 0, width, height)
-        gl.glMatrixMode(gl.GL_PROJECTION)
-        gl.glLoadIdentity()
-        gl.gluPerspective(45, width / float(height), .1, 1000)
-
-        gl.gluLookAt(
-            0, 6, 12,  # eye
-            0, 0, 0,  # target
-            0, 1, 0  # up
-        )
-        gl.glMatrixMode(gl.GL_MODELVIEW)
-        return event.EVENT_HANDLED

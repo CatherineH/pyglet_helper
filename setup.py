@@ -60,7 +60,7 @@ def main():
         packages=PACKAGES,
         description=find_meta("description"),
         install_requires=INSTALL_REQUIRES,
-        package_data = {"pyglet_helper": ['common/library.txt']}
+        package_data = {"pyglet_helper": ['common/library.txt', 'common/*.tga']}
     )
 
 if __name__ == "__main__":

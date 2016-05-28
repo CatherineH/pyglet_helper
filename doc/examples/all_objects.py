@@ -41,7 +41,6 @@ def on_resize(width, height):
     glMatrixMode(GL_MODELVIEW)
     return EVENT_HANDLED
 
-
 @_window.event
 def on_draw():
     global screennum
@@ -70,14 +69,14 @@ def on_draw():
 
     _ring.axis = spin
     _ring.render(scene)
-    if screennum < 99:
+    if screennum < 99 and render_images:
         path = os.path.dirname(__file__)
         filename = os.path.join(path, 'screenshot%02d.png' % (screennum, ))
         get_buffer_manager().get_color_buffer().save(filename)
         screennum += 1
 
 screennum = 0
-
+render_images = False
 
 # put all objects in a scene together
 _ball = Sphere(pos=Vector([1, 1, 0]), radius=0.5, color=color.RED)

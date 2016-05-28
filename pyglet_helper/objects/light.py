@@ -6,7 +6,7 @@ except Exception as error_msg:
     gl = None
 from pyglet_helper.objects import Renderable
 from pyglet_helper.util import Rgb, Vector
-
+from pyglet_helper import GLOBAL_VIEW
 
 class Light(Renderable):
     """
@@ -28,6 +28,8 @@ class Light(Renderable):
         :type position: array_like
         """
         super(Light, self).__init__(color=color)
+        if GLOBAL_VIEW is not None:
+            GLOBAL_VIEW.ligths.append(self)
         self.color = None
         self.rgb = color
         self.specular = (gl.GLfloat * 4)(*specular)
