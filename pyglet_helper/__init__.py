@@ -42,7 +42,10 @@ def setup(scene=None):
     :type scene: pyglet_helper.objects.View
     :return:
     """
-    from pyglet.window import Window
+    try:
+        import pyglet.window as window
+    except Exception as error_msg:
+        window = None
     global GLOBAL_WINDOW
     global GLOBAL_VIEW
     # global view must be initialized first, it contains all of the variables that describe the window.
@@ -50,7 +53,7 @@ def setup(scene=None):
         GLOBAL_VIEW = scene
     else:
         GLOBAL_VIEW = objects.renderable.View()
-    GLOBAL_WINDOW = Window(width=GLOBAL_VIEW.view_width, height=GLOBAL_VIEW.view_height)
+    GLOBAL_WINDOW = window.Window(width=GLOBAL_VIEW.view_width, height=GLOBAL_VIEW.view_height)
 
     @GLOBAL_WINDOW.event
     def on_resize(width, height):

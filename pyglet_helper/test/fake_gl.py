@@ -47,6 +47,7 @@ GL_OBJECT_INFO_LOG_LENGTH_ARB = 0
 GL_POSITION = 0
 GL_DIFFUSE = 0
 
+
 class GLException(Exception):
    def __init__(self, value):
         self.value = value
@@ -161,6 +162,7 @@ def glVertexPointer(pointer, type, index, vertices):
 def glNormalPointer(type, index, normals):
     pass
 
+
 def glDrawElements(triangles, indices_leng, type, indices):
     pass
 
@@ -242,7 +244,8 @@ class glext_arb(object):
 
     @staticmethod
     def glGetInfoLogARB(program, length):
-        return (0.0, 0.0)
+        return 0.0, 0.0
+
 
 class glu(object):
     GLU_FILL = 1
