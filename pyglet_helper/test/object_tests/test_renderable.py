@@ -33,4 +33,4 @@ def test_view_pixel_coverage():
     scene = View()
     pix_coverage = scene.pixel_coverage(pos=Vector([10, 0, 0]), radius=0.2)
     print(pix_coverage)
-    assert(pix_coverage == 800.0)
+    assert(pix_coverage == 640.0)

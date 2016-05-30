@@ -8,11 +8,20 @@ from ctypes import c_float, c_double, c_uint
 GLfloat = c_float
 GLdouble = c_double
 GLuint = c_uint
+GL_AMBIENT_AND_DIFFUSE = 0
+GL_BACK = 0
+GL_CLIENT_VERTEX_ARRAY_BIT = 0
 GL_COLOR_BUFFER_BIT = 16384
+GL_COLOR_MATRIX = 0
+GL_COMPILE = 0
 GL_CULL_FACE = 2884
+GL_DIFFUSE = 0
 GL_DEPTH_BUFFER_BIT = 256
 GL_DEPTH_TEST = 2929
-GL_LIGHTING = 2896
+GL_FLOAT = 0
+GL_FRAGMENT_SHADER_ARB = 0
+GL_FRONT = 0
+GL_FRONT_AND_BACK = 0
 GL_LIGHT0 = 16384
 GL_LIGHT1 = 16385
 GL_LIGHT2 = 16386
@@ -21,31 +30,22 @@ GL_LIGHT4 = 16388
 GL_LIGHT5 = 16389
 GL_LIGHT6 = 16390
 GL_LIGHT7 = 16391
-
-
-GL_COMPILE = 0
-GL_FRONT = 0
-GL_BACK = 0
-GL_FLOAT = 0
+GL_LIGHTING = 2896
+GL_MODELVIEW = 0
 GL_MODELVIEW_MATRIX = 0
-GL_TEXTURE_MATRIX = 0
-GL_COLOR_MATRIX = 0
-GL_PROJECTION_MATRIX = 0
-GL_FRONT_AND_BACK = 0
-GL_AMBIENT_AND_DIFFUSE = 0
-GL_SPECULAR = 0
-GL_SHININESS = 0
-GL_CLIENT_VERTEX_ARRAY_BIT = 0
-GL_VERTEX_ARRAY = 0
 GL_NORMAL_ARRAY = 0
-GL_TRIANGLES = 0
-GL_UNSIGNED_INT = 0
-GL_VERTEX_SHADER_ARB = 0
-GL_FRAGMENT_SHADER_ARB = 0
 GL_OBJECT_LINK_STATUS_ARB = 0
 GL_OBJECT_INFO_LOG_LENGTH_ARB = 0
 GL_POSITION = 0
-GL_DIFFUSE = 0
+GL_PROJECTION = 0
+GL_PROJECTION_MATRIX = 0
+GL_SHININESS = 0
+GL_SPECULAR = 0
+GL_TEXTURE_MATRIX = 0
+GL_TRIANGLES = 0
+GL_UNSIGNED_INT = 0
+GL_VERTEX_ARRAY = 0
+GL_VERTEX_SHADER_ARB = 0
 
 
 class GLException(Exception):
@@ -55,152 +55,129 @@ class GLException(Exception):
         return repr(self.value)
 
 
-def glNormal3f(a, b, c):
+def glBegin(triangles):
     pass
-
-
-def glVertex3f(a, b, c):
-    pass
-
-
-def glNormal3dv(component):
-    pass
-
-
-def glVertex3d(a, b, c):
-    pass
-
-
-def glVertex4d(a, b, c, d):
-    pass
-
-
-def glGenLists(handle):
-    return handle
-
-
-def glEnable(lighting):
-    pass
-
-
-def glClearColor(a, b, c, d):
-    pass
-
-
-def glColor3f(a, b, c):
-    pass
-
-
-def glClear(a):
-    pass
-
-
-def glLoadIdentity():
-    pass
-
-
-def glRotatef(x, y, z, w):
-    pass
-
-
-def glNewList(handle, compile):
-    pass
-
-
-def glEndList(handle=None):
-    pass
-
-
-def glPushMatrix():
-    pass
-
-
-def glCullFace(front):
-    pass
-
 
 def glCallList(handle):
     pass
 
-
-def glPopMatrix():
+def glClear(a):
     pass
 
-
-def glLoadMatrixd(ctypes_matrix):
+def glClearColor(a, b, c, d):
     pass
 
-
-def glMultMatrixd(ctype_matrix):
+def glColor3f(a, b, c):
     pass
 
-
-def glGetFloatv(matrix, ctypes_matrix):
-    return [-1.0, -1.0, -1.0, -1.0]
-
-
-def glMaterialf(front_and_back, shininess, val):
+def glCullFace(front):
     pass
 
-
-def glMaterialfv(front_and_back, shininess, val):
+def glEnable(lighting):
     pass
-
-
-def glPushClientAttrib(array_bit):
-    pass
-
 
 def glEnableClientState(array):
     pass
 
-
-def glVertexPointer(pointer, type, index, vertices):
-    pass
-
-
-def glNormalPointer(type, index, normals):
-    pass
-
-
-def glDrawElements(triangles, indices_leng, type, indices):
-    pass
-
-
-def glPopClientAttrib():
-    pass
-
-
-def glBegin(triangles):
-    pass
-
-
-def glNormal3fv(a, b, c):
-    pass
-
-
 def glEnd():
     pass
 
+def glEndList(handle=None):
+    pass
 
 def glDisable(cull_face):
     pass
 
-
-def glTranslatef(a, b, c):
+def glDrawElements(triangles, indices_leng, type, indices):
     pass
 
+def glGenLists(handle):
+    return handle
 
-def glTranslated(x, y, z):
+def glGetFloatv(matrix, ctypes_matrix):
+    return [-1.0, -1.0, -1.0, -1.0]
+
+def glLoadIdentity():
     pass
 
+def glLoadMatrixd(ctypes_matrix):
+    pass
+
+def glLightfv(defined_light, position, light_position):
+    pass
+
+def glMaterialf(front_and_back, shininess, val):
+    pass
+
+def glMaterialfv(front_and_back, shininess, val):
+    pass
+
+def glMatrixMode(projection):
+    pass
+
+def glMultMatrixd(ctype_matrix):
+    pass
+
+def glNewList(handle, compile):
+    pass
+
+def glNormal3dv(component):
+    pass
+
+def glNormal3f(a, b, c):
+    pass
+
+def glNormal3fv(a, b, c):
+    pass
+
+def glNormalPointer(type, index, normals):
+    pass
+
+def glPopClientAttrib():
+    pass
+
+def glPopMatrix():
+    pass
+
+def glPushClientAttrib(array_bit):
+    pass
+
+def glPushMatrix():
+    pass
+
+def glRotatef(x, y, z, w):
+    pass
 
 def glScaled(x, y, z):
     pass
 
-
-def glLightfv(defined_light, position, light_position):
+def glTranslated(x, y, z):
     pass
+
+def glTranslatef(a, b, c):
+    pass
+
+def gluLookAt(cam1, cam2, cam3, center1, center2, center3, up1, up2, up3):
+    pass
+
+def gluPerspective(angle, ratio, resolution, distance):
+    pass
+
+def glVertex3d(a, b, c):
+    pass
+
+def glVertex3f(a, b, c):
+    pass
+
+def glVertex4d(a, b, c, d):
+    pass
+
+def glVertexPointer(pointer, type, index, vertices):
+    pass
+
+def glViewport(x, y, width, height):
+    pass
+
 
 
 class glext_arb(object):

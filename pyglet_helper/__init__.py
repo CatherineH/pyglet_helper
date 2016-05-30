@@ -16,7 +16,8 @@ from . import util
 
 from pyglet.app import run
 from pyglet.clock import schedule
-from pyglet.image import get_buffer_manager
+
+
 
 
 __version__ = "0.0.1"
@@ -73,6 +74,10 @@ def vsetup(scene=None):
     GLOBAL_VIEW.draw_lights()
 
 class VApp(object):
+    try:
+        import pyglet.image as image
+    except Exception as error_msg:
+        image = None
     def __init__(self, update, max_frames=99, render_images=False):
         self.update = update
         self.max_frames = max_frames
@@ -85,7 +90,7 @@ class VApp(object):
         if self.screennum < self.max_frames and self.render_images:
             path = os.path.dirname(__file__)
             filename = os.path.join(path, 'screenshot%02d.png' % (self.screennum, ))
-            get_buffer_manager().get_color_buffer().save(filename)
+            self.image.get_buffer_manager().get_color_buffer().save(filename)
             self.screennum += 1
 
 
