@@ -21,3 +21,6 @@ from pyglet_helper.objects.sphere import Sphere
 from pyglet_helper.objects.ellipsoid import Ellipsoid
 from pyglet_helper.objects.light import Light
 from pyglet_helper.objects.ring import Ring
+from pyglet_helper.objects.array_primitive import ColorArrayPrimitive
+from pyglet_helper.objects.curve import Curve
+from pyglet_helper.objects.points import Points

@@ -2,7 +2,7 @@
 pyglet_helper.primitive contains objects and methods related to drawing all
 geometric shapes
 """
-from pyglet_helper.objects import Material, Renderable
+from pyglet_helper.objects import Material, Renderable, Curve, Points
 from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 
 
@@ -13,7 +13,7 @@ class Primitive(Renderable):
     """
     def __init__(self, axis=Vector([1, 0, 0]), up_vector=Vector([0, 1, 0]),
                  pos=Vector([0, 0, 0]), obj_initialized=False, color=Rgb(),
-                 material=Material()):
+                 material=Material(), make_trail=False, trail_type='curve'):
         """
 
         :param axis: The orientation to use when drawing.
@@ -47,6 +47,8 @@ class Primitive(Renderable):
         self.up_vector = Vector(up_vector)
         self.pos = Vector(pos)
         self.axis = Vector(axis)
+        self.make_trail = make_trail
+        self.trail_type = trail_type
 
     def model_world_transform(self, world_scale=0.0,
                               object_scale=Vector([1, 1, 1])):
@@ -111,6 +113,12 @@ class Primitive(Renderable):
         #self.pos = R * self._pos
         self.up_vector = rotation_matrix.times_v(fake_up)
         self._axis = rotation_matrix.times_v(self._axis)
+
+    def render_trail(self):
+        if self.trail_type == 'curve':
+            self.trail_object = Curve(frame=self.__frame, color=self.color)
+        else:
+            self.trail_object = Points(frame=self.__frame, color=self.color)
 
     @property
     def center(self):
@@ -282,3 +290,4 @@ class Primitive(Renderable):
         :rtype: bool
         """
         return False
+

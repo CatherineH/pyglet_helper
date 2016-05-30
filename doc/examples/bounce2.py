@@ -2,6 +2,20 @@ from pyglet_helper.objects import Box, Sphere
 from pyglet_helper.util import color, Vector, Rgb
 from pyglet_helper import vsetup, vrun
 
+vsetup()
+
+def update(dt):
+    global ball
+    global t
+    t = t + dt
+    ball.pos = ball.pos + (ball.p / ball.mass) * dt
+    if not (side > ball.pos.x_component > -side):
+      ball.p.x_component = -ball.p.x_component
+    if not (side > ball.pos.y_component > -side):
+      ball.p.y_component = -ball.p.y_component
+    if not (side > ball.pos.z_component > -side):
+      ball.p.z_component = -ball.p.z_component
+
 print("""
 Right button drag or Ctrl-drag to rotate "camera" to view scene.
 Middle button or Alt-drag to drag up or down to zoom in or out.
@@ -21,19 +35,13 @@ wallBK = Box(pos=Vector([0, 0, -side]), size=Vector([s2, s2, thk]), color=Rgb(0.
 ball = Sphere(color = color.GREEN, radius = 0.4, make_trail=True, retain=200)
 ball.trail_object.radius = 0.05
 ball.mass = 1.0
-ball.p = vector (-0.15, -0.23, +0.27)
+ball.p = Vector([-0.15, -0.23, +0.27])
 
 side = side - thk*0.5 - ball.radius
 
 dt = 0.5
 t=0.0
-while True:
-  rate(100)
-  t = t + dt
-  ball.pos = ball.pos + (ball.p/ball.mass)*dt
-  if not (side > ball.x > -side):
-    ball.p.x = -ball.p.x
-  if not (side > ball.y > -side):
-    ball.p.y = -ball.p.y
-  if not (side > ball.z > -side):
-    ball.p.z = -ball.p.z
+
+
+
+vrun(update)

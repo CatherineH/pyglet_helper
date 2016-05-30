@@ -19,4 +19,3 @@ ball.velocity = util.Vector([0, -1, 0])
 dt = 0.01
 
 vrun(update)
-vrun
