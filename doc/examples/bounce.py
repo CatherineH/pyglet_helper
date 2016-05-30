@@ -1,8 +1,8 @@
 from pyglet_helper.objects import Box, Sphere
 from pyglet_helper.util import color, Vector
-from pyglet_helper import setup, vrun
+from pyglet_helper import vsetup, vrun
 
-setup()
+vsetup()
 
 
 def update(dt):

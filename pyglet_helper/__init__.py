@@ -16,6 +16,7 @@ from . import util
 
 from pyglet.app import run
 from pyglet.clock import schedule
+from traceback import print_stack
 
 __version__ = "0.0.1"
 __author__ = "cholloway"
@@ -33,8 +34,7 @@ __copyright__ = "Copyright (c) 2014-2016 Catherine Holloway"
 #dt = 0.01
 
 
-
-def setup(scene=None):
+def vsetup(scene=None):
     """
     Initializes the GLOBAL_VIEW and GLOBAL_WINDOW variables. The window is initialized based on the settings in scene.
     If scene is undefined, a GLOBAL_VIEW will be created with default variables.
@@ -42,6 +42,7 @@ def setup(scene=None):
     :type scene: pyglet_helper.objects.View
     :return:
     """
+    print_stack()
     try:
         import pyglet.window as window
     except Exception as error_msg:
@@ -51,8 +52,10 @@ def setup(scene=None):
     # global view must be initialized first, it contains all of the variables that describe the window.
     if scene is not None:
         GLOBAL_VIEW = scene
+        print(scene)
     else:
         GLOBAL_VIEW = objects.renderable.View()
+        print(type(GLOBAL_VIEW))
     GLOBAL_WINDOW = window.Window(width=GLOBAL_VIEW.view_width, height=GLOBAL_VIEW.view_height)
 
     @GLOBAL_WINDOW.event
