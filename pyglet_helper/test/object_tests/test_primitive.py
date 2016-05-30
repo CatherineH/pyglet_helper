@@ -7,6 +7,7 @@ import pyglet_helper.test.fake_gl
 @patch('pyglet_helper.window', new=pyglet_helper.test.fake_window)
 @patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
 @patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.light.gl', new=pyglet_helper.test.fake_gl)
 def test_primitive_setup():
     from pyglet_helper import vsetup
     from pyglet_helper.objects import Primitive
