@@ -8,3 +8,8 @@ class Window(object):
     def __init__(self, width=640, height=480):
         self.width = width
         self.height = height
+
+    def event(self, func):
+        def decorator(func):
+            return func
+        return decorator

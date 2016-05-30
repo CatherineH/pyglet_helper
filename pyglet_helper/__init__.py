@@ -17,8 +17,10 @@ from . import util
 from pyglet.app import run
 from pyglet.clock import schedule
 
-
-
+try:
+    import pyglet.window as window
+except Exception as error_msg:
+    window = None
 
 __version__ = "0.0.1"
 __author__ = "cholloway"
@@ -43,10 +45,6 @@ def vsetup(scene=None):
     :type scene: pyglet_helper.objects.View
     :return:
     """
-    try:
-        import pyglet.window as window
-    except Exception as error_msg:
-        window = None
     global GLOBAL_WINDOW
     global GLOBAL_VIEW
     # global view must be initialized first, it contains all of the variables that describe the window.

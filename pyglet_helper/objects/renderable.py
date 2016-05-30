@@ -10,10 +10,8 @@ try:
 except ImportError:
     window = None
 
-try:
-    import pyglet.event as event
-except ImportError:
-    event = None
+import pyglet.event as event
+
 
 
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector

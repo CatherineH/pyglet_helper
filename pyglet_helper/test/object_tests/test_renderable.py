@@ -3,6 +3,7 @@ from mock import patch
 import pyglet_helper.test.fake_gl
 
 
+
 @patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
 def test_renderable_material():
     from pyglet_helper.objects import Renderable
@@ -32,5 +33,11 @@ def test_view_pixel_coverage():
     from pyglet_helper.util import Vector
     scene = View()
     pix_coverage = scene.pixel_coverage(pos=Vector([10, 0, 0]), radius=0.2)
-    print(pix_coverage)
     assert(pix_coverage == 640.0)
+
+@patch('pyglet_helper.util.display_list.gl', new=pyglet_helper.test.fake_gl)
+@patch('pyglet_helper.objects.renderable.gl', new=pyglet_helper.test.fake_gl)
+def test_view_resize():
+    from pyglet_helper.objects import View
+    scene = View()
+    scene.resize()
