@@ -32,8 +32,7 @@ or clone it and build from source:
 Usage
 -----
 
-pyglet_helper can draw and animation objects on a screen with or without calls to pyglet. This short tutorial will cover
- the code for both methods.
+pyglet_helper can draw and animation objects on a screen with or without calls to pyglet. This short tutorial will cover the code for both methods.
 
 .. image:: doc/examples/bounce.gif
 
@@ -83,13 +82,11 @@ First, import both pyglet and pyglet_helper:
     from pyglet import *
 
 Next, create a pyglet Window and use its size to initialize a new scene (View):
-
 ::
-   window = window.Window()
-   scene = objects.View(view_height=window.height, view_width=window.width)
+    window = window.Window()
+    scene = objects.View(view_height=window.height, view_width=window.width)
 
 The update function is the same as above, but now its execution will be controlled with pyglet.schedule:
-
 ::
    def update(dt):
        global ball
@@ -101,29 +98,26 @@ The update function is the same as above, but now its execution will be controll
    schedule(update)
 
 The objects are declared as they are in the above example, but now they must be explicitly added to the scene:
-
 ::
-   floor = objects.Box(length=4, height=0.5, width=4, color=util.color.BLUE)
+    floor = objects.Box(length=4, height=0.5, width=4, color=util.color.BLUE)
 
-   ball = objects.Sphere(pos=util.Vector([0, 4, 0]), color=util.color.RED)
-   ball.velocity = util.Vector([0, -1, 0])
+    ball = objects.Sphere(pos=util.Vector([0, 4, 0]), color=util.color.RED)
+    ball.velocity = util.Vector([0, -1, 0])
 
-   scene.screen_objects.append(ball)
-   scene.screen_objects.append(floor)
+    scene.screen_objects.append(ball)
+    scene.screen_objects.append(floor)
 
 As above, define the amount of time that passes between frames:
 ::
     dt = 0.01
 
 The setup() method of the scene must be invoked every time the pyglet window is drawn:
-
 ::
-   @window.event
-   def on_draw():
+    @window.event
+    def on_draw():
        scene.setup()
 
 Adding lights pointing from the direction of the camera to the object will make the colors pop:
-
 ::
    _light0 = objects.Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
    _light1 = objects.Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))
@@ -131,7 +125,6 @@ Adding lights pointing from the direction of the camera to the object will make 
    scene.lights.append(_light1)
 
 Finally, call pyglet.run to view the animation:
-
 ::
    run()
 
@@ -140,7 +133,6 @@ Creating animations
 
 When using vrun, pass the arguments max_frames=99, render_images=True, and pyglet_helper will generate 99 contiguous
 images of the window which can be stitched together into an animated gif, such as those in this example:
-
 ::
    vrun(update, max_frames=99, render_images=True)
 
