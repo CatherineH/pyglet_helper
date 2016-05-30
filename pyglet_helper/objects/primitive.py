@@ -30,12 +30,15 @@ class Primitive(Renderable):
         :param material: The object's material
         :type material: pyglet_helper.util.Material
         """
+        from pyglet_helper import GLOBAL_VIEW
         super(Primitive, self).__init__(color=color, mat=material)
         self._axis = None
         self._pos = None
         self._up = None
         self._width = None
         self._height = None
+        if GLOBAL_VIEW is not None:
+            GLOBAL_VIEW.screen_objects.append(self)
 
         self.startup = True
         self.obj_initialized = obj_initialized

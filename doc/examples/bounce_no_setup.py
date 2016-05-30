@@ -5,7 +5,7 @@ from pyglet.app import run
 from pyglet.clock import schedule
 
 window = Window()
-scene = View()
+scene = View(view_height=window.height, view_width=window.width)
 
 
 def update(dt):

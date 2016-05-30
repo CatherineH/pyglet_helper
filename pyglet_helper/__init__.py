@@ -16,7 +16,8 @@ from . import util
 
 from pyglet.app import run
 from pyglet.clock import schedule
-from traceback import print_stack
+from pyglet.image import get_buffer_manager
+
 
 __version__ = "0.0.1"
 __author__ = "cholloway"
@@ -31,7 +32,6 @@ __email__ = "milankie@gmail.com"
 __license__ = "AGPLv3"
 __copyright__ = "Copyright (c) 2014-2016 Catherine Holloway"
 
-#dt = 0.01
 
 
 def vsetup(scene=None):
@@ -42,7 +42,6 @@ def vsetup(scene=None):
     :type scene: pyglet_helper.objects.View
     :return:
     """
-    print_stack()
     try:
         import pyglet.window as window
     except Exception as error_msg:
@@ -52,10 +51,8 @@ def vsetup(scene=None):
     # global view must be initialized first, it contains all of the variables that describe the window.
     if scene is not None:
         GLOBAL_VIEW = scene
-        print(scene)
     else:
         GLOBAL_VIEW = objects.renderable.View()
-        print(type(GLOBAL_VIEW))
     GLOBAL_WINDOW = window.Window(width=GLOBAL_VIEW.view_width, height=GLOBAL_VIEW.view_height)
 
     @GLOBAL_WINDOW.event
@@ -68,9 +65,31 @@ def vsetup(scene=None):
     def on_draw():
         GLOBAL_VIEW.setup()
 
+    _light0 = objects.light.Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
+    _light1 = objects.light.Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))
+    GLOBAL_VIEW.lights.append(_light0)
+    GLOBAL_VIEW.lights.append(_light1)
+
     GLOBAL_VIEW.draw_lights()
 
+class VApp(object):
+    def __init__(self, update, max_frames=99, render_images=False):
+        self.update = update
+        self.max_frames = max_frames
+        self.render_images = render_images
+        self.screennum = 0
 
-def vrun(update):
-    schedule(update)
+    def vupdate(self, dt):
+        import os
+        self.update(dt)
+        if self.screennum < self.max_frames and self.render_images:
+            path = os.path.dirname(__file__)
+            filename = os.path.join(path, 'screenshot%02d.png' % (self.screennum, ))
+            get_buffer_manager().get_color_buffer().save(filename)
+            self.screennum += 1
+
+
+def vrun(update, max_frames=99, render_images=False):
+    _vapp = VApp(update, max_frames, render_images)
+    schedule(_vapp.vupdate)
     run()

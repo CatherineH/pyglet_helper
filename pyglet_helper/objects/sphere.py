@@ -29,11 +29,9 @@ class Sphere(Axial):
         :param other: another sphere object to copy properties from (optional)
         :type other: pyglet_helper.objects.Sphere
         """
-        from pyglet_helper import GLOBAL_VIEW
         super(Sphere, self).__init__(color=color, pos=pos, radius=radius,
                                      material=material, axis=axis)
-        if GLOBAL_VIEW is not None:
-            GLOBAL_VIEW.screen_objects.append(self)
+
         # Construct a unit sphere at the origin.
         if other is not None:
             self.axial = other

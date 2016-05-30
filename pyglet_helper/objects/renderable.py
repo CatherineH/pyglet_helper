@@ -106,7 +106,7 @@ class View(object):
     A class for handling the environment in which all objects are rendered
     """
 
-    def __init__(self, gcf=1.0, view_width=800, view_height=600,
+    def __init__(self, gcf=1.0, view_width=640, view_height=480,
                  anaglyph=False, coloranaglyph=False, forward_changed=False,
                  gcf_changed=False, lod_adjust=0, tan_hfov_x=0, tan_hfov_y=0,
                  enable_shaders=True, background_color=Rgb()):
@@ -184,7 +184,7 @@ class View(object):
     def setup(self):
         """ Does some one-time OpenGL setup.
         """
-        #print("doing setup")
+        self.resize()
         gl.glEnable(gl.GL_LIGHTING)
         gl.glClearColor(1, 1, 1, 1)
         gl.glColor3f(1, 0, 0)

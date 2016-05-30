@@ -30,11 +30,9 @@ class Box(Rectangular):
         :param pos: The object's position.
         :type pos: pyglet_helper.util.Vector
         """
-        from pyglet_helper import GLOBAL_VIEW
         super(Box, self).__init__(width=width, height=height, color=color,
                                   length=length, pos=pos)
-        if GLOBAL_VIEW is not None:
-            GLOBAL_VIEW.screen_objects.append(self)
+
         self.initialized = False
         self.skip_right_face = False
 

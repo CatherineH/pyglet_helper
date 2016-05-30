@@ -99,6 +99,7 @@ class Light(Renderable):
         :param scene: The view to render the model into
         :type scene: pyglet_helper.objects.View
         """
-        scene.lights.append(self)
+        if self not in scene.lights:
+            scene.lights.append(self)
         scene.draw_lights()
 

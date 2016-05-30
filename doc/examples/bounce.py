@@ -4,7 +4,6 @@ from pyglet_helper import vsetup, vrun
 
 vsetup()
 
-
 def update(dt):
     global ball
     ball.pos = ball.pos + ball.velocity * dt
