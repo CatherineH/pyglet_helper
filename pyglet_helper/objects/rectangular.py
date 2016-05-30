@@ -12,7 +12,7 @@ class Rectangular(Primitive):
     A base class for rectangular-like objects (such as the box or pyramid)
     """
     def __init__(self, axis=Vector([1, 0, 0]), pos=Vector([0, 0, 0]),
-                 width=1.0, height=1.0, length=1.0, color=Rgb(), other=None):
+                 width=1.0, height=1.0, length=1.0, color=Rgb(), size=None, other=None):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -28,13 +28,18 @@ class Rectangular(Primitive):
         super(Rectangular, self).__init__(color=color, pos=pos, axis=axis)
         self._height = None
         self._width = None
-        if other is None:
+        if other is None and size is None:
             self.width = width
             self.height = height
-        else:
+            self.length = length
+        elif other is not None:
             self.width = other.width
             self.height = other.height
-        self.length = length
+            self.length = other.length
+        elif size is not None:
+            self.width = size.width
+            self.height = size.height
+            self.length = size.length
 
     @property
     def scale(self):

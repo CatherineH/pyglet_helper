@@ -1,8 +1,7 @@
-from pyglet_helper.objects import Box, Sphere
-from pyglet_helper.util import color, Vector
-from pyglet_helper import vsetup, vrun
+from pyglet_helper import *
 
 vsetup()
+
 
 def update(dt):
     global ball
@@ -12,11 +11,12 @@ def update(dt):
     else:
         ball.velocity.y_component = ball.velocity.y_component - 9.8 * dt
 
-floor = Box(length=4, height=0.5, width=4, color=color.BLUE)
+floor = objects.Box(length=4, height=0.5, width=4, color=util.color.BLUE)
 
-ball = Sphere(pos=Vector([0, 4, 0]), color=color.RED)
-ball.velocity = Vector([0, -1, 0])
+ball = objects.Sphere(pos=util.Vector([0, 4, 0]), color=util.color.RED)
+ball.velocity = util.Vector([0, -1, 0])
 
 dt = 0.01
 
 vrun(update)
+vrun

@@ -1,11 +1,8 @@
-from pyglet_helper.objects import Box, Sphere, View, Light
-from pyglet_helper.util import color, Vector
-from pyglet.window import Window
-from pyglet.app import run
-from pyglet.clock import schedule
+from pyglet_helper import *
+from pyglet import *
 
-window = Window()
-scene = View(view_height=window.height, view_width=window.width)
+window = window.Window()
+scene = objects.View(view_height=window.height, view_width=window.width)
 
 
 def update(dt):
@@ -18,10 +15,11 @@ def update(dt):
 
 schedule(update)
 
-floor = Box(length=4, height=0.5, width=4, color=color.BLUE)
+floor = objects.Box(length=4, height=0.5, width=4, color=util.color.BLUE)
 
-ball = Sphere(pos=Vector([0, 4, 0]), color=color.RED)
-ball.velocity = Vector([0, -1, 0])
+ball = objects.Sphere(pos=util.Vector([0, 4, 0]), color=util.color.RED)
+ball.velocity = util.Vector([0, -1, 0])
+
 scene.screen_objects.append(ball)
 scene.screen_objects.append(floor)
 dt = 0.01
@@ -30,8 +28,8 @@ dt = 0.01
 def on_draw():
     scene.setup()
 
-_light0 = Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
-_light1 = Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))
+_light0 = objects.Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
+_light1 = objects.Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))
 scene.lights.append(_light0)
 scene.lights.append(_light1)
 
