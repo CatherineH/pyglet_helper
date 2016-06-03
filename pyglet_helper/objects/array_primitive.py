@@ -1,4 +1,5 @@
 from pyglet_helper.objects import Renderable
+from pyglet_helper.util import Rgb
 from numpy import array
 
 
@@ -30,8 +31,13 @@ class ArrayPrimitive(Renderable):
         self.pos = ArrayPrimitiveArray([0, 0, 0])
         self.all = slice(0, count)
 
+    @property
+    def count(self):
+        return self.all.stop
+
 
 class ColorArrayPrimitive(ArrayPrimitive):
-    def __init__(self):
+    def __init__(self, color=Rgb()):
         super(ColorArrayPrimitive, self).__init__()
+        self.color = color
 

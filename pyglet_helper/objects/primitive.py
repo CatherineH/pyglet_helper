@@ -116,9 +116,9 @@ class Primitive(Renderable):
 
     def render_trail(self):
         if self.trail_type == 'curve':
-            self.trail_object = Curve(frame=self.__frame, color=self.color)
+            self.trail_object = Curve(color=self.color)
         else:
-            self.trail_object = Points(frame=self.__frame, color=self.color)
+            self.trail_object = Points(color=self.color)
 
     @property
     def center(self):
