@@ -14,7 +14,8 @@ class Cone(Axial):
     A Cone object
     """
     def __init__(self, radius=1.0, color=Rgb(), pos=Vector([0, 0, 0]),
-                 axis=Vector([1, 0, 0])):
+                 axis=Vector([1, 0, 0]), make_trail=False, trail_type='curve',
+                 interval=1, retain=-1):
         """
 
         :param radius: The cone's bottom radius.
@@ -27,7 +28,9 @@ class Cone(Axial):
         :type axis: pyglet_helper.util.Vector
         :return:
         """
-        super(Cone, self).__init__(radius=radius, color=color, pos=Vector(pos))
+        super(Cone, self).__init__(radius=radius, color=color, pos=Vector(pos),
+                                   make_trail=make_trail, trail_type=trail_type,
+                                   interval=interval, retain=retain)
         self.axis = Vector(axis)
 
     def init_model(self, scene):

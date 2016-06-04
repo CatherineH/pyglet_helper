@@ -3,7 +3,7 @@ try:
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.objects import ColorArrayPrimitive
+from pyglet_helper.objects import ArrayPrimitive
 from pyglet_helper.util import Rgb, Vector, Vertex, Tmatrix
 from enum import Enum
 from ctypes import sizeof
@@ -25,10 +25,10 @@ class PointCoord(object):
         self.color = color
 
 
-class Points(ColorArrayPrimitive):
+class Points(ArrayPrimitive):
     def __init__(self, color=Rgb(), points_shape=PointsShape.ROUND, size_units=SizeUnits.PIXELS, size=5.0):
-        super(Points, self).__init__(color=color)
-        ### since wxPython is not being used, the frame argument is not important for now
+        super(Points, self).__init__()
+        # since wxPython is not being used, the frame argument is not important for now
         self.points_shape = points_shape
         self.size_units = size_units
         self.size = size
@@ -43,18 +43,10 @@ class Points(ColorArrayPrimitive):
 
         translucent_points = []
         opaque_points = []
-        pos_i = self.pos.data()
-        pos_end = self.pos.end()
-
-        color_i = self.color.data()
-        color_end = self.color.end()
-
 
         # Every point must be depth sorted
-        while pos_i < pos_end and color_i < color_end:
-            opaque_points.append(PointCoord(Vector(pos_i), Rgb(color_i)))
-            pos_i += 3
-            color_i += 3
+        for i in range(0, self.count):
+            opaque_points.append(PointCoord(Vector(self.pos[i]), Rgb(self.color[i])))
 
         if scene.gcf != 1.0 or scene.gcfvec[0] != scene.gcfvec[1]:
             for i in opaque_points:
@@ -99,10 +91,8 @@ class Points(ColorArrayPrimitive):
     def center(self):
         if self.degenerate or self.points_shape != PointsShape.ROUND:
             return Vector()
-        pos_i = self.pos.data()
         ret = Vector()
         for i in range(0, self.count):
-            ret += Vector(pos_i)
-            pos_i += 3
+            ret += Vector(self.pos[i])
         ret /= self.count
         return ret

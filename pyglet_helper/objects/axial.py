@@ -11,7 +11,8 @@ class Axial(Primitive):
      cones, etc., ).
     """
     def __init__(self, axis=Vector([1, 0, 0]), radius=1.0, color=Rgb(),
-                 pos=Vector([0, 0, 0]), material=Material(), other=None):
+                 pos=Vector([0, 0, 0]), material=Material(), other=None,
+                 make_trail=False, trail_type='curve', interval=1, retain=-1):
         """
 
         :param other: another axial object to copy properties from (optional)
@@ -28,7 +29,9 @@ class Axial(Primitive):
         :type material: pyglet_helper.util.Material
         """
         super(Axial, self).__init__(color=color, pos=pos, axis=axis,
-                                    material=material)
+                                    material=material, make_trail=make_trail,
+                                    trail_type=trail_type, interval=interval,
+                                    retain=retain)
         self._radius = None
         if other is not None:
             self.radius = other.radius

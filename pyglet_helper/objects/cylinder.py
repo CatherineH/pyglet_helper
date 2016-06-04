@@ -13,9 +13,9 @@ class Cylinder(Axial):
     """
      A Cylinder object.
     """
-    def __init__(self, pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]),
-                 radius=1.0,
-                 color=Rgb(0, 0, 0)):
+    def __init__(self, pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]), radius=1.0,
+                 color=Rgb(0, 0, 0), make_trail=False, trail_type='curve', interval=1,
+                 retain=-1):
         """
 
         :param radius: The cylinder's radius.
@@ -28,7 +28,9 @@ class Cylinder(Axial):
         :type axis: pyglet_helper.util.Vector
         """
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color,
-                                       axis=axis)
+                                       axis=axis, make_trail=make_trail,
+                                       trail_type=trail_type, interval=interval,
+                                       retain=retain)
 
     def init_model(self, scene):
         """ Add the cylinder quadrics to the view.

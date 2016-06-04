@@ -14,7 +14,8 @@ class Sphere(Axial):
     """
     def __init__(self, color=Rgb(), pos=Vector([0, 0, 0]),
                  axis=Vector([1.0, 0.0, 0.0]), radius=1.0,
-                 material=Material(), other=None):
+                 material=Material(), other=None, make_trail=False, trail_type='curve',
+                 interval=1, retain=-1):
         """
         :param radius: The sphere's radius.
         :type radius: float
@@ -30,7 +31,9 @@ class Sphere(Axial):
         :type other: pyglet_helper.objects.Sphere
         """
         super(Sphere, self).__init__(color=color, pos=pos, radius=radius,
-                                     material=material, axis=axis)
+                                     material=material, axis=axis,
+                                     make_trail=make_trail, trail_type=trail_type,
+                                     interval=interval, retain=retain)
 
         # Construct a unit sphere at the origin.
         if other is not None:

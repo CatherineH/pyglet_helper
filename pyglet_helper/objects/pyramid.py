@@ -14,7 +14,8 @@ class Pyramid(Rectangular):
     A Pyramid Object
     """
     def __init__(self, axis=Vector([1, 0, 0]), pos=Vector([0, 0, 0]),
-                 width=1.0, height=1.0, length=1.0, color=Rgb()):
+                 width=1.0, height=1.0, length=1.0, color=Rgb(), make_trail=False,
+                 trail_type='curve', interval=1, retain=-1):
         """
         :param color: The object's color.
         :type color: pyglet_helper.util.Rgb
@@ -30,7 +31,9 @@ class Pyramid(Rectangular):
         """
         super(Pyramid, self).__init__(axis=axis, pos=pos, color=color,
                                       width=width, height=height,
-                                      length=length)
+                                      length=length, make_trail=make_trail,
+                                      trail_type=trail_type, interval=interval,
+                                      retain=retain)
         self.compiled = False
 
     def init_model(self, scene):

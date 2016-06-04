@@ -15,8 +15,8 @@ class Arrow(Primitive):
      along +x, unit length.
     """
     def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0,
-                 shaft_width=0.0, color=Rgb(),
-                 pos=Vector([0, 0, 0]), axis=(1, 0, 0)):
+                 shaft_width=0.0, color=Rgb(), pos=Vector([0, 0, 0]), axis=(1, 0, 0),
+                 make_trail=False, trail_type='curve', interval=1, retain=-1):
         """
 
         :param fixed_width: if True, the arrow's head width and length will not
@@ -35,7 +35,9 @@ class Arrow(Primitive):
         :param axis: The arrow's axis direction
         :type axis: pyglet_helper.util.Vector
         """
-        super(Arrow, self).__init__(color=color, pos=pos, axis=axis)
+        super(Arrow, self).__init__(color=color, pos=pos, axis=axis,
+                                    make_trail=make_trail, trail_type=trail_type,
+                                    interval=interval, retain=retain)
         # True if the width of the point and shaft should not vary with the
         # length
         # of the arrow.

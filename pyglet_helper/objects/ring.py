@@ -13,7 +13,8 @@ class Ring(Axial):
     A Ring object
     """
     def __init__(self, thickness=0.0, radius=1.0, color=Rgb(),
-                 pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0])):
+                 pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]), make_trail=False,
+                 trail_type='curve', interval=1, retain=-1):
         """
 
         :param thickness: The ring's thickness.
@@ -28,7 +29,9 @@ class Ring(Axial):
         :type axis: pyglet_helper.util.Vector
         """
         super(Ring, self).__init__(radius=radius, color=color, pos=pos,
-                                   axis=axis)
+                                   axis=axis, make_trail=make_trail,
+                                   trail_type=trail_type, interval=interval,
+                                   retain=retain)
         self._thickness = None
         self.list = None
         self.axis = axis

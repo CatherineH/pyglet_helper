@@ -5,6 +5,25 @@ geometric shapes
 from pyglet_helper.objects import Material, Renderable, Curve, Points
 from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 
+# the original primitive class relied on an array_primitive class, however, given that
+#  all objects
+
+
+def trail_update(obj):
+    # trail_update does not detect changes such as ball.pos.x += 1
+    # which are detected in create_display/_Interact which looks at trail_list
+    if obj.interval == 0:
+        return
+    obj.updated = True
+    obj.interval_count += 1
+    if obj.trail_object.count == 0:
+        print(type(obj.pos))
+        obj.trail_object.append(pos=obj.pos)
+        obj.interval_count -= 1
+    if obj.interval_count == obj.interval:
+        if obj.pos != obj.trail_object.pos[-1]:
+            obj.trail_object.append(pos=obj.pos, retain=obj.retain)
+        obj.interval_count = 0
 
 
 class Primitive(Renderable):
@@ -13,7 +32,8 @@ class Primitive(Renderable):
     """
     def __init__(self, axis=Vector([1, 0, 0]), up_vector=Vector([0, 1, 0]),
                  pos=Vector([0, 0, 0]), obj_initialized=False, color=Rgb(),
-                 material=Material(), make_trail=False, trail_type='curve'):
+                 material=Material(), make_trail=False, trail_type='curve',
+                 interval=1, retain=-1):
         """
 
         :param axis: The orientation to use when drawing.
@@ -37,18 +57,28 @@ class Primitive(Renderable):
         self._up = None
         self._width = None
         self._height = None
-        if GLOBAL_VIEW is not None:
-            GLOBAL_VIEW.screen_objects.append(self)
+        self._make_trail = None
 
-        self.startup = True
         self.obj_initialized = obj_initialized
+        self.trail_initialized = None
+        self.retain = retain
 
         # position must be defined first, before the axis
         self.up_vector = Vector(up_vector)
         self.pos = Vector(pos)
         self.axis = Vector(axis)
-        self.make_trail = make_trail
+
+        self.startup = True
         self.trail_type = trail_type
+        self.trail_object = None
+        self.interval = interval
+
+        self.updated = False
+        self.interval_count = 0
+        self.make_trail = make_trail
+
+        if GLOBAL_VIEW is not None:
+            GLOBAL_VIEW.screen_objects.append(self)
 
     def model_world_transform(self, world_scale=0.0,
                               object_scale=Vector([1, 1, 1])):
@@ -110,11 +140,15 @@ class Primitive(Renderable):
                 fake_up = Vector([0, 1, 0])
         # is this rotation needed at present? Is it already included in the
         # transformation matrix?
-        #self.pos = R * self._pos
+        # self.pos = R * self._pos
         self.up_vector = rotation_matrix.times_v(fake_up)
         self._axis = rotation_matrix.times_v(self._axis)
 
     def render_trail(self):
+        """
+        render the trail.
+        :return:
+        """
         if self.trail_type == 'curve':
             self.trail_object = Curve(color=self.color)
         else:
@@ -147,6 +181,9 @@ class Primitive(Renderable):
         :return:
         """
         self._pos = Vector(n_pos)
+        if self.trail_initialized and self.make_trail:
+            if self.obj_initialized:
+                trail_update(self)
 
     @property
     def length(self):
@@ -235,6 +272,26 @@ class Primitive(Renderable):
         self.axis = self.axis.norm() * new_size.x_component
         self.height = new_size.y_component
         self.width = new_size.z_component
+
+    @property
+    def make_trail(self):
+        return self._make_trail
+
+    @make_trail.setter
+    def make_trail(self, new_val):
+        """
+        Initialize the trail, if it needs to be initialized
+        :param new_val: the value to set make_trail to
+        :type new_val: boolean
+        """
+        if new_val and not self.obj_initialized:
+            raise ValueError("Can't set make_trail=True unless object was created with make_trail specified")
+        if self.startup:
+            self.render_trail()
+            trail_update(self)
+            self.startup = False
+        self._make_trail = new_val
+        self.trail_initialized = True
 
     @property
     def axis(self):

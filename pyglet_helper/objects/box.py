@@ -16,7 +16,8 @@ class Box(Rectangular):
      A box object.
     """
     def __init__(self, width=1.0, height=1.0, length=1.0, color=Rgb(),
-                 pos=Vector([0, 0, 0]), size=None):
+                 pos=Vector([0, 0, 0]), size=None, make_trail=False, trail_type='curve',
+                 interval=1, retain=-1):
         """
 
         :param width: The box's width.
@@ -31,7 +32,9 @@ class Box(Rectangular):
         :type pos: pyglet_helper.util.Vector
         """
         super(Box, self).__init__(width=width, height=height, color=color,
-                                  length=length, pos=pos, size=size)
+                                  length=length, pos=pos, size=size,
+                                  make_trail=make_trail, trail_type=trail_type,
+                                  interval=interval, retain=retain)
 
         self.initialized = False
         self.skip_right_face = False
