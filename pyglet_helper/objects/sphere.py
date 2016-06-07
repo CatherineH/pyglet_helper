@@ -100,6 +100,7 @@ class Sphere(Axial):
         scene.sphere_model[5].gl_compile_begin()
         sph.render_sphere(1.0, 140, 69)
         scene.sphere_model[5].gl_compile_end()
+        self.obj_initialized = True
 
     def render(self, geometry):
         """ Add the sphere to the view.

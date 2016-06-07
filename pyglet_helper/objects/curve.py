@@ -61,7 +61,6 @@ class Curve(ArrayPrimitive):
     def render(self, scene):
         if self.degenerate:
             return
-        true_size = self.count
         # Set up the leading and trailing points for the joins.  See
         # glePolyCylinder() for details.  The intent is to create joins that are
         # perpendicular to the path at the last segment.  When the path appears
@@ -69,22 +68,17 @@ class Curve(ArrayPrimitive):
         # The maximum number of points to display.
         line_length = 1000
         # Data storage for the position and color data (plus room for 3 extra points)
-        spos = [line_length+3]
-        tcolor = [line_length+3]  # opacity not yet implemented for curves
-        fstep = (self.count-1)/(line_length-1)
-        if fstep < 1.0:
-            fstep = 1.0
+        spos = [0 for i in range(0, min(line_length+3, self.count))]
+        tcolor = [0 for i in range(0, min(line_length+3, self.count))]  # opacity not
+        # yet implemented for curves
         iptr = 0
         pcount = 0
 
         # Choose which points to display
-        fptr = 0.0
         while iptr < self.count and pcount < line_length:
             spos[pcount] = self.pos[iptr]
             tcolor[pcount] = self.color[iptr]
-            fptr += fstep
-            iptr = int(fptr+.5)
-            pcount += 1
+            iptr += 1
 
         # Do scaling if necessary
         scaled_radius = self.radius
@@ -164,7 +158,7 @@ class Curve(ArrayPrimitive):
         if pcount < 2:
             return
 
-        closed = Vector(spos) == Vector(spos[(pcount-1)*3])
+        closed = Vector(spos[0]) == Vector(spos[-1])
 
         vcount = pcount*2 - closed  # The number of vertices along each edge of the curve
         projected = vcount*self.sides*[Vector()]
@@ -172,8 +166,6 @@ class Curve(ArrayPrimitive):
         light = vcount*self.sides*[Rgb()]
 
         # pos and color iterators
-        v_i = spos
-        c_i = tcolor
         if closed:
             i = 0
         else:
@@ -181,29 +173,29 @@ class Curve(ArrayPrimitive):
         mono = self.adjust_colors(scene, tcolor, pcount)
 
         # eliminate initial duplicate points
-        start = Vector(v_i)
+        start = Vector(spos[0])
         reduce = 0
+        pos_index = 0
         for corner in range(0, pcount):
-            next = Vector(v_i)
+            next = Vector(spos[pos_index])
             A = (next-start).norm()
             if not A:
                 reduce += 1
                 continue
-            v_i += 3
-            c_i += 3
+            pos_index += 1
             pcount -= reduce
 
         if pcount < 2:
             return
 
         for corner in range(0, pcount):
-            current = Vector(v_i)
+            current = spos[pos_index]
             next = Vector()
             A = Vector()
-            bisecting_plane_normal = Vector
+            bisecting_plane_normal = Vector()
             sectheta = None
             if corner != pcount-1:
-                next = Vector(v_i[3])  # The next vector in spos
+                next = spos[pos_index+1]  # The next vector in spos
                 A = (next - current).norm()
                 if not A:
                     A = lastA
@@ -236,7 +228,7 @@ class Curve(ArrayPrimitive):
                     normals[a+i] = rel.norm()
                     projected[a+i] = current + rel
                     if not mono:
-                        light[a+i] = Rgb(c_i)
+                        light[a+i] = Rgb(tcolor[pos_index])
 
                     if not closed:
                         # Cap start of curve
@@ -260,7 +252,7 @@ class Curve(ArrayPrimitive):
                     projected[i+a] = prev_end
                     normals[i+a] = normals[i+a-self.sides]
                     if not mono:
-                        light[i+a] = Rgb(c_i)
+                        light[i+a] = Rgb(tcolor[pos_index])
 
                     if corner != pcount-1:
                         next_start = prev_end - 2*(prev_end-current)\
@@ -281,8 +273,7 @@ class Curve(ArrayPrimitive):
                                 light[i+a+self.sides] = light[a+i]
                 i += 2*self.sides
             lastA = A
-            v_i += 3
-            c_i += 3
+            pos_index += 1
 
         if closed:
             # Connect the end of the curve to the start... can be ugly because the basis

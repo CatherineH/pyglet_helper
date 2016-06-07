@@ -192,6 +192,9 @@ class View(object):
         gl.glLoadIdentity()
         for object in self.screen_objects:
             object.render(self)
+            if object.make_trail:
+                #print("Object: "+str(object)+" has trail of type: "+object.trail_type)
+                object.trail_object.render(self)
         self.draw_lights()
 
         for light in self.lights:

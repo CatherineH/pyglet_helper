@@ -24,6 +24,9 @@ class PointCoord(object):
         self.center = center
         self.color = color
 
+    def __sub__(self, other):
+        return self.center-other.center
+
 
 class Points(ArrayPrimitive):
     def __init__(self, color=Rgb(), points_shape=PointsShape.ROUND, size_units=SizeUnits.PIXELS, size=5.0):
@@ -72,15 +75,14 @@ class Points(ArrayPrimitive):
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
         # Render opaque points( if any)
-        if len(opaque_points)>0:
+        if len(opaque_points) > 0:
             chunk = 256
         begin = opaque_points[0]
         end = opaque_points[-1]
         while begin < end:
             block = min(chunk, end - begin)
-            gl.glColorPointer()
-            gl.glColorPointer(3, gl.GL_FLOAT, sizeof(PointCoord()), begin.color.red)
-            gl.glVertexPointer(3, gl.GL_DOUBLE, sizeof(PointCoord()), begin.center.x_coordinate)
+            gl.glColorPointer(3, gl.GL_FLOAT, 1, begin.color)
+            gl.glVertexPointer(3, gl.GL_DOUBLE, 1, begin.center)
             gl.glDrawArrays(gl.GL_POINTS, 0, block)
             begin += block
 

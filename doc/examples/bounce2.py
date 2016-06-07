@@ -32,7 +32,8 @@ wallB = Box(pos=Vector([0, -side, 0]), size=Vector([s3, thk, s3]),  color=color.
 wallT = Box(pos=Vector([0,  side, 0]), size=Vector([s3, thk, s3]),  color=color.BLUE)
 wallBK = Box(pos=Vector([0, 0, -side]), size=Vector([s2, s2, thk]), color=Rgb(0.7, 0.7, 0.7))
 
-ball = Sphere(color = color.GREEN, radius = 0.4, make_trail=True, retain=200)
+ball = Sphere(color=color.GREEN, radius=0.4, make_trail=True, retain=200,
+              trail_type="points")
 ball.trail_object.radius = 0.05
 ball.mass = 1.0
 ball.p = Vector([-0.15, -0.23, +0.27])

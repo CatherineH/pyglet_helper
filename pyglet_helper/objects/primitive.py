@@ -14,10 +14,12 @@ def trail_update(obj):
     # which are detected in create_display/_Interact which looks at trail_list
     if obj.interval == 0:
         return
+    #print(obj, "updating trail, size: ", obj.trail_object.count, obj.interval,
+    #      obj.interval_count)
+    #print(str(obj.trail_object))
     obj.updated = True
     obj.interval_count += 1
     if obj.trail_object.count == 0:
-        print(type(obj.pos))
         obj.trail_object.append(pos=obj.pos)
         obj.interval_count -= 1
     if obj.interval_count == obj.interval:
@@ -284,7 +286,7 @@ class Primitive(Renderable):
         :param new_val: the value to set make_trail to
         :type new_val: boolean
         """
-        if new_val and not self.obj_initialized:
+        if new_val and self.obj_initialized:
             raise ValueError("Can't set make_trail=True unless object was created with make_trail specified")
         if self.startup:
             self.render_trail()

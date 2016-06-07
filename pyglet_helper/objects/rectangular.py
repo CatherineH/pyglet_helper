@@ -42,9 +42,9 @@ class Rectangular(Primitive):
             self.height = other.height
             self.length = other.length
         elif size is not None:
-            self.width = size.width
-            self.height = size.height
-            self.length = size.length
+            self.width = size[0]
+            self.height = size[1]
+            self.length = size[2]
 
     @property
     def scale(self):
