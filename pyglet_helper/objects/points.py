@@ -19,22 +19,15 @@ class PointsShape(Enum):
     SQUARE = 1
 
 
-class PointCoord(object):
-    def __init__(self, center=Vector(), color=Rgb()):
-        self.center = center
-        self.color = color
-
-    def __sub__(self, other):
-        return self.center-other.center
-
-
 class Points(ArrayPrimitive):
-    def __init__(self, color=Rgb(), points_shape=PointsShape.ROUND, size_units=SizeUnits.PIXELS, size=5.0):
+    def __init__(self, color=Rgb(), points_shape=PointsShape.ROUND,
+                 size_units=SizeUnits.PIXELS, size=5.0):
         super(Points, self).__init__()
         # since wxPython is not being used, the frame argument is not important for now
         self.points_shape = points_shape
         self.size_units = size_units
         self.size = size
+        self.color.append(color)
 
     @property
     def degenerate(self):
@@ -44,24 +37,17 @@ class Points(ArrayPrimitive):
         if self.degenerate:
             return
 
-        translucent_points = []
-        opaque_points = []
-
-        # Every point must be depth sorted
-        for i in range(0, self.count):
-            opaque_points.append(PointCoord(Vector(self.pos[i]), Rgb(self.color[i])))
-
         if scene.gcf != 1.0 or scene.gcfvec[0] != scene.gcfvec[1]:
-            for i in opaque_points:
-                i.center = i.center.scale(scene.gcfvec)
+            for i in range(0, self.count):
+                self.pos[i] = self.pos[i].scale(scene.gcfvec)
 
         if scene.anaglyph:
             if scene.coloranaglyph:
-                for i in opaque_points:
-                    i.color = i.color.desaturate()
+                for i in range(0, self.count):
+                    self.color[i] = self.color[i].desaturate()
             else:
-                for i in opaque_points:
-                    i.color = i.color.grayscale()
+                for i in range(0, self.count):
+                    self.color[i] = self.color[i].grayscale()
 
         if self.points_shape == PointsShape.ROUND:
             gl.glEnable(gl.GL_POINT_SMOOTH)
@@ -69,22 +55,22 @@ class Points(ArrayPrimitive):
         if self.size_units == SizeUnits.WORLD and scene.glext.ARB_point_parameters:
             gl.glPointSize(1)
         elif self.size_units == SizeUnits.PIXELS:
-            gl.glPointSize( self.size )
+            gl.glPointSize(self.size)
 
         gl.glDisable(gl.GL_LIGHTING)
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_COLOR_ARRAY)
         # Render opaque points( if any)
-        if len(opaque_points) > 0:
+        if self.count > 0:
             chunk = 256
-        begin = opaque_points[0]
-        end = opaque_points[-1]
-        while begin < end:
-            block = min(chunk, end - begin)
-            gl.glColorPointer(3, gl.GL_FLOAT, 1, begin.color)
-            gl.glVertexPointer(3, gl.GL_DOUBLE, 1, begin.center)
+        curr_point = 0
+        while curr_point < self.count:
+            # this needs to be cleaned up to convert opaque_points to pointers
+            block = min(chunk, self.count - curr_point)
+            gl.glColorPointer(3, gl.GL_FLOAT, 1, self.pointer(curr_point, self.color))
+            gl.glVertexPointer(3, gl.GL_DOUBLE, 1, self.pointer(curr_point, self.pos))
             gl.glDrawArrays(gl.GL_POINTS, 0, block)
-            begin += block
+            curr_point += block
 
         if self.points_shape == PointsShape.ROUND:
             gl.glDisable(gl.GL_POINT_SMOOTH)
