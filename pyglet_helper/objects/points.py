@@ -6,7 +6,7 @@ except Exception as error_msg:
 from pyglet_helper.objects import ArrayPrimitive
 from pyglet_helper.util import Rgb, Vector, Vertex, Tmatrix
 from enum import Enum
-from ctypes import sizeof
+from ctypes import sizeof, c_float
 
 
 class SizeUnits(Enum):
@@ -15,8 +15,8 @@ class SizeUnits(Enum):
 
 
 class PointsShape(Enum):
-    ROUND = 0
-    SQUARE = 1
+    ROUND = 1
+    SQUARE = 0
 
 
 class Points(ArrayPrimitive):
@@ -67,8 +67,9 @@ class Points(ArrayPrimitive):
         while curr_point < self.count:
             # this needs to be cleaned up to convert opaque_points to pointers
             block = min(chunk, self.count - curr_point)
-            gl.glColorPointer(3, gl.GL_FLOAT, 1, self.pointer(curr_point, self.color))
-            gl.glVertexPointer(3, gl.GL_DOUBLE, 1, self.pointer(curr_point, self.pos))
+            #print(self.color[-1])
+            gl.glColorPointer(3, gl.GL_FLOAT, 0, self.pointer(curr_point, self.color))
+            gl.glVertexPointer(3, gl.GL_FLOAT, 0, self.pointer(curr_point, self.pos))
             gl.glDrawArrays(gl.GL_POINTS, 0, block)
             curr_point += block
 

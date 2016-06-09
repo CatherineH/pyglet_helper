@@ -3,6 +3,7 @@ try:
 except Exception as error_msg:
     gl = None
 
+from ctypes import c_float
 from pyglet_helper.util import RED
 
 
@@ -25,8 +26,8 @@ class ArrayPrimitive(object):
         for i in range(index, self.count):
             for j in range(0, 3):
                 _list.append(component[i][j])
-        return (gl.GL_FLOAT * len(_list))(*_list)
 
+        return (c_float * len(_list))(*_list)
 
     def append(self, pos, col=None, retain=-1):
         """

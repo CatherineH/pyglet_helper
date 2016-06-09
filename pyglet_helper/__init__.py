@@ -16,6 +16,9 @@ from . import util
 
 from pyglet.app import run
 from pyglet.clock import schedule
+from math import log
+from os import path
+
 
 try:
     import pyglet.window as window
@@ -76,23 +79,30 @@ class VApp(object):
         import pyglet.image as image
     except Exception as error_msg:
         image = None
-    def __init__(self, update, max_frames=99, render_images=False):
+    def __init__(self, update, max_frames=99, render_images=False, interval=1,
+                 foldername=None):
         self.update = update
         self.max_frames = max_frames
         self.render_images = render_images
+        self.interval = interval
         self.screennum = 0
+        if foldername is None:
+            self.foldername = path.dirname(__file__)
+        else:
+            self.foldername = foldername
 
     def vupdate(self, dt):
-        import os
         self.update(dt)
-        if self.screennum < self.max_frames and self.render_images:
-            path = os.path.dirname(__file__)
-            filename = os.path.join(path, 'screenshot%02d.png' % (self.screennum, ))
-            self.image.get_buffer_manager().get_color_buffer().save(filename)
+        name_width = int(log(self.max_frames)/log(10))
+        format_str = 'screenshot%0'+str(name_width)+'d.png'
+        if self.screennum < self.max_frames*self.interval and self.render_images:
+            if self.screennum % self.interval == 0:
+                filename = path.join(self.foldername, format_str % (self.screennum/self.interval, ))
+                self.image.get_buffer_manager().get_color_buffer().save(filename)
             self.screennum += 1
 
 
-def vrun(update, max_frames=99, render_images=False):
-    _vapp = VApp(update, max_frames, render_images)
+def vrun(update, max_frames=99, render_images=False, interval=1, foldername=None):
+    _vapp = VApp(update, max_frames, render_images, interval, foldername)
     schedule(_vapp.vupdate)
     run()
