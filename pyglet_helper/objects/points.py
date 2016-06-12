@@ -4,7 +4,7 @@ except Exception as error_msg:
     gl = None
 
 from pyglet_helper.objects import ArrayPrimitive
-from pyglet_helper.util import Rgb, Vector, Vertex, Tmatrix
+from pyglet_helper.util import make_pointer, Rgb, Vector, Vertex, Tmatrix
 from enum import Enum
 from ctypes import sizeof, c_float
 
@@ -68,8 +68,8 @@ class Points(ArrayPrimitive):
             # this needs to be cleaned up to convert opaque_points to pointers
             block = min(chunk, self.count - curr_point)
             #print(self.color[-1])
-            gl.glColorPointer(3, gl.GL_FLOAT, 0, self.pointer(curr_point, self.color))
-            gl.glVertexPointer(3, gl.GL_FLOAT, 0, self.pointer(curr_point, self.pos))
+            gl.glColorPointer(3, gl.GL_FLOAT, 0, make_pointer(curr_point, self.color))
+            gl.glVertexPointer(3, gl.GL_FLOAT, 0, make_pointer(curr_point, self.pos))
             gl.glDrawArrays(gl.GL_POINTS, 0, block)
             curr_point += block
 

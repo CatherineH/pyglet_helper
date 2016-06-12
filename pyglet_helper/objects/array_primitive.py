@@ -3,8 +3,8 @@ try:
 except Exception as error_msg:
     gl = None
 
-from ctypes import c_float
 from pyglet_helper.util import RED
+
 
 
 class ArrayPrimitive(object):
@@ -16,18 +16,6 @@ class ArrayPrimitive(object):
     def count(self):
         return len(self.pos)
 
-    def pointer(self, index, component):
-        """
-        Return a ctypes pointer of the positions or the colors
-        :param index: the starting point
-        :return:
-        """
-        _list = []
-        for i in range(index, self.count):
-            for j in range(0, 3):
-                _list.append(component[i][j])
-
-        return (c_float * len(_list))(*_list)
 
     def append(self, pos, col=None, retain=-1):
         """

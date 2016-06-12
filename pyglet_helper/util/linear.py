@@ -50,6 +50,9 @@ class Vector(object):
                        + other.y_component, self.z_component +
                        other.z_component])
 
+    def __len__(self):
+        return 3
+
     def __sub__(self, vector):
         """
         subtract another vector or vertex to the current vector
@@ -134,6 +137,9 @@ class Vector(object):
         otherwise
         """
         return self.x_component or self.y_component or self.z_component
+
+    def __neg__(self):
+        return Vector([-self.x_component, -self.y_component, -self.z_component])
 
     def __invert__(self):
         return Vector([-self.x_component, -self.y_component, -self.z_component])

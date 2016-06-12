@@ -10,4 +10,5 @@ from pyglet_helper.util.rgba import Rgba, Rgb
 from pyglet_helper.util.shader_program import ShaderProgram, UseShaderProgram
 from pyglet_helper.util.texture import Texture
 from pyglet_helper.util.linear import Vector, Vertex, Tmatrix, rotation
+from pyglet_helper.util.ctypes_util import make_pointer
 

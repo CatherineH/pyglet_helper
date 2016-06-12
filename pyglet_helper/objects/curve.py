@@ -4,31 +4,12 @@ except Exception as error_msg:
     gl = None
 
 from pyglet_helper.objects import ArrayPrimitive
-from pyglet_helper.util import Rgb, Vector
+from pyglet_helper.util import Rgb, Vector, make_pointer
 from math import pi, cos, sin
 from numpy import zeros
-from ctypes import sizeof
+from ctypes import sizeof, c_uint, c_int, byref
 
 
-def monochrome(tcolor, pcount):
-    """
-    Checks whether all colors in a list are the same
-    :param tcolor: the list of colors
-    :type tcolor: list
-    :param pcount: the number of colors in the ArrayPrimitive to check
-    :type pcount: int
-    :return: boolean, either True if all colors are the same, false otherwise
-    :rtype: boolean
-    """
-    first_color = Rgb(tcolor[0], tcolor[1], tcolor[2])
-    for nn in range(0, pcount):
-        if tcolor[nn * 3] != first_color.red:
-            return False
-        if tcolor[nn * 3 + 1] != first_color.green:
-            return False
-        if tcolor[nn * 3 + 2] != first_color.blue:
-            return False
-    return True
 
 
 class Curve(ArrayPrimitive):
@@ -58,6 +39,22 @@ class Curve(ArrayPrimitive):
     def degenerate(self):
         return self.count < 2
 
+    def monochrome(self):
+        """
+        Checks whether all colors in a list are the same
+        :param tcolor: the list of colors
+        :type tcolor: list
+        :param pcount: the number of colors in the ArrayPrimitive to check
+        :type pcount: int
+        :return: boolean, either True if all colors are the same, false otherwise
+        :rtype: boolean
+        """
+        first_color = self.color[0]
+        for nn in range(0, self.count):
+            if self.color[nn] != first_color:
+                return False
+        return True
+
     def render(self, scene):
         if self.degenerate:
             return
@@ -67,25 +64,16 @@ class Curve(ArrayPrimitive):
         # to be closed, it should be rendered that way on-screen.
         # The maximum number of points to display.
         line_length = 1000
-        # Data storage for the position and color data (plus room for 3 extra points)
-        spos = [0 for i in range(0, min(line_length+3, self.count))]
-        tcolor = [0 for i in range(0, min(line_length+3, self.count))]  # opacity not
         # yet implemented for curves
         iptr = 0
-        pcount = 0
 
-        # Choose which points to display
-        while iptr < self.count and pcount < line_length:
-            spos[pcount] = self.pos[iptr]
-            tcolor[pcount] = self.color[iptr]
-            iptr += 1
 
         # Do scaling if necessary
         scaled_radius = self.radius
         if scene.gcf != 1.0 or scene.gcfvec[0] != scene.gcfvec[1]:
             scaled_radius = self.radius*scene.gcfvec[0]
-            for i in range(0, pcount):
-                spos[i] *= scene.gcfvec
+            for i in range(0, self.count):
+                self.pos[i] *= scene.gcfvec
 
         if self.radius == 0.0:
             gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
@@ -94,20 +82,20 @@ class Curve(ArrayPrimitive):
             if self.antialias:
                 gl.glEnable(gl.GL_LINE_SMOOTH)
 
-            gl.glVertexPointer(3, gl.GL_DOUBLE, 0, spos)
-            mono = self.adjust_colors(scene, tcolor, pcount)
+            gl.glVertexPointer(3, gl.GL_DOUBLE, 0, self.pos)
+            mono = self.adjust_colors(scene)
             if not mono:
-                gl.glColorPointer(3, gl.GL_FLOAT, 0, tcolor)
-            gl.glDrawArrays(gl.GL_LINE_STRIP, 0, pcount)
+                gl.glColorPointer(3, gl.GL_FLOAT, 0, self.color)
+            gl.glDrawArrays(gl.GL_LINE_STRIP, 0, self.pos)
             gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
             gl.glDisableClientState(gl.GL_COLOR_ARRAY)
             gl.glEnable(gl.GL_LIGHTING)
             if self.antialias:
                 gl.glDisable(gl.GL_LINE_SMOOTH)
         else:
-            self.thickline(scene, spos, tcolor, pcount, scaled_radius)
+            self.thickline(scene, scaled_radius)
 
-    def adjust_colors(self, scene, tcolor, pcount):
+    def adjust_colors(self, scene):
         """
 
         :param scene:
@@ -115,32 +103,32 @@ class Curve(ArrayPrimitive):
         :param pcount:
         :return:
         """
-        mono = monochrome(tcolor, pcount)
+        mono = self.monochrome()
         if mono:
             # We can get away without using a color array.
-            rendered_color = Rgb(tcolor[0], tcolor[1], tcolor[2])
+            rendered_color = Rgb(self.color[0][0], self.color[0][1], self.color[0][2])
             if scene.anaglyph:
                 if scene.coloranaglyph:
-                    rendered_color.desaturate().gl_set(self.opacity)
+                    rendered_color.desaturate()#.gl_set(self.opacity)
                 else:
-                    rendered_color.grayscale().gl_set(self.opacity)
+                    rendered_color.grayscale()#.gl_set(self.opacity)
             else:
-                rendered_color.gl_set(self.opacity)
+                rendered_color#.gl_set(self.opacity)
         else:
             gl.glEnableClientState(gl.GL_COLOR_ARRAY)
             if scene.anaglyph:
                 # Must desaturate or grayscale the color.
 
-                for i in range(0, pcount):
-                    rendered_color = Rgb(tcolor[i])
+                for i in range(0, self.count):
+                    rendered_color = Rgb(self.color[i])
                     if scene.coloranaglyph:
                         rendered_color = rendered_color.desaturate()
                     else:
                         rendered_color = rendered_color.grayscale()
-                    tcolor[i] = rendered_color
+                    self.color[i] = rendered_color
         return mono
 
-    def thickline(self, scene, spos, tcolor, pcount, scaled_radius):
+    def thickline(self, scene, scaled_radius):
         """
 
         :param scene:
@@ -152,15 +140,14 @@ class Curve(ArrayPrimitive):
         """
         cost = self.curve_sc
         sint = cost + self.sides
-
         lastA = Vector()  # unit vector of previous segment
 
-        if pcount < 2:
+        if self.count < 2:
             return
+        closed = self.pos[0] == self.pos[-1]
 
-        closed = Vector(spos[0]) == Vector(spos[-1])
-
-        vcount = pcount*2 - closed  # The number of vertices along each edge of the curve
+        vcount = self.count*2 - closed  # The number of vertices along each edge of the
+        # curve
         projected = vcount*self.sides*[Vector()]
         normals = vcount*self.sides*[Vector()]
         light = vcount*self.sides*[Rgb()]
@@ -170,32 +157,32 @@ class Curve(ArrayPrimitive):
             i = 0
         else:
             i = self.sides
-        mono = self.adjust_colors(scene, tcolor, pcount)
+        mono = self.adjust_colors(scene)
 
         # eliminate initial duplicate points
-        start = Vector(spos[0])
+        start = self.pos[0]
         reduce = 0
         pos_index = 0
-        for corner in range(0, pcount):
-            next = Vector(spos[pos_index])
+        while pos_index < self.count:
+            next = self.pos[pos_index]
             A = (next-start).norm()
             if not A:
                 reduce += 1
+                del self.pos[pos_index]
+                del self.color[pos_index]
                 continue
             pos_index += 1
-            pcount -= reduce
-
-        if pcount < 2:
+        if self.count < 2:
             return
-
-        for corner in range(0, pcount):
-            current = spos[pos_index]
+        pos_index = 0
+        for corner in range(0, self.count):
+            current = self.pos[pos_index]
             next = Vector()
             A = Vector()
             bisecting_plane_normal = Vector()
             sectheta = None
-            if corner != pcount-1:
-                next = spos[pos_index+1]  # The next vector in spos
+            if corner != self.count-1:
+                next = self.pos[pos_index+1]  # The next vector in pos
                 A = (next - current).norm()
                 if not A:
                     A = lastA
@@ -228,7 +215,7 @@ class Curve(ArrayPrimitive):
                     normals[a+i] = rel.norm()
                     projected[a+i] = current + rel
                     if not mono:
-                        light[a+i] = Rgb(tcolor[pos_index])
+                        light[a+i] = self.color[pos_index]
 
                     if not closed:
                         # Cap start of curve
@@ -243,24 +230,25 @@ class Curve(ArrayPrimitive):
                     prev_start = projected[i+a-self.sides]
                     rel = current - prev_start
                     t = rel.dot(lastA)
-                    if corner != pcount-1 and sectheta > 0.0:
+                    if corner != self.count-1 and sectheta > 0.0:
                         t1 = (rel.dot(bisecting_plane_normal)) * sectheta
                         t1 = max(t1, t - Adot)
                         t = max(0.0, min(t, t1))
-                    prev_end = prev_start + t*lastA
+                    prev_end = prev_start + lastA*t
 
                     projected[i+a] = prev_end
                     normals[i+a] = normals[i+a-self.sides]
                     if not mono:
-                        light[i+a] = Rgb(tcolor[pos_index])
+                        light[i+a] = self.color[pos_index]
 
-                    if corner != pcount-1:
-                        next_start = prev_end - 2*(prev_end-current)\
-                            .dot(bisecting_plane_normal)*bisecting_plane_normal
+                    if corner != self.count-1:
+                        diff_normal = bisecting_plane_normal*2*(prev_end-current).dot(
+                            bisecting_plane_normal)
+                        next_start = prev_end - diff_normal
                         rel = next_start - current
 
                         projected[i+a+self.sides] = next_start
-                        normals[i+a+self.sides] = (rel - A.dot(next_start-current)*A)\
+                        normals[i+a+self.sides] = (rel - A*A.dot(next_start-current))\
                             .norm()
                         if not mono:
                             light[i+a+self.sides] = light[i+a]
@@ -295,7 +283,7 @@ class Curve(ArrayPrimitive):
         else:
             prev_i = 0
             i = self.sides
-
+        '''
         while i < vcount*self.sides:
             for a in range(0, self.sides):
                 n1 = normals[i+a]
@@ -308,34 +296,39 @@ class Curve(ArrayPrimitive):
                     n2 = n2 * (1-smooth_amount) + n_smooth
             prev_i = i + self.sides
             i = 2 * self.sides
-
+        '''
         gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
         gl.glEnableClientState(gl.GL_NORMAL_ARRAY)
         if not mono:
             gl.glEnableClientState(gl.GL_COLOR_ARRAY)
 
-        ind = self.curve_slice
+        ind = 0
         for a in range(0, self.sides):
             ai = a
             if a == self.sides-1:
                 ind += 256  # upper portion of curve_slice indices, for the last side
                 ai = 0
-
             # List all the vertices for the ai-th side of the thick line:
             for i in range(0, vcount, 127):
-                gl.glVertexPointer(3, gl.GL_DOUBLE, sizeof(Vector),
-                                   projected[i*self.sides + ai].x_component)
+
+                vertexPointer = make_pointer(i*self.sides + ai, projected)
+                print(type(projected), projected)
+                gl.glVertexPointer(3, gl.GL_FLOAT, 6, vertexPointer)
+                print(type(light), light)
                 if not mono:
-                    gl.glColorPointer(3, gl.GL_FLOAT, sizeof(Rgb),
-                                      light[(i*self.sides + ai)].red)
-                gl.glNormalPointer(gl.GL_DOUBLE, sizeof(Vector),
-                                   normals[i*self.sides + ai].x_component)
+                    colorPointer = make_pointer((i*self.sides + ai), light)
+                    gl.glColorPointer(3, gl.GL_FLOAT, 0, colorPointer)
+                normalPointer = make_pointer(i*self.sides + ai, normals)
+                gl.glNormalPointer(gl.GL_FLOAT, 0, normalPointer)
+
                 if vcount-i < 128:
+                    pointer = make_pointer(ind, self.curve_slice, c_int)
                     gl.glDrawElements(gl.GL_TRIANGLE_STRIP, 2*(vcount-i),
-                                      gl.GL_UNSIGNED_INT, ind)
+                                          gl.GL_UNSIGNED_INT, pointer)
+
                 else:
-                    gl.glDrawElements(gl.GL_TRIANGLE_STRIP, 256, gl.GL_UNSIGNED_INT, ind)
-            
+                    gl.glDrawElements(gl.GL_TRIANGLE_STRIP, 256, gl.GL_UNSIGNED_INT,
+                                      make_pointer(ind, self.curve_slice, c_int))
+
         if not mono:
             gl.glDisableClientState(gl.GL_COLOR_ARRAY)
-

@@ -64,6 +64,9 @@ class Rgba(object):
         return "color: r" + str(self.red) + " g" + str(self.green) + " b" + \
                str(self.blue) + " o"+str(self.opacity)
 
+    def __repr__(self):
+        return self.__str__()
+
     def desaturate(self):
         """ Return a desaturated version of the color
 
@@ -124,6 +127,9 @@ class Rgb(object):
     def __str__(self):
         return "color: r" + str(self.red) + " g" + str(self.green) \
                + " b" + str(self.blue)
+
+    def __repr__(self):
+        return self.__str__()
 
     def __getitem__(self, item):
         if item == 0:
