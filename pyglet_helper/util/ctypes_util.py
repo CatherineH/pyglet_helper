@@ -17,7 +17,10 @@ def make_pointer(index, component, data_type=c_float):
                     _list.append(int(component[i][j]))
         else:
             if data_type == c_float:
-                _list.append(float(component[i]))
+                try:
+                    _list.append(float(component[i]))
+                except TypeError as e:
+                    print(component[i], type(component[i]))
             elif data_type == c_long:
                 _list.append(int(component[i]))
     return (data_type * len(_list))(*_list)

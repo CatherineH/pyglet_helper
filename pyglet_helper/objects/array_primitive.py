@@ -3,19 +3,39 @@ try:
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.util import RED
-
+from pyglet_helper.util import RED, Rgb
 
 
 class ArrayPrimitive(object):
     def __init__(self):
         self.pos = []
-        self.color = []
+        self.color = self.color_template()
 
     @property
     def count(self):
         return len(self.pos)
 
+    class color_template(object):
+        def __init__(self):
+            self._data = []
+
+        def append(self, value):
+            self._data.append(value)
+
+        def __setitem__(self, key, value):
+            self.fill(key)
+            self._data[key] = value
+
+        def __getitem__(self, key):
+            self.fill(key)
+            return self._data[key]
+
+        def fill(self, key):
+            if key+1 > len(self._data):
+                if len(self._data) == 0:
+                    self._data.append(RED)
+                for i in range(len(self._data), key+1):
+                    self._data.append(self._data[-1])
 
     def append(self, pos, col=None, retain=-1):
         """

@@ -39,7 +39,6 @@ __license__ = "AGPLv3"
 __copyright__ = "Copyright (c) 2014-2016 Catherine Holloway"
 
 
-
 def vsetup(scene=None):
     """
     Initializes the GLOBAL_VIEW and GLOBAL_WINDOW variables. The window is initialized based on the settings in scene.
@@ -67,12 +66,25 @@ def vsetup(scene=None):
     def on_draw():
         GLOBAL_VIEW.setup()
 
+    @GLOBAL_WINDOW.event
+    def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
+        if buttons & window.mouse.RIGHT:
+            GLOBAL_VIEW.rotate_camera(x, y)
+        if buttons & window.mouse.MIDDLE:
+            GLOBAL_VIEW.zoom_camera(y)
+
     _light0 = objects.light.Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
     _light1 = objects.light.Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))
     GLOBAL_VIEW.lights.append(_light0)
     GLOBAL_VIEW.lights.append(_light1)
 
     GLOBAL_VIEW.draw_lights()
+    print("""
+    Right button drag or Ctrl-drag to rotate "camera" to view scene.
+    Middle button or Alt-drag to drag up or down to zoom in or out.
+      On a two-button mouse, middle is left + right.
+    """)
+
 
 class VApp(object):
     try:

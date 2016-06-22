@@ -5,4 +5,4 @@ dist
 .coverage
 pyglet_helper.egg-info
 scratchpad.py
-python/doc/examples/screenshot*.png
+pyglet_helper/screenshot*.png

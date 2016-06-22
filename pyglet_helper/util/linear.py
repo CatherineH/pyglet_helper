@@ -292,7 +292,7 @@ class Vector(object):
         else:
             axis = Vector([0, 0, 1])
             _rotation_matrix = rotation(angle, axis.norm())
-        return _rotation_matrix * self
+        return Vector(_rotation_matrix * self)
 
     @property
     def x_component(self):

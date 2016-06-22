@@ -48,6 +48,9 @@ class Rgba(object):
         else:
             raise ValueError("no such component")
 
+    def __len__(self):
+        return 4
+
     def __setitem__(self, item, value):
         if item == 0:
             self.red = value
@@ -140,6 +143,9 @@ class Rgb(object):
             return self.blue
         else:
             raise ValueError("no such component")
+
+    def __len__(self):
+        return 3
 
     def __setitem__(self, item, value):
         if item == 0:

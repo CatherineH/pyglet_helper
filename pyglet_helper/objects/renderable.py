@@ -11,7 +11,7 @@ except ImportError:
     window = None
 
 import pyglet.event as event
-
+from math import sqrt, pi
 
 
 from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
@@ -179,6 +179,22 @@ class View(object):
         self.is_setup = False
         self.setup()
 
+    def rotate_camera(self, dx, dy):
+        dx = (pi/2.0)*float(dx)/float(self.view_width)
+        dy = (pi/2.0)*float(dy)/float(self.view_height)
+        prev_mag = self.camera.mag()
+        print(self.camera, dx, dy, self.camera.mag())
+
+        #self.camera = self.camera.rotate(sqrt(dx**2+dy**2), Vector([dx, dy, 0]))
+        self.camera = self.camera.rotate(dx, Vector([1, 0, 0]))
+        self.camera = self.camera.rotate(dy, Vector([0, 1, 0]))
+        new_mag = self.camera.mag()
+        self.camera *= prev_mag/new_mag
+        print("rotated to: ", self.camera, self.camera.mag())
+
+    def zoom_camera(self, dy):
+        self.camera *= (1.0 + 2*float(dy)/float(self.view_height))
+
     def setup(self):
         """ Does some one-time OpenGL setup.
         """
@@ -232,7 +248,6 @@ class View(object):
                       self.lights[i].specular)
             gl.glLightfv(GL_DEFINED_LIGHTS[i], gl.GL_DIFFUSE,
                                 self.lights[i].diffuse)
-
 
 
     def pixel_coverage(self, pos, radius):
