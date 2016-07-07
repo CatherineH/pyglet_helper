@@ -1,3 +1,5 @@
+from __future__ import print_function, division, absolute_import
+
 try:
     from pyglet.gl import gl
 except Exception as error_msg:

@@ -1,6 +1,8 @@
 """
 pyglet_helper.cylinder contains an object for drawing a cylinder
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as err_msg:

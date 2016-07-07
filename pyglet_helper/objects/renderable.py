@@ -1,6 +1,8 @@
 """
 pyglet_helper.renderable contains objects needed to draw all geometric shapes
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except ImportError:

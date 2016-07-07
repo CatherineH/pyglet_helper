@@ -1,6 +1,8 @@
 """
 pyglet_helper.ellipsoid contains an object for drawing an ellipsoid
 """
+from __future__ import print_function, division, absolute_import
+
 from pyglet_helper.objects import Sphere
 from pyglet_helper.util import Rgb, Vector
 

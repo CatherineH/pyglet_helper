@@ -1,4 +1,6 @@
 """pyglet_helper.ring contains an object for drawing a ring"""
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as error_msg:

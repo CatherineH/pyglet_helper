@@ -2,6 +2,8 @@
 pyglet_helper.primitive contains objects and methods related to drawing all
 geometric shapes
 """
+from __future__ import print_function, division, absolute_import
+
 from pyglet_helper.objects import Material, Renderable, Curve, Points
 from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
 

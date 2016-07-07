@@ -1,3 +1,5 @@
+from __future__ import print_function, division, absolute_import
+
 from mock import patch
 import pyglet_helper
 

@@ -46,6 +46,7 @@ Unstable interfaces:
         raw 2D textures useful only for filling in the textures parameter of
         materials.shader().
 """
+from __future__ import print_function, division, absolute_import
 
 from numpy import array, reshape, fromstring, ubyte, asarray
 import os.path

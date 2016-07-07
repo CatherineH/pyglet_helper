@@ -1,3 +1,5 @@
+from __future__ import print_function, division, absolute_import
+
 def test_thickline():
     from pyglet_helper.objects import Curve, View
 

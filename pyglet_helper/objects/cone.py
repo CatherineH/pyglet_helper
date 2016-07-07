@@ -1,6 +1,8 @@
 """
 pyglet_helper.cone contains an object for drawing a cone
 """
+from __future__ import print_function, division, absolute_import
+
 try:
    import pyglet.gl as gl
 except Exception as error_msg:
