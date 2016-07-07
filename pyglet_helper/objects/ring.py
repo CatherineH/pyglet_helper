@@ -5,8 +5,8 @@ try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Axial
-from pyglet_helper.util import Rgb, Tmatrix, Vector
+from . import Axial
+from ..util import Rgb, Tmatrix, Vector
 from math import pi, sin, cos, sqrt
 
 

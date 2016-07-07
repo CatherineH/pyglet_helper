@@ -1,10 +1,10 @@
 """pyglet_helper.axial contains a base class for objects with radial symmetry"""
 from __future__ import print_function, division, absolute_import
 
-from pyglet_helper.objects import Primitive
+from . import Primitive
 from math import pi
-from pyglet_helper.util import Rgb, Tmatrix, Vector
-from pyglet_helper.objects.material import Material
+from ..util import Rgb, Tmatrix, Vector
+from .material import Material
 
 
 class Axial(Primitive):

@@ -4,8 +4,8 @@ geometric shapes
 """
 from __future__ import print_function, division, absolute_import
 
-from pyglet_helper.objects import Material, Renderable, Curve, Points
-from pyglet_helper.util import Rgb, rotation, Tmatrix, Vector
+from . import Material, Renderable, Curve, Points
+from ..util import Rgb, rotation, Tmatrix, Vector
 
 # the original primitive class relied on an array_primitive class, however, given that
 #  all objects

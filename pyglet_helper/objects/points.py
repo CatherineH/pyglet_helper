@@ -5,8 +5,8 @@ try:
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.objects import ArrayPrimitive
-from pyglet_helper.util import make_pointer, Rgb, Vector, Vertex, Tmatrix
+from . import ArrayPrimitive
+from ..util import make_pointer, Rgb, Vector, Vertex, Tmatrix
 from enum import Enum
 from ctypes import sizeof, c_float
 

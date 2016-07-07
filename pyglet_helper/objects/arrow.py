@@ -7,8 +7,8 @@ try:
     from pyglet.gl import gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Box, Material, Primitive, Pyramid
-from pyglet_helper.util import Rgb, Tmatrix, Vector
+from . import Box, Material, Primitive, Pyramid
+from ..util import Rgb, Tmatrix, Vector
 
 
 class Arrow(Primitive):

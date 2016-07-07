@@ -5,7 +5,7 @@ try:
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.util import RED, Rgb
+from ..util import RED, Rgb
 
 
 class ArrayPrimitive(object):

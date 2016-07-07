@@ -52,8 +52,8 @@ from numpy import array, reshape, fromstring, ubyte, asarray
 import os.path
 import sys
 
-from pyglet_helper.util.texture import Texture
-from pyglet_helper.objects.material import Material, UNSHADED, EMISSIVE, \
+from ..util.texture import Texture
+from ..objects.material import Material, UNSHADED, EMISSIVE, \
     DIFFUSE, PLASTIC, ROUGH, SHINY, CHROME, ICE, GLASS, BLAZED, SILVER, \
     WOOD, MARBLE, EARTH, BLUEMARBLE, BRICKS
 

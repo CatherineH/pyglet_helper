@@ -7,8 +7,8 @@ try:
     import pyglet.gl as gl
 except Exception as err_msg:
     gl = None
-from pyglet_helper.objects import Axial
-from pyglet_helper.util import Quadric, Rgb, Vector
+from . import Axial
+from ..util import Quadric, Rgb, Vector
 
 
 class Cylinder(Axial):

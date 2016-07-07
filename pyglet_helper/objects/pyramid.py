@@ -7,8 +7,8 @@ try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Rectangular
-from pyglet_helper.util import Rgb, Tmatrix, Vector
+from . import Rectangular
+from ..util import Rgb, Tmatrix, Vector
 
 
 class Pyramid(Rectangular):

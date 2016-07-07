@@ -4,8 +4,8 @@ rectangular symmetry
 """
 from __future__ import print_function, division, absolute_import
 
-from pyglet_helper.objects import Primitive
-from pyglet_helper.util import Rgb, Vector
+from . import Primitive
+from ..util import Rgb, Vector
 
 
 class Rectangular(Primitive):

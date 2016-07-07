@@ -16,8 +16,8 @@ import pyglet.event as event
 from math import sqrt, pi
 
 
-from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
-from pyglet_helper.objects import Material
+from ..util import DisplayList, Rgb, Tmatrix, Vector
+from . import Material
 
 
 class Renderable(object):
