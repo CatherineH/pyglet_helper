@@ -2,6 +2,8 @@
 The following file contains definitions for GL functions when pyglet can't
 be used, such as on testing on continuous integration systems.
 """
+from __future__ import print_function, division, absolute_import
+
 from ctypes import c_float, c_double, c_uint
 
 

@@ -1,6 +1,8 @@
 """ pyglet_helper.util.shader_program contains objects for creating programs to
 describe how the light treats the object
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except ImportError:

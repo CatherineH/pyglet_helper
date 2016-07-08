@@ -1,12 +1,14 @@
 """
 pyglet_helper.pyramid contains an object for drawing a pyramid
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Rectangular
-from pyglet_helper.util import Rgb, Tmatrix, Vector
+from . import Rectangular
+from ..util import Rgb, Tmatrix, Vector
 
 
 class Pyramid(Rectangular):

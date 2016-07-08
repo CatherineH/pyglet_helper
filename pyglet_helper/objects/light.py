@@ -1,12 +1,14 @@
 """ pyglet_helper.light contains an object for creating lights
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Renderable
-from pyglet_helper.util import Rgb, Vector
-from pyglet_helper import GLOBAL_VIEW
+from . import Renderable
+from ..util import Rgb, Vector
+from .. import GLOBAL_VIEW
 
 class Light(Renderable):
     """

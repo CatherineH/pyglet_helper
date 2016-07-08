@@ -1,10 +1,12 @@
 """pyglet_helper.ring contains an object for drawing a ring"""
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Axial
-from pyglet_helper.util import Rgb, Tmatrix, Vector
+from . import Axial
+from ..util import Rgb, Tmatrix, Vector
 from math import pi, sin, cos, sqrt
 
 

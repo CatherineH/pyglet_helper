@@ -1,9 +1,11 @@
+from __future__ import print_function, division, absolute_import
+
 try:
     from pyglet.gl import gl
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.util import RED, Rgb
+from ..util import RED, Rgb
 
 
 class ArrayPrimitive(object):

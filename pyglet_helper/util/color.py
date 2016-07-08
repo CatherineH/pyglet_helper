@@ -1,6 +1,8 @@
 """ pyglet_helper.util.color defines a few standard colors
 """
-from pyglet_helper.util.rgba import Rgb
+from __future__ import print_function, division, absolute_import
+
+from .rgba import Rgb
 
 BLUE = Rgb(red=0.0, green=0.0, blue=1.0)
 RED = Rgb(red=1.0, green=0.0, blue=0.0)

@@ -1,11 +1,13 @@
 """ pyglet_helper.sphere contains an object for drawing a sphere
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except Exception as error_msg:
     gl = None
-from pyglet_helper.objects import Axial, Material
-from pyglet_helper.util import Quadric, Rgb, Tmatrix, Vector
+from . import Axial, Material
+from ..util import Quadric, Rgb, Tmatrix, Vector
 
 
 class Sphere(Axial):

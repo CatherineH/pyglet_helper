@@ -1,6 +1,8 @@
 """
 pyglet_helper.renderable contains objects needed to draw all geometric shapes
 """
+from __future__ import print_function, division, absolute_import
+
 try:
     import pyglet.gl as gl
 except ImportError:
@@ -14,8 +16,8 @@ import pyglet.event as event
 from math import sqrt, pi
 
 
-from pyglet_helper.util import DisplayList, Rgb, Tmatrix, Vector
-from pyglet_helper.objects import Material
+from ..util import DisplayList, Rgb, Tmatrix, Vector
+from . import Material
 
 
 class Renderable(object):

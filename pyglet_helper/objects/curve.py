@@ -1,10 +1,12 @@
+from __future__ import print_function, division, absolute_import
+
 try:
     from pyglet.gl import gl
 except Exception as error_msg:
     gl = None
 
-from pyglet_helper.objects import ArrayPrimitive
-from pyglet_helper.util import Rgb, Vector, make_pointer
+from . import ArrayPrimitive
+from ..util import Rgb, Vector, make_pointer
 from math import pi, cos, sin
 from numpy import zeros
 from ctypes import sizeof, c_uint, c_int, byref
