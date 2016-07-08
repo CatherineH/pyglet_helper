@@ -113,10 +113,8 @@ def test_vector_rotate():
     vec2 = Vector([0, 1.0, 1.0])
     vec3 = vec1.rotate(angle=1.0, axis=vec2)
     assert abs(vec3[0] - 2.73032198493) < 0.01
-    assert vec3[3] == 1.0
     vec3 = vec1.rotate(angle=1.0)
     assert vec3[2] == 3.0
-    assert vec3[3] == 1.0
 
 @patch('pyglet_helper.util.linear.gl', new=pyglet_helper.test.fake_gl)
 def test_vector_render():

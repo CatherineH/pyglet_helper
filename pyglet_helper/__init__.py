@@ -69,9 +69,9 @@ def vsetup(scene=None):
     @GLOBAL_WINDOW.event
     def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         if buttons & window.mouse.RIGHT:
-            GLOBAL_VIEW.rotate_camera(x, y)
+            GLOBAL_VIEW.rotate_camera(dx, dy)
         if buttons & window.mouse.MIDDLE:
-            GLOBAL_VIEW.zoom_camera(y)
+            GLOBAL_VIEW.zoom_camera(dy)
 
     _light0 = objects.light.Light(position=(1, 0.5, 1, 0), specular=(.5, .5, 1, 0.5))
     _light1 = objects.light.Light(position=(1, 0, .5, 0), specular=(.5, .5, .5, 1))

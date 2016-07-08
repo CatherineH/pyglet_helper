@@ -173,27 +173,36 @@ class View(object):
 
         self.background_color = background_color
         self.lights = []
-
+        self.user_scale = 1.0
         self.enable_shaders = enable_shaders
         self.screen_objects = []
         self.is_setup = False
         self.setup()
 
     def rotate_camera(self, dx, dy):
-        dx = (pi/2.0)*float(dx)/float(self.view_width)
-        dy = (pi/2.0)*float(dy)/float(self.view_height)
+        vfrac = float(dy) / float(self.view_height)
+        hfrac = float(dx) / float(self.view_width)
         prev_mag = self.camera.mag()
-        print(self.camera, dx, dy, self.camera.mag())
 
-        #self.camera = self.camera.rotate(sqrt(dx**2+dy**2), Vector([dx, dy, 0]))
-        self.camera = self.camera.rotate(dx, Vector([1, 0, 0]))
-        self.camera = self.camera.rotate(dy, Vector([0, 1, 0]))
+        self.camera = self.camera.rotate(-2.0*hfrac, self.up_vector)
+
+        # Then perform rotation about an axis orthogonal to up and forward.
+        vertical_angle = vfrac * 2.0
+        max_vertical_angle = self.up_vector.diff_angle(-self.forward.norm())
+
+        # Over the top( or under the bottom) rotation
+        if (not (vertical_angle >= max_vertical_angle or
+        vertical_angle <= max_vertical_angle - pi)):
+            self.camera = self.camera.rotate(-vertical_angle, self.forward.cross(
+                self.up_vector).norm())
+            self.forward_changed = True
+
         new_mag = self.camera.mag()
         self.camera *= prev_mag/new_mag
-        print("rotated to: ", self.camera, self.camera.mag())
 
     def zoom_camera(self, dy):
-        self.camera *= (1.0 + 2*float(dy)/float(self.view_height))
+        vfrac = float(dy) / float(self.view_height)
+        self.user_scale *= pow(10.0, vfrac)
 
     def setup(self):
         """ Does some one-time OpenGL setup.
@@ -222,8 +231,9 @@ class View(object):
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         gl.gluPerspective(45, self.view_width / float(self.view_height), .1, 1000)
+        _camera = self.user_scale*self.camera
         gl.gluLookAt(
-            self.camera[0], self.camera[1], self.camera[2],
+            _camera[0], _camera[1], _camera[2],
             self.center[0], self.center[1], self.center[2],
             self.up_vector[0], self.up_vector[1], self.up_vector[2]
         )

@@ -186,8 +186,8 @@ class Vector(object):
         Format the vector into a string
         :return:
         """
-        return "Vector(" + str(self.x_component) + "," + str(self.y_component) \
-               + "," + str(self.z_component) + ")"
+        return "Vector( %.2f, %.2f, %.2f)" % (self.x_component, self.y_component,
+                                             self.z_component )
 
     def dot(self, vector):
         """ Calculates the dot product of this vector and another.

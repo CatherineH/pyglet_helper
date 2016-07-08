@@ -10,8 +10,6 @@ from numpy import zeros
 from ctypes import sizeof, c_uint, c_int, byref
 
 
-
-
 class Curve(ArrayPrimitive):
     def __init__(self, color=Rgb(), antialias=True, radius=0.0, sides=4):
         super(Curve, self).__init__()
@@ -164,7 +162,7 @@ class Curve(ArrayPrimitive):
         if self.count < 2:
             return
         self.projected = self.count*self.sides*[Vector()]
-        normals = self.count*self.sides*[Vector()]
+        self.normals = self.count*self.sides*[Vector()]
         light = self.count*self.sides*[Rgb()]
 
         mono = self.adjust_colors(scene)
@@ -219,7 +217,7 @@ class Curve(ArrayPrimitive):
             for a in range(0, self.sides):
                 rel = x*sint[a] + y*cost[a]  # first point is "up"
 
-                normals[a+segment*self.sides] = rel.norm()
+                self.normals[a+segment*self.sides] = rel.norm()
                 self.projected[a+segment*self.sides] = next + rel
                 if not mono:
                     light[a+segment*self.sides] = self.color[pos_index]
@@ -299,30 +297,40 @@ class Curve(ArrayPrimitive):
         an alternative to glDrawElements, to confirm that the values are correct
         :return:
         """
-        gl.glBegin(gl.GL_TRIANGLES)
+        vertices = []
+        normals = []
+        draw_triangles = False
+        if draw_triangles:
+            gl.glBegin(gl.GL_TRIANGLES)
         for i in range(0, self.count-1):
             ind_j = 0
             for j in range(0, 2*self.sides):
                 #print("\n")
-                #print(i, j)
+                #print(i, j, self.count-1)
                 for k in range(0, 3):
                     _vert = self.projected[i+self.curve_slice[ind_j]]
+                    _norm = self.normals[i+self.curve_slice[ind_j]]
                 #    print(i, k, ind_j, self.curve_slice[ind_j], _vert)
-                    gl.glVertex3f(_vert[0], _vert[1], _vert[2])
+                    if draw_triangles:
+                        gl.glVertex3f(_vert[0], _vert[1], _vert[2])
+                        gl.glNormal3f(_norm[0], _norm[1], _norm[2])
+                    else:
+                        vertices.append(_vert)
+                        normals.append(_norm)
                     if k != 2:
                         ind_j += 1
                     if ind_j == 2*self.sides:
                         ind_j = 0
-        gl.glEnd(gl.GL_TRIANGLES)
+        if draw_triangles:
+            gl.glEnd(gl.GL_TRIANGLES)
+        else:
+            gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
+            gl.glEnableClientState(gl.GL_NORMAL_ARRAY)
 
-        '''
+            gl.glVertexPointer(3, gl.GL_FLOAT, 0, make_pointer(0, vertices))
+            gl.glGetPointerv(gl.GL_VERTEX_ARRAY_POINTER)
+            gl.glNormalPointer(gl.GL_FLOAT, 0, make_pointer(0, normals))
+            gl.glDrawArrays(gl.GL_TRIANGLES, 0, 2*self.sides*(self.count - 1))
 
-        gl.glEnableClientState(gl.GL_VERTEX_ARRAY)
-        gl.glVertexPointer(3, gl.GL_FLOAT, 0, vertices)
-
-        # draw a cube
-        gl.glDrawArrays(gl.GL_TRIANGLES, 0, 36)
-
-        # deactivate vertex arrays after drawing
-        gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
-        '''
+            gl.glDisableClientState(gl.GL_VERTEX_ARRAY)
+            gl.glDisableClientState(gl.GL_NORMAL_ARRAY)

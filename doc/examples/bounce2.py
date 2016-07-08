@@ -10,7 +10,7 @@ def update(dt):
     t = t + dt
     #if ball.trail_object.count > 2:
     #    return
-    if t > 1.51:
+    if t > 3.51:
          return
     ball.pos = ball.pos + (ball.p / ball.mass) * dt
     if not (side > ball.pos.x_component > -side):
@@ -29,16 +29,16 @@ side = 4.0
 thk = 0.3
 s2 = 2*side - thk
 s3 = 2*side + thk
-
+'''
 wallR = Box(pos=Vector([side, 0, 0]), size=Vector([thk, s2, s3]),  color=color.RED)
 wallL = Box(pos=Vector([-side, 0, 0]), size=Vector([thk, s2, s3]),  color=color.RED)
 wallB = Box(pos=Vector([0, -side, 0]), size=Vector([s3, thk, s3]),  color=color.BLUE)
 wallT = Box(pos=Vector([0,  side, 0]), size=Vector([s3, thk, s3]),  color=color.BLUE)
 wallBK = Box(pos=Vector([0, 0, -side]), size=Vector([s2, s2, thk]), color=Rgb(0.7, 0.7, 0.7))
-
+'''
 ball = Sphere(color=color.GREEN, radius=0.4, make_trail=True, retain=200,
               trail_type="curve")
-ball.trail_object.radius = 0.1
+ball.trail_object.radius = 0.4
 ball.mass = 1.0
 ball.p = Vector([-0.15, -0.23, +0.27])
 
