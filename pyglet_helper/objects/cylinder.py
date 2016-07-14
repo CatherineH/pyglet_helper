@@ -15,9 +15,9 @@ class Cylinder(Axial):
     """
      A Cylinder object.
     """
-    def __init__(self, pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]), radius=1.0,
-                 color=Rgb(0, 0, 0), make_trail=False, trail_type='curve', interval=1,
-                 retain=-1):
+    def __init__(self, pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]), size=None,
+                 radius=1.0, color=Rgb(0, 0, 0), make_trail=False, trail_type='curve',
+                 interval=1, retain=-1):
         """
 
         :param radius: The cylinder's radius.
@@ -32,7 +32,7 @@ class Cylinder(Axial):
         super(Cylinder, self).__init__(pos=pos, radius=radius, color=color,
                                        axis=axis, make_trail=make_trail,
                                        trail_type=trail_type, interval=interval,
-                                       retain=retain)
+                                       retain=retain, size=size)
 
     def init_model(self, scene):
         """ Add the cylinder quadrics to the view.

@@ -25,19 +25,12 @@ class Vector(object):
         self._y_component = None
         self._z_component = None
         if in_vector is None:
-            self.x_component = 0
-            self.y_component = 0
-            self.z_component = 0
-        if type(in_vector) is tuple or type(in_vector) is list:
-            self.x_component = in_vector[0]
-            self.y_component = in_vector[1]
-            self.z_component = in_vector[2]
-        elif hasattr(in_vector, 'x_component') and \
-                hasattr(in_vector, 'y_component') and \
-                hasattr(in_vector, 'z_component'):
-            self.x_component = getattr(in_vector, 'x_component')
-            self.y_component = getattr(in_vector, 'y_component')
-            self.z_component = getattr(in_vector, 'z_component')
+            self.zero()
+        elif len(in_vector) > 2:
+            for i in range(len(self)):
+                self[i] = in_vector[i]
+        else:
+            raise ValueError("in_vector must contain at least three numbers!")
 
     def __add__(self, other):
         """
@@ -63,6 +56,15 @@ class Vector(object):
         return Vector([self.x_component - vector.x_component, self.y_component -
                        vector.y_component,
                        self.z_component - vector.z_component])
+
+    def zero(self):
+        """
+        set every component of the vector to zero
+        :return:
+        """
+        self.x_component = 0.0
+        self.y_component = 0.0
+        self.z_component = 0.0
 
     def __mul__(self, vector):
         """

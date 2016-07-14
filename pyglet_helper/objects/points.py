@@ -65,8 +65,7 @@ class Points(ArrayPrimitive):
         # Render opaque points( if any)
         if self.count > 0:
             chunk = 256
-        curr_point = 0
-        while curr_point < self.count:
+        for curr_point in range(0, self.count):
             # this needs to be cleaned up to convert opaque_points to pointers
             block = min(chunk, self.count - curr_point)
             #print(self.color[-1])

@@ -15,7 +15,7 @@ class Cone(Axial):
     """
     A Cone object
     """
-    def __init__(self, radius=1.0, color=Rgb(), pos=Vector([0, 0, 0]),
+    def __init__(self, radius=1.0, color=Rgb(), size=None, pos=Vector([0, 0, 0]),
                  axis=Vector([1, 0, 0]), make_trail=False, trail_type='curve',
                  interval=1, retain=-1):
         """
@@ -34,6 +34,9 @@ class Cone(Axial):
                                    make_trail=make_trail, trail_type=trail_type,
                                    interval=interval, retain=retain)
         self.axis = Vector(axis)
+        if size is not None:
+            self.axis = self.axis*size[0]
+            self.radius = size[1]
 
     def init_model(self, scene):
         """Add the cone quadrics to the view.

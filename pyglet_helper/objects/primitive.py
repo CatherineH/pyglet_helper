@@ -125,7 +125,7 @@ class Primitive(Renderable):
 
         return ret
 
-    def rotate(self, angle, axis, origin):
+    def rotate(self, angle, axis, origin=None):
         """Rotate the primitive's axis by angle about a specified axis at a
         specified origin.
 
@@ -136,6 +136,8 @@ class Primitive(Renderable):
         :param origin: The center of the axis of rotation.
         :type origin: pyglet_helper.util.Vector
         """
+        if origin is None:
+            origin = self.pos
         rotation_matrix = rotation(angle, axis, origin)
         fake_up = self.up_vector
         if not self.axis.cross(fake_up):

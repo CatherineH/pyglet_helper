@@ -17,8 +17,9 @@ class Arrow(Primitive):
      along +x, unit length.
     """
     def __init__(self, fixed_width=False, head_width=0.0, head_length=0.0,
-                 shaft_width=0.0, color=Rgb(), pos=Vector([0, 0, 0]), axis=(1, 0, 0),
-                 make_trail=False, trail_type='curve', interval=1, retain=-1):
+                 shaft_width=0.0, size=None, color=Rgb(), pos=Vector([0, 0, 0]),
+                 axis=(1, 0, 0), make_trail=False, trail_type='curve', interval=1,
+                 retain=-1):
         """
 
         :param fixed_width: if True, the arrow's head width and length will not
@@ -54,6 +55,9 @@ class Arrow(Primitive):
         self.head_width = head_width
         self.head_length = head_length
         self.shaft_width = shaft_width
+        if size is not None:
+            self.axis = self.axis*size[0]
+            self.shaft_width = self.size[2]
         self.box = None
         self.pyramid = None
 

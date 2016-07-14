@@ -15,7 +15,7 @@ from ctypes import sizeof, c_uint, c_int, byref
 
 
 class Curve(ArrayPrimitive):
-    def __init__(self, color=Rgb(), antialias=True, radius=0.0, sides=4):
+    def __init__(self, color=Rgb(), antialias=True, radius=0.0, size=None, sides=4):
         super(Curve, self).__init__()
         # since wxPython is not being used, the frame argument is not important for now
         self.antialias = antialias

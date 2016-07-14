@@ -14,7 +14,7 @@ class Sphere(Axial):
     """
     A Sphere object
     """
-    def __init__(self, color=Rgb(), pos=Vector([0, 0, 0]),
+    def __init__(self, color=Rgb(), size=None, pos=Vector([0, 0, 0]),
                  axis=Vector([1.0, 0.0, 0.0]), radius=1.0,
                  material=Material(), other=None, make_trail=False, trail_type='curve',
                  interval=1, retain=-1):
@@ -32,7 +32,7 @@ class Sphere(Axial):
         :param other: another sphere object to copy properties from (optional)
         :type other: pyglet_helper.objects.Sphere
         """
-        super(Sphere, self).__init__(color=color, pos=pos, radius=radius,
+        super(Sphere, self).__init__(color=color, size=size, pos=pos, radius=radius,
                                      material=material, axis=axis,
                                      make_trail=make_trail, trail_type=trail_type,
                                      interval=interval, retain=retain)

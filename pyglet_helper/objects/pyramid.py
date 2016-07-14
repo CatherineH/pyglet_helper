@@ -15,7 +15,7 @@ class Pyramid(Rectangular):
     """
     A Pyramid Object
     """
-    def __init__(self, axis=Vector([1, 0, 0]), pos=Vector([0, 0, 0]),
+    def __init__(self, axis=Vector([1, 0, 0]), size=None, pos=Vector([0, 0, 0]),
                  width=1.0, height=1.0, length=1.0, color=Rgb(), make_trail=False,
                  trail_type='curve', interval=1, retain=-1):
         """
@@ -31,7 +31,7 @@ class Pyramid(Rectangular):
         :type length: float
         :return:
         """
-        super(Pyramid, self).__init__(axis=axis, pos=pos, color=color,
+        super(Pyramid, self).__init__(axis=axis, size=size, pos=pos, color=color,
                                       width=width, height=height,
                                       length=length, make_trail=make_trail,
                                       trail_type=trail_type, interval=interval,

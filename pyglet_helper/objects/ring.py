@@ -14,7 +14,7 @@ class Ring(Axial):
     """
     A Ring object
     """
-    def __init__(self, thickness=0.0, radius=1.0, color=Rgb(),
+    def __init__(self, thickness=0.0, radius=1.0, size=None, color=Rgb(),
                  pos=Vector([0, 0, 0]), axis=Vector([1, 0, 0]), make_trail=False,
                  trail_type='curve', interval=1, retain=-1):
         """
@@ -30,7 +30,7 @@ class Ring(Axial):
         :param axis: The cone points from the base to the point along the axis.
         :type axis: pyglet_helper.util.Vector
         """
-        super(Ring, self).__init__(radius=radius, color=color, pos=pos,
+        super(Ring, self).__init__(radius=radius, size=size, color=color, pos=pos,
                                    axis=axis, make_trail=make_trail,
                                    trail_type=trail_type, interval=interval,
                                    retain=retain)

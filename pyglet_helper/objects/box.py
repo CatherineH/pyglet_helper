@@ -11,8 +11,6 @@ from . import Rectangular
 from ..util import Rgb, Vector
 
 
-
-
 class Box(Rectangular):
     """
      A box object.

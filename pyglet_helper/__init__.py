@@ -29,7 +29,7 @@ __version__ = "0.0.1"
 __author__ = "cholloway"
 
 __title__ = "pyglet_helper"
-__description__ = "3d modelling library"
+__description__ = "3d modeling library"
 __uri__ = "http://catherineh.github.io/pyglet_helper/"
 
 
@@ -105,7 +105,7 @@ class VApp(object):
 
     def vupdate(self, dt):
         self.update(dt)
-        name_width = int(log(self.max_frames)/log(10))
+        name_width = int(log(self.max_frames)/log(10))+1
         format_str = 'screenshot%0'+str(name_width)+'d.png'
         if self.screennum < self.max_frames*self.interval and self.render_images:
             if self.screennum % self.interval == 0:

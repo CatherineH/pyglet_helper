@@ -11,7 +11,7 @@ class Ellipsoid(Sphere):
     """
     An Ellipsoid object
     """
-    def __init__(self, height=1.0, width=1.0, length=1.0, color=Rgb(),
+    def __init__(self, height=1.0, width=1.0, length=1.0, size=None, color=Rgb(),
                  pos=Vector([0, 0, 0]), axis=Vector([1.0, 0.0, 0.0]), make_trail=False,
                  trail_type='curve', interval=1, retain=-1):
         """
@@ -35,6 +35,11 @@ class Ellipsoid(Sphere):
         self.height = height
         self.width = width
         self.length = length
+
+        if size is not None:
+            self.height = size[0]
+            self.width = size[1]
+            self.length = size[2]
 
 
     @property

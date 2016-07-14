@@ -13,7 +13,7 @@ class Axial(Primitive):
      cones, etc., ).
     """
     def __init__(self, axis=Vector([1, 0, 0]), radius=1.0, color=Rgb(),
-                 pos=Vector([0, 0, 0]), material=Material(), other=None,
+                 pos=Vector([0, 0, 0]), material=Material(), other=None, size=None,
                  make_trail=False, trail_type='curve', interval=1, retain=-1):
         """
 
@@ -39,6 +39,9 @@ class Axial(Primitive):
             self.radius = other.radius
         else:
             self.radius = radius
+        if size is not None:
+            self.axis = self.axis*size[0]
+            self.radius = size[1]
 
     @property
     def scale(self):
